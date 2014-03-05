@@ -14,14 +14,24 @@ use lithium\net\http\Router;
 
 $persist = ['persist' => ['admin', 'controller']];
 
-Router::connect('/admin/banners/{:id:[0-9]+}', array(
-	'controller' => 'banners', 'library' => 'cms_banner', 'action' => 'view', 'admin' => true
+Router::connect('/admin/billing/{:id:[0-9]+}', array(
+	'controller' => 'Billing', 'library' => 'cms_billing', 'action' => 'view', 'admin' => true
 ), $persist);
-Router::connect('/admin/banners/{:action}', array(
-	'controller' => 'banners', 'library' => 'cms_banner', 'admin' => true
+Router::connect('/admin/billing/{:action}', array(
+	'controller' => 'Billing', 'library' => 'cms_billing', 'admin' => true
 ), $persist);
-Router::connect('/admin/banners/{:action}/{:id:[0-9]+}', array(
-	'controller' => 'banners', 'library' => 'cms_banner', 'admin' => true
+Router::connect('/admin/billing/{:action}/{:id:[0-9]+}', array(
+	'controller' => 'Billing', 'library' => 'cms_billing', 'admin' => true
+), $persist);
+
+Router::connect('/admin/billing/invoices/{:id:[0-9]+}', array(
+	'controller' => 'BillingInvoices', 'library' => 'cms_billing', 'action' => 'view', 'admin' => true
+), $persist);
+Router::connect('/admin/billing/invoices/{:action}', array(
+	'controller' => 'BillingInvoices', 'library' => 'cms_billing', 'admin' => true
+), $persist);
+Router::connect('/admin/billing/invoices/{:action}/{:id:[0-9]+}', array(
+	'controller' => 'BillingInvoices', 'library' => 'cms_billing', 'admin' => true
 ), $persist);
 
 ?>

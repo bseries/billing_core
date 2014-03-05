@@ -22,8 +22,14 @@ Panes::register('cms_billing', 'billing', [
 	'url' => $base = ['controller' => 'billing', 'library' => 'cms_billing', 'admin' => true],
 	'actions' => [
 		$t('List Invoices') => ['controller' => 'BillingInvoices', 'action' => 'index'] + $base,
-		$t('New Invoices') => ['controller' => 'BillingInvoices', 'action' => 'add'] + $base,
+		$t('New Invoice') => ['controller' => 'BillingInvoices', 'action' => 'add'] + $base,
 	]
 ]);
+
+// Parsed with sprintf.
+Settings::register('cms_billing', 'invoiceNumberPattern.number', '%04.d');
+
+// Parsed with strftime.
+Settings::register('cms_billing', 'invoiceNumberPattern.prefix', '%Y-');
 
 ?>

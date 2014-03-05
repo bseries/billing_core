@@ -1,0 +1,37 @@
+BUREAU Billing
+-- Billing module for bureau.
+
+Synopsis
+--------
+n/a
+
+Authors
+-------
+David M. Persson for Atelier Disko (david@atelierdisko.de).
+
+Copyright & License
+-------------------
+Bureau Billing is Copyright (c) 2014 Atelier Disko - All rights reserved.
+
+-- This software is proprietary and confidential. Redistributions   --
+-- not permitted. Unless required by applicable law or agreed to    --
+-- in writing, software distributed on an "AS IS" BASIS, WITHOUT    --
+-- WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. --
+
+Copyright and license information for contained 3rd party libraries can
+be found in (a) the `doc/licenses` directory, (b) the header of the files
+contained in the library or (c) the directory of the library.
+
+Versions & Requirements
+-----------------------
+Bureau follows the rolling release development model. Code in the master
+branch should always considered to be stable. While code in the dev branch
+should be considered unstable or sometimes even expiremental.
+
+There are no versions as in the standard release development model but
+snapshots. The master branch may be tagged ("snapshotted") at any point in
+time when a significant point of development has been reached.
+
+Snapshots are schemed as follows:
+[current year, two digit].[index, zero based]
+

@@ -10,9 +10,9 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace cms_banner\models;
+namespace cms_billing\models;
 
-use cms_billing\models\BillingInvoicePositions;
+use cms_billing\models\InvoicePositions;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).
@@ -22,7 +22,11 @@ use cms_billing\models\BillingInvoicePositions;
 // @link http://www.hk24.de/en/international/tax/347922/vat_goods_trading_eu.html
 // @link http://www.stuttgart.ihk24.de/recht_und_steuern/steuerrecht/Umsatzsteuer_Verbrauchssteuer/Umsatzsteuer_international/971988/Steuern_und_Abgaben_grenzueberschreitend.html#121
 // @link http://www.hk24.de/recht_und_steuern/steuerrecht/umsatzsteuer_mehrwertsteuer/umsatzsteuer_mehrwertsteuer_international/644156/Uebersetzung_Steuerschuldnerschaft_des_Leistungsempfaengers.html
-class BillingInvoices extends \cms_core\models\Base {
+class Invoices extends \cms_core\models\Base {
+
+	protected $_meta = [
+		'source' => 'billing_invoices'
+	];
 
 	public $belongsTo = ['User'];
 
@@ -32,14 +36,25 @@ class BillingInvoices extends \cms_core\models\Base {
 	];
 	*/
 
-	// public $hasMany = ['BillingInvoicePosition'];
+	// public $hasMany = ['InvoicePosition'];
 
 	public static $enum = [
 		'status' => ['created', 'sent', 'paid', 'void']
 	];
 
+	public function positions($entity) {
+		if (!$entity->id) {
+			return [];
+		}
+		return InovicePositions::find('all', [
+			'conditions' => [
+				'billing_invoice_id' => $entity->id
+			]
+		]);
+	}
+
 	// public $virtualFields = [
-	//	'is_overdue' => "BillingInvoice.total_gross_outstanding != 0 AND BillingInvoice.date + INTERVAL 2 WEEK < CURDATE()"
+	//	'is_overdue' => "Invoice.total_gross_outstanding != 0 AND Invoice.date + INTERVAL 2 WEEK < CURDATE()"
 	// ];
 
 	public static function totalOutstanding($user = null) {
@@ -63,7 +78,7 @@ class BillingInvoices extends \cms_core\models\Base {
 	// If the user should get an invoice taking her invoice frequency into account.
 	/*
 	public function mustGenerate($user, $frequency) {
-		if (!$this->BillingInvoicePosition->pending($user)) {
+		if (!$this->InvoicePosition->pending($user)) {
 			// User has no pending lines, no need to create an empty invoice.
 			return false;
 		}
@@ -76,7 +91,7 @@ class BillingInvoices extends \cms_core\models\Base {
 		if (!$invoice) {
 			return true; // No last billing available.
 		}
-		$last = DateTime::createFromFormat('Y-m-d', $invoice['BillingInvoice']['date']);
+		$last = DateTime::createFromFormat('Y-m-d', $invoice['Invoice']['date']);
 		$diff = $last->diff(new DateTime());
 
 		switch ($frequency) {
@@ -124,11 +139,11 @@ class BillingInvoices extends \cms_core\models\Base {
 		}
 
 		// Finalize all pending positions.
-		$positions = BillingInvoicePositions::pending($user);
+		$positions = InvoicePositions::pending($user);
 		foreach ($positions as $position) {
 			$posistion->finalize($invoice->id);
 		}
-		$positions = BillingInvoicePositios::find('all', [
+		$positions = InvoicePositios::find('all', [
 			'conditions' => ['billing_invoice_id' => $invoice->id]
 		]); // Refresh.
 

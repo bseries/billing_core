@@ -10,10 +10,14 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace cms_banner\models;
+namespace cms_billing\models;
 
 // In the moment of generating an invoice position the price is finalized.
-class BillingInvoicePositions extends \cms_core\models\Base {
+class InvoicePositions extends \cms_core\models\Base {
+
+	protected $_meta = [
+		'source' => 'billing_invoice_positions'
+	];
 
 	/*
 	protected static $_actsAs = [
@@ -23,7 +27,7 @@ class BillingInvoicePositions extends \cms_core\models\Base {
 
 	public $belongsTo = [
 		'User',
-		'BillingInvoice'
+		'Invoice'
 	];
 
 	// This fills out all fields open for the position making it non-pending.

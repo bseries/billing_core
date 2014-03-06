@@ -18,7 +18,7 @@ use lithium\analysis\Logger;
 // In the moment of generating an invoice position the price is finalized.
 class TaxZone extends \cms_core\models\Base {
 
-	protected static $_meta = [
+	protected $_meta = [
 		'connection' => false
 	];
 

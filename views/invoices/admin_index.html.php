@@ -4,12 +4,12 @@ $dateFormatter = new IntlDateFormatter(
 	'de_DE',
 	IntlDateFormatter::SHORT,
 	IntlDateFormatter::SHORT,
-	'Europe/Berlin'
+	$authedUser['timezone']
 );
 
 ?>
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?>">
-	<h1 class="alpha"><?= $this->title($t('Banners')) ?></h1>
+	<h1 class="alpha"><?= $this->title($t('Invoices')) ?></h1>
 
 	<?php if ($data->count()): ?>
 		<table>
@@ -49,6 +49,6 @@ $dateFormatter = new IntlDateFormatter(
 			</tbody>
 		</table>
 	<?php else: ?>
-		<div class="none-available"><?= $t('No banners available, yet.') ?></div>
+		<div class="none-available"><?= $t('No items available, yet.') ?></div>
 	<?php endif ?>
 </article>

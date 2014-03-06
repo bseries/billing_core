@@ -10,6 +10,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+use cms_core\extensions\cms\Settings;
 use cms_core\extensions\cms\Panes;
 use lithium\g11n\Message;
 use cms_media\models\Media;
@@ -21,8 +22,8 @@ Panes::register('cms_billing', 'billing', [
 	'group' => Panes::GROUP_AUTHORING,
 	'url' => $base = ['controller' => 'billing', 'library' => 'cms_billing', 'admin' => true],
 	'actions' => [
-		$t('List Invoices') => ['controller' => 'BillingInvoices', 'action' => 'index'] + $base,
-		$t('New Invoice') => ['controller' => 'BillingInvoices', 'action' => 'add'] + $base,
+		$t('List Invoices') => ['controller' => 'Invoices', 'action' => 'index'] + $base,
+		$t('New Invoice') => ['controller' => 'Invoices', 'action' => 'add'] + $base,
 	]
 ]);
 

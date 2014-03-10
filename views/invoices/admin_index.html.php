@@ -15,35 +15,33 @@ $dateFormatter = new IntlDateFormatter(
 		<table>
 			<thead>
 				<tr>
-					<td class="flag"><?= $t('publ.?') ?>
-					<td>
-					<td class="emphasize"><?= $t('Title') ?>
-					<td><?= $t('Group') ?>
+					<td class="emphasize"><?= $t('Number') ?>
+					<td class="status"><?= $t('Status') ?>
+					<td><?= $t('Total currency') ?>
+					<td><?= $t('Total net') ?>
+					<td><?= $t('Total gross') ?>
+					<td class="date created"><?= $t('Date') ?>
 					<td class="date created"><?= $t('Created') ?>
-					<td class="date modified"><?= $t('Modified') ?>
 					<td>
 			</thead>
-			<tbody class="use-manual-sorting">
+			<tbody>
 				<?php foreach ($data as $item): ?>
 				<tr data-id="<?= $item->id ?>">
-					<td class="flag"><?= ($item->is_published ? '✓' : '╳') ?>
-					<td>
-						<?php if (($media = $item->cover()) && ($version = $media->version('fix3'))): ?>
-							<?= $this->media->image($version->url('http'), ['class' => 'media']) ?>
-						<?php endif ?>
-					<td class="emphasize"><?= $item->title ?: '–' ?>
-					<td><?= $item->category ?>
+					<td class="emphasize"><?= $item->number ?: '–' ?>
+					<td class="status"><?= $item->status ?>
+					<td><?= $item->total_currency ?>
+					<td><?= $item->total_net ?>
+					<td><?= $item->total_gross ?>
+					<td class="date">
+						<?php $date = DateTime::createFromFormat('Y-m-d', $item->date) ?>
+						<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
 					<td class="date created">
 						<?php $date = DateTime::createFromFormat('Y-m-d H:i:s', $item->created) ?>
 						<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
-					<td class="date modified">
-						<?php $date = DateTime::createFromFormat('Y-m-d H:i:s', $item->modified) ?>
-						<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
 					<td>
 						<nav class="actions">
-							<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_banner'], ['class' => 'button']) ?>
-							<?= $this->html->link($item->is_published ? $t('unpublish') : $t('publish'), ['id' => $item->id, 'action' => $item->is_published ? 'unpublish': 'publish', 'library' => 'cms_banner'], ['class' => 'button']) ?>
-							<?= $this->html->link($t('edit'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_banner'], ['class' => 'button']) ?>
+							<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?= $this->html->link($t('edit'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						</nav>
 				<?php endforeach ?>
 			</tbody>

@@ -27,10 +27,15 @@ Panes::register('cms_billing', 'billing', [
 	]
 ]);
 
+// Number Format
+//
 // Parsed with sprintf.
-Settings::register('cms_billing', 'invoiceNumberPattern.number', '%04.d');
-
 // Parsed with strftime.
+Settings::register('cms_billing', 'invoiceNumberPattern.number', '%04.d');
 Settings::register('cms_billing', 'invoiceNumberPattern.prefix', '%Y-');
+
+// Overdue, set to false if never overdue.
+// Parsed with strtotime.
+Settings::register('cms_billing', 'invoiceOverdueAfter', '+2 weeks');
 
 ?>

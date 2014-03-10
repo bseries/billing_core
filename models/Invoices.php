@@ -12,10 +12,17 @@
 
 namespace cms_billing\models;
 
+use cms_core\models\Users;
+use cms_core\extensions\cms\Settings;
+use cms_billing\models\TaxZones;
 use cms_billing\models\InvoicePositions;
+use DateTime;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).
+//
+// Denormalizing in order to regenerate invoices
+// even when user changes details.
 //
 // @link http://www.hk24.de/recht_und_steuern/steuerrecht/umsatzsteuer_mehrwertsteuer/umsatzsteuer_mehrwertsteuer_international/367156/USt_grenzueber_Dienstleistungen.html
 // @link http://www.revenue.ie/en/tax/vat/leaflets/place-of-supply-of-services.html
@@ -30,32 +37,56 @@ class Invoices extends \cms_core\models\Base {
 
 	public $belongsTo = ['User'];
 
-	/*
+	public $hasMany = ['InvoicePosition'];
+
 	protected static $_actsAs = [
 		'cms_core\extensions\data\behavior\Timestamp'
 	];
-	*/
-
-	// public $hasMany = ['InvoicePosition'];
 
 	public static $enum = [
-		'status' => ['created', 'sent', 'paid', 'void']
+		'status' => [
+			'created', // open
+			'sent', // open
+			'paid',  // paid
+			'void' // storno
+		]
 	];
 
-	public function positions($entity) {
+	// public static function init() {
+	// }
+
+	public function positions($entity, array $options = []) {
+		$options += ['collectPendingFor' => false];
+
 		if (!$entity->id) {
 			return [];
 		}
-		return InovicePositions::find('all', [
+		if ($options['collectPendingFor']) {
+			return InvoicePositions::find('all', [
+				'conditions' => [
+					'or' => [
+						'user_id' => $options['collectPendingFor'],
+						'billing_invoice_id' => $entity->id
+					]
+				]
+			]);
+		}
+		return InvoicePositions::find('all', [
 			'conditions' => [
 				'billing_invoice_id' => $entity->id
 			]
 		]);
 	}
 
-	// public $virtualFields = [
-	//	'is_overdue' => "Invoice.total_gross_outstanding != 0 AND Invoice.date + INTERVAL 2 WEEK < CURDATE()"
-	// ];
+	public function isOverdue($entity) {
+		$date = DateTime::createFromFormat('Y-m-d H:i:s', $entity->date);
+		$overdue = Settings::read('invoiceOverdueAfter');
+
+		if (!$overdue) {
+			return false;
+		}
+		return $entity->total_gross_outstanding & $date->getTimestamp() > strtotime($overdue);
+	}
 
 	public static function totalOutstanding($user = null) {
 		$results = static::find('all', [
@@ -104,17 +135,17 @@ class Invoices extends \cms_core\models\Base {
 	}
 	*/
 
-	protected static function _nextNumber() {
+	public static function nextNumber() {
 		$pattern = Settings::read('invoiceNumberPattern');
 
 		$item = static::find('first', [
 			'conditions' => [
-				'number LIKE' => strftime($pattern['prefix']) . '%'
+				'number' => 'LIKE ' . strftime($pattern['prefix']) . '%'
 			],
 			'order' => ['number' => 'DESC'],
 			'fields' => ['number']
 		]);
-		if ($number = $item->number) {
+		if ($item && ($number = $item->number)) {
 			$number++;
 		} else {
 			$number = strftime($pattern['prefix']) . sprintf($pattern['number'], 1);
@@ -125,7 +156,7 @@ class Invoices extends \cms_core\models\Base {
 	public static function generate($user, $currency, array $taxZone, $vatRegNo) {
 		// 1st step initalizing the invoice.
 		$invoice = static::create([
-			'number' => static::_nextNumber(),
+			'number' => static::nextNumber(),
 			'user_id' => $user,
 			'date' => date('Y-m-d'),
 			'user_vat_reg_no' => $vatRegNo, // fixate, may be changed by user
@@ -139,11 +170,13 @@ class Invoices extends \cms_core\models\Base {
 		}
 
 		// Finalize all pending positions.
+		/*
 		$positions = InvoicePositions::pending($user);
 		foreach ($positions as $position) {
 			$posistion->finalize($invoice->id);
 		}
-		$positions = InvoicePositios::find('all', [
+		 */
+		$positions = InvoicePositions::find('all', [
 			'conditions' => ['billing_invoice_id' => $invoice->id]
 		]); // Refresh.
 
@@ -166,5 +199,107 @@ class Invoices extends \cms_core\models\Base {
 		]);
 	}
 }
+
+Invoices::applyFilter('save', function($self, $params, $chain) {
+	static $useFilter = true;
+
+	if (!$useFilter) {
+		return $chain->next($self, $params, $chain);
+	}
+
+	$entity = $params['entity'];
+	$data = $params['data'];
+
+	Invoices::pdo()->beginTransaction();
+
+	$user = Users::findById($data['user_id']);
+	$address = $user->address('billing');
+	$taxZone = TaxZones::generate($address->country, $user->vat_reg_no, $user->locale);
+
+	$entity->user_address = $address->format('postal');
+	$entity->user_vat_reg_no = $user->vat_reg_no;
+	$entity->tax_rate = $taxZone->rate;
+	$entity->tax_note = $taxZone->note;
+
+	$currency = $user->billing_currency;
+
+	if (!$entity->exists()) {
+		$entity->number = Invoices::nextNumber();
+	}
+
+	if (!$result = $chain->next($self, $params, $chain)) {
+		Invoices::pdo()->rollback();
+	}
+
+	// Save nested positions.
+	$new = $entity->positions;
+
+	foreach ($new as $key => $data) {
+		if ($key === 'new') {
+			continue;
+		}
+		if (isset($data['id'])) {
+			$item = InvoicePositions::findById($data['id']);
+
+			if ($data['_delete']) {
+				if (!$item->delete()) {
+					Invoices::pdo()->rollback();
+					return false;
+				}
+				continue;
+			}
+		} else {
+			$item = InvoicePositions::create($data + ['user_id' + $entity->user_id]);
+		}
+		if (!$item->save(['billing_invoice_id' => $entity->id])) {
+			Invoices::pdo()->rollback();
+			return false;
+		}
+	}
+
+	$useFilter = false;
+
+	$positions = InvoicePositions::find('all', [
+		'conditions' => ['billing_invoice_id' => $entity->id]
+	]); // Refresh.
+
+	// 2nd step finalizing the invoice.
+	// Calculate invoice totals from positions.
+	$totalNet = 0;
+	$totalGross = 0;
+
+	foreach ($positions as $item) {
+		$field = 'price_' . strtolower($currency);
+		$price = $item->$field;
+		$totalNet += $price - ($price * $entity->tax_rate);
+		$totalGross += $price;
+	}
+	$result = $entity->save([
+		'total_currency' => $currency,
+		'total_net' => $totalNet,
+		'total_gross' => $totalGross,
+		'total_gross_outstanding' => $totalGross,
+		'total_tax' => $totalGross - $totalNet,
+	]);
+
+	Invoices::pdo()->commit();
+	$useFilter = true;
+	return true;
+});
+Invoices::applyFilter('delete', function($self, $params, $chain) {
+	$entity = $params['entity'];
+	$result = $chain->next($self, $params, $chain);
+
+	if ($result) {
+		$positions = InvoicePositions::find('all', [
+			'conditions' => ['billing_invoice_id' => $entity->id]
+		]);
+		foreach ($positions as $position) {
+			$position->delete();
+		}
+	}
+	return $result;
+});
+
 
 ?>

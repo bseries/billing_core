@@ -10,19 +10,19 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace cms_banner\models;
+namespace cms_billing\models;
 
 use lithium\g11n\Message;
 use lithium\analysis\Logger;
 
 // In the moment of generating an invoice position the price is finalized.
-class TaxZone extends \cms_core\models\Base {
+class TaxZones extends \cms_core\models\Base {
 
 	protected $_meta = [
 		'connection' => false
 	];
 
-	public static function create($territory, $vatRegNo, $locale) {
+	public static function generate($territory, $vatRegNo, $locale) {
 		extract(Message::aliases());
 
 		// Enable if becomes required.

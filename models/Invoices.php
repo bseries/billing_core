@@ -52,9 +52,6 @@ class Invoices extends \cms_core\models\Base {
 		]
 	];
 
-	// public static function init() {
-	// }
-
 	public function positions($entity, array $options = []) {
 		$options += ['collectPendingFor' => false];
 
@@ -105,35 +102,6 @@ class Invoices extends \cms_core\models\Base {
 		}
 		return $outstanding;
 	}
-
-	// If the user should get an invoice taking her invoice frequency into account.
-	/*
-	public function mustGenerate($user, $frequency) {
-		if (!$this->InvoicePosition->pending($user)) {
-			// User has no pending lines, no need to create an empty invoice.
-			return false;
-		}
-
-		$invoice = $this->find('first', [
-			'conditions' => ['user_id' => $user],
-			'fields' => ['date'],
-			'order' => 'date DESC'
-		]);
-		if (!$invoice) {
-			return true; // No last billing available.
-		}
-		$last = DateTime::createFromFormat('Y-m-d', $invoice['Invoice']['date']);
-		$diff = $last->diff(new DateTime());
-
-		switch ($frequency) {
-			case 'monthly':
-				return $diff->m >= 1;
-			case 'yearly':
-				return $diff->y >= 1;
-			}
-		return false;
-	}
-	*/
 
 	public static function nextNumber() {
 		$pattern = Settings::read('invoiceNumberPattern');
@@ -203,29 +171,30 @@ class Invoices extends \cms_core\models\Base {
 Invoices::applyFilter('save', function($self, $params, $chain) {
 	static $useFilter = true;
 
+	$entity = $params['entity'];
+	$data = $params['data'];
+
 	if (!$useFilter) {
 		return $chain->next($self, $params, $chain);
 	}
-
-	$entity = $params['entity'];
-	$data = $params['data'];
+	if ($entity->is_locked || isset($data['is_locked'])) {
+		return $chain->next($self, $params, $chain);
+	}
 
 	Invoices::pdo()->beginTransaction();
 
 	$user = Users::findById($data['user_id']);
 	$address = $user->address('billing');
 	$taxZone = TaxZones::generate($address->country, $user->vat_reg_no, $user->locale);
-
-	$entity->user_address = $address->format('postal');
-	$entity->user_vat_reg_no = $user->vat_reg_no;
-	$entity->tax_rate = $taxZone->rate;
-	$entity->tax_note = $taxZone->note;
-
 	$currency = $user->billing_currency;
 
 	if (!$entity->exists()) {
 		$entity->number = Invoices::nextNumber();
 	}
+	$entity->user_address = $address->format('postal');
+	$entity->user_vat_reg_no = $user->vat_reg_no;
+	$entity->tax_rate = $taxZone->rate;
+	$entity->tax_note = $taxZone->note;
 
 	if (!$result = $chain->next($self, $params, $chain)) {
 		Invoices::pdo()->rollback();

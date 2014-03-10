@@ -21,6 +21,8 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 	use \cms_core\controllers\AdminEditTrait;
 	use \cms_core\controllers\AdminDeleteTrait;
 
+	use \cms_core\controllers\AdminLockTrait;
+
 	public function admin_index() {
 		$data = Invoices::find('all', [
 			'order' => ['number' => 'DESC']

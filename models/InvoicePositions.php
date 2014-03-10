@@ -19,11 +19,9 @@ class InvoicePositions extends \cms_core\models\Base {
 		'source' => 'billing_invoice_positions'
 	];
 
-	/*
 	protected static $_actsAs = [
 		'cms_core\extensions\data\behavior\Timestamp'
 	];
-	*/
 
 	public $belongsTo = [
 		'User',

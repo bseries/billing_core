@@ -28,6 +28,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 
 			<?= $this->form->field('user_id', [
 				'type' => 'select',
+				'disabled' => $item->is_locked,
 				'label' => $t('User'),
 				'list' => $users
 			]) ?>
@@ -36,7 +37,6 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 				'type' => 'textarea',
 				'label' => $t('User address'),
 				'disabled' => true,
-				''
 			]) ?>
 			<div class="help"><?= $t('Address taken is the billing address selected by user.') ?></div>
 
@@ -46,10 +46,22 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 				'list' => $statuses
 			]) ?>
 
+			<?= $this->form->field('is_locked', [
+				'type' => 'checkbox',
+				'label' => $t('Locked?'),
+				'checked' => $item->is_locked,
+				'disabled' => true
+			]) ?>
+			<div class="help">
+				<?= $t('When the invoice is locked it cannot be changed anymore with the exception of the outstanding amount.') ?>
+				<?= $t('The invoice is automatically locked once sent to the user.') ?>
+			</div>
+
 			<?= $this->form->field('date', [
 				'type' => 'date',
 				'label' => $t('Date'),
-				'value' => $item->date ?: date('Y-m-d')
+				'value' => $item->date ?: date('Y-m-d'),
+				'disabled' => $item->is_locked
 			]) ?>
 			<div class="help"><?= $t('Invoice date.') ?></div>
 		</section>
@@ -113,24 +125,26 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 		<section class="nested use-nested">
 			<h1 class="beta"><?= $t('Positions') ?></h1>
 
-			<article class="nested-add nested-item">
-				<h1 class="gamma"><?= $t('New Position') ?></h1>
+			<?php if (!$item->is_locked): ?>
+				<article class="nested-add nested-item">
+					<h1 class="gamma"><?= $t('New Position') ?></h1>
 
-				<?= $this->form->field('positions.new.description', [
-					'type' => 'text',
-					'label' => $t('Description')
-				]) ?>
-				<?= $this->form->field('positions.new.price_eur', [
-					'type' => 'text',
-					'label' => $t('Price (EUR)')
-				]) ?>
-				<?= $this->form->field('positions.new.price_usd', [
-					'type' => 'text',
-					'label' => $t('Price (USD)')
-				]) ?>
+					<?= $this->form->field('positions.new.description', [
+						'type' => 'text',
+						'label' => $t('Description')
+					]) ?>
+					<?= $this->form->field('positions.new.price_eur', [
+						'type' => 'text',
+						'label' => $t('Price (EUR)')
+					]) ?>
+					<?= $this->form->field('positions.new.price_usd', [
+						'type' => 'text',
+						'label' => $t('Price (USD)')
+					]) ?>
 
-				<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
-			</article>
+					<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
+				</article>
+			<?php endif ?>
 
 			<?php foreach ($item->positions() as $key => $child): ?>
 				<article class="nested-item">
@@ -138,33 +152,41 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 
 					<?= $this->form->field("positions.{$key}.id", [
 						'type' => 'hidden',
-						'value' => $child->id
+						'value' => $child->id,
+						'disabled' => $item->is_locked
 					]) ?>
 
 					<?= $this->form->field("positions.{$key}._delete", [
-						'type' => 'hidden'
+						'type' => 'hidden',
+						'disabled' => $item->is_locked
 					]) ?>
 
 					<?= $this->form->field("positions.{$key}.description", [
 						'type' => 'text',
 						'label' => $t('Description'),
-						'value' => $child->description
+						'value' => $child->description,
+						'disabled' => $item->is_locked
 					]) ?>
 					<?= $this->form->field("positions.{$key}.price_eur", [
 						'type' => 'text',
 						'label' => $t('Price (EUR)'),
-						'value' => $child->price_eur
+						'value' => $child->price_eur,
+						'disabled' => $item->is_locked
 					]) ?>
 					<?= $this->form->field("positions.{$key}.price_usd", [
 						'type' => 'text',
 						'label' => $t('Price (USD)'),
-						'value' => $child->price_usd
+						'value' => $child->price_usd,
+						'disabled' => $item->is_locked
 					]) ?>
-
-					<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
+					<?php if (!$item->is_locked): ?>
+						<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
+					<?php endif ?>
 				</article>
 			<?php endforeach ?>
-			<?= $this->form->button($t('add another position'), ['class' => 'button add-nested']) ?>
+			<?php if (!$item->is_locked): ?>
+				<?= $this->form->button($t('add another position'), ['class' => 'button add-nested']) ?>
+			<?php endif ?>
 		</section>
 
 		<?= $this->form->button($t('save'), ['type' => 'submit', 'class' => 'button large']) ?>

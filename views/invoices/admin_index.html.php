@@ -15,6 +15,7 @@ $dateFormatter = new IntlDateFormatter(
 		<table>
 			<thead>
 				<tr>
+					<td class="flag"><?= $t('locked?') ?>
 					<td class="emphasize"><?= $t('Number') ?>
 					<td class="status"><?= $t('Status') ?>
 					<td><?= $t('Total currency') ?>
@@ -27,6 +28,7 @@ $dateFormatter = new IntlDateFormatter(
 			<tbody>
 				<?php foreach ($data as $item): ?>
 				<tr data-id="<?= $item->id ?>">
+					<td class="flag"><?= ($item->is_locked ? '✓' : '╳') ?>
 					<td class="emphasize"><?= $item->number ?: '–' ?>
 					<td class="status"><?= $item->status ?>
 					<td><?= $item->total_currency ?>
@@ -41,6 +43,7 @@ $dateFormatter = new IntlDateFormatter(
 					<td>
 						<nav class="actions">
 							<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($t('edit'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						</nav>
 				<?php endforeach ?>

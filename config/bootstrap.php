@@ -10,10 +10,16 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+use lithium\core\Libraries;
 use cms_core\extensions\cms\Settings;
 use cms_core\extensions\cms\Panes;
 use lithium\g11n\Message;
 use cms_media\models\Media;
+
+Libraries::add('money', [
+	'path' => 'src',
+	'prefix' => 'SebastianBergmann\\Money\\'
+]);
 
 extract(Message::aliases());
 

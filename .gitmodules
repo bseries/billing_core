@@ -1,3 +1,0 @@
-[submodule "libraries/money"]
-	path = libraries/money
-	url = git@github.com:sebastianbergmann/money.git

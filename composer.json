@@ -1,0 +1,8 @@
+{
+    "config": {
+        "vendor-dir": "libraries"
+    },
+    "require": {
+        "sebastian/money": "*"
+    }
+}

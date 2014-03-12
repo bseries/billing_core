@@ -30,8 +30,7 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 		return compact('data');
 	}
 
-	protected function _selects() {
-		$parent = parent::_selects();
+	protected function _selects($item) {
 		$statuses = Invoices::enum('status');
 		$currencies = [
 			'EUR' => 'EUR',
@@ -39,7 +38,7 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 		];
 		$users = Users::find('list');
 
-		return compact('currencies', 'statuses', 'users') + $parent;
+		return compact('currencies', 'statuses', 'users');
 	}
 }
 

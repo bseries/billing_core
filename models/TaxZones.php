@@ -14,6 +14,7 @@ namespace cms_billing\models;
 
 use lithium\g11n\Message;
 use lithium\analysis\Logger;
+use cms_core\extensions\cms\Settings;
 
 // In the moment of generating an invoice position the price is finalized.
 class TaxZones extends \cms_core\models\Base {
@@ -25,6 +26,8 @@ class TaxZones extends \cms_core\models\Base {
 	public static function generate($territory, $vatRegNo, $locale) {
 		extract(Message::aliases());
 
+		$vat = Settings::read('tax.vat');
+
 		// Enable if becomes required.
 		// if ($vatRegNo && $this->_mustValidateVatRegNo($territory)) {
 		//	if (!$this->_validateVatRegNo($vatRegNo)) {
@@ -33,11 +36,11 @@ class TaxZones extends \cms_core\models\Base {
 		//}
 
 		// National
-		if ($territory == 'DE') {
+		if ($territory == 'DE' || $territory === null) {
 			return parent::create([
 				'name' => 'National, Germany',
-				'rate' => $rate = 0.19,
-				'note' => $t('Includes {:rate}% VAT.', compact('locale') + ['rate' => $rate * 100])
+				'rate' => $vat['rate'],
+				'note' => $t('Includes {:rate}% {:title}.', compact('locale') + $vat)
 			]);
 		}
 
@@ -47,8 +50,8 @@ class TaxZones extends \cms_core\models\Base {
 			if (static::_recipientType($vatRegNo) == 'C') {
 				return parent::create([
 					'name' => 'Inter-community, country inside EU',
-					'rate' => $rate = 0.19,
-					'note' => $t('Includes {:rate}% VAT.', compact('locale') + ['rate' => $rate * 100])
+					'rate' => $vat['rate'],
+					'note' => $t('Includes {:rate}% {:title}.', compact('locale') + $vat)
 				]);
 			}
 			// Reverse charge, § 13 b UStG

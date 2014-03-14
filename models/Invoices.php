@@ -12,11 +12,16 @@
 
 namespace cms_billing\models;
 
+use cms_core\models\Addresses;
 use cms_core\models\Users;
 use cms_core\extensions\cms\Settings;
+use cms_billing\models\Payments;
 use cms_billing\models\TaxZones;
 use cms_billing\models\InvoicePositions;
 use DateTime;
+use Exception;
+use SebastianBergmann\Money\Money;
+use SebastianBergmann\Money\Currency;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).
@@ -52,6 +57,23 @@ class Invoices extends \cms_core\models\Base {
 		]
 	];
 
+	public static function createForUser($user) {
+		$item = static::create();
+
+		if ($user->id) {
+			$item->user_id = $user->id;
+		}
+
+		$item->user_vat_reg_no = $user->vat_reg_no;
+		$item = $user->address('billing')->copy($item, 'address_');
+
+		$taxZone = $user->taxZone();
+		$item->tax_rate = $taxZone->rate;
+		$item->tax_note = $taxZone->note;
+
+		return $item;
+	}
+
 	public function positions($entity, array $options = []) {
 		$options += ['collectPendingFor' => false];
 
@@ -75,6 +97,17 @@ class Invoices extends \cms_core\models\Base {
 		]);
 	}
 
+	public function payments($entity) {
+		if (!$entity->id) {
+			return [];
+		}
+		return Payments::find('all', [
+			'conditions' => [
+				'billing_invoice_id' => $entity->id
+			]
+		]);
+	}
+
 	public function isOverdue($entity) {
 		$date = DateTime::createFromFormat('Y-m-d H:i:s', $entity->date);
 		$overdue = Settings::read('invoiceOverdueAfter');
@@ -85,30 +118,14 @@ class Invoices extends \cms_core\models\Base {
 		return $entity->total_gross_outstanding & $date->getTimestamp() > strtotime($overdue);
 	}
 
-	public static function totalOutstanding($user = null) {
-		$results = static::find('all', [
-			'conditions' => $user ? ['user_id' => $user] : []
-		]);
-		$outstanding = [];
-
-		foreach ($results as $result) {
-			$currency = $result->total_currency;
-
-			if (!isset($outstanding[$currency])) {
-				$outstanding[$currency]  = $result->total_gross_outstanding;
-			} else {
-				$outstanding[$currency] += $result->total_gross_outstanding;
-			}
-		}
-		return $outstanding;
-	}
-
 	public static function nextNumber() {
 		$pattern = Settings::read('invoiceNumberPattern');
 
 		$item = static::find('first', [
 			'conditions' => [
-				'number' => 'LIKE ' . strftime($pattern['prefix']) . '%'
+				'number' => [
+					'LIKE' => strftime($pattern['prefix']) . '%'
+				]
 			],
 			'order' => ['number' => 'DESC'],
 			'fields' => ['number']
@@ -121,53 +138,52 @@ class Invoices extends \cms_core\models\Base {
 		return $number;
 	}
 
-	public static function generate($user, $currency, array $taxZone, $vatRegNo) {
-		// 1st step initalizing the invoice.
-		$invoice = static::create([
-			'number' => static::nextNumber(),
-			'user_id' => $user,
-			'date' => date('Y-m-d'),
-			'user_vat_reg_no' => $vatRegNo, // fixate, may be changed by user
-			'tax_rate' => $taxZone['rate'],
-			'tax_note' => $taxZone['note'],
-			'status' => 'created'
-		]);
+	public function totalAmount($entity, $type) {
+		$result = new Money(0, new Currency($entity->currency));
 
-		if (!$invoice->save()) {
-			return false;
-		}
+		$positions = $this->positions($entity);
 
-		// Finalize all pending positions.
-		/*
-		$positions = InvoicePositions::pending($user);
 		foreach ($positions as $position) {
-			$posistion->finalize($invoice->id);
+			$result = $result->add($position->totalAmount($type));
 		}
-		 */
-		$positions = InvoicePositions::find('all', [
-			'conditions' => ['billing_invoice_id' => $invoice->id]
-		]); // Refresh.
+		return $result;
+	}
 
-		// 2nd step finalizing the invoice.
-		// Calculate invoice totals from positions.
-		$totalNet = 0;
-		$totalGross = 0;
+	public function totalTax($entity) {
+		$result = $this->totalAmount($entity, 'gross');
+		$result = $result->subtract($this->totalAmount($entity, 'net'));
 
-		foreach ($positions as $item) {
-			$price = $item['price_' . strtolower($currency)];
-			$totalNet += $price - ($price * $invoice->tax_rate);
-			$totalGross += $price;
+		return $result;
+	}
+
+	public function totalOutstanding($entity, $type) {
+		$result = new Money(0, new Currency($entity->currency));
+
+		foreach ($entity->positions() as $position) {
+			$result = $result->add($position->totalAmount($type));
 		}
-		return (boolean) $invoice->save([
-			'total_currency' => $currency,
-			'total_net' => $totalNet,
-			'total_gross' => $totalGross,
-			'total_gross_outstanding' => $totalGross,
-			'total_tax' => $totalGross - $totalNet,
+		foreach ($entity->payments() as $payment) {
+			$result = $result->subtract($payment->totalAmount($type));
+		}
+		return $result;
+	}
+
+	public function paidInFull($entity, $method) {
+		$payment = Payments::create([
+			'billing_invoice_id' => $entity->id,
+			'method' => $method,
+			'currency' => $entity->currency,
+			'amount' => $entity->totalOutstanding('gross')
 		]);
+		return $payment->save();
+	}
+
+	public function address($entity) {
+		return Addresses::createFromPrefixed('address_', $entity->data());
 	}
 }
 
+// @todo Extract into create method.
 Invoices::applyFilter('save', function($self, $params, $chain) {
 	static $useFilter = true;
 
@@ -181,27 +197,16 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 		return $chain->next($self, $params, $chain);
 	}
 
-	Invoices::pdo()->beginTransaction();
-
-	$user = Users::findById($data['user_id']);
-	$address = $user->address('billing');
-	$taxZone = TaxZones::generate($address->country, $user->vat_reg_no, $user->locale);
-	$currency = $user->billing_currency;
-
 	if (!$entity->exists()) {
 		$entity->number = Invoices::nextNumber();
 	}
-	$entity->user_address = $address->format('postal');
-	$entity->user_vat_reg_no = $user->vat_reg_no;
-	$entity->tax_rate = $taxZone->rate;
-	$entity->tax_note = $taxZone->note;
 
 	if (!$result = $chain->next($self, $params, $chain)) {
-		Invoices::pdo()->rollback();
+		return false;
 	}
 
 	// Save nested positions.
-	$new = $entity->positions;
+	$new = $entity->positions ?: [];
 
 	foreach ($new as $key => $data) {
 		if ($key === 'new') {
@@ -212,7 +217,6 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 
 			if ($data['_delete']) {
 				if (!$item->delete()) {
-					Invoices::pdo()->rollback();
 					return false;
 				}
 				continue;
@@ -221,12 +225,13 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 			$item = InvoicePositions::create($data + ['user_id' + $entity->user_id]);
 		}
 		if (!$item->save(['billing_invoice_id' => $entity->id])) {
-			Invoices::pdo()->rollback();
 			return false;
 		}
 	}
 
+	/*
 	$useFilter = false;
+
 
 	$positions = InvoicePositions::find('all', [
 		'conditions' => ['billing_invoice_id' => $entity->id]
@@ -247,11 +252,10 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 		'total_currency' => $currency,
 		'total_net' => $totalNet,
 		'total_gross' => $totalGross,
-		'total_gross_outstanding' => $totalGross,
 		'total_tax' => $totalGross - $totalNet,
 	]);
 
-	Invoices::pdo()->commit();
+	 */
 	$useFilter = true;
 	return true;
 });

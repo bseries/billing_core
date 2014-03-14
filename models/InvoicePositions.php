@@ -12,6 +12,10 @@
 
 namespace cms_billing\models;
 
+use cms_billing\models\Invoices;
+use SebastianBergmann\Money\Money;
+use SebastianBergmann\Money\Currency;
+
 // In the moment of generating an invoice position the price is finalized.
 class InvoicePositions extends \cms_core\models\Base {
 
@@ -21,11 +25,6 @@ class InvoicePositions extends \cms_core\models\Base {
 
 	protected static $_actsAs = [
 		'cms_core\extensions\data\behavior\Timestamp'
-	];
-
-	public $belongsTo = [
-		'User',
-		'Invoice'
 	];
 
 	// This fills out all fields open for the position making it non-pending.
@@ -40,6 +39,19 @@ class InvoicePositions extends \cms_core\models\Base {
 				'billing_invoice_id' => null
 			]
 		]);
+	}
+
+	public function totalAmount($entity, $type) {
+		$invoice = Invoices::findById($entity->billing_invoice_id);
+
+		$currency = $entity->currency;
+		$taxZone = [
+			'rate' => $invoice->tax_rate,
+			'note' => $invoice->tax_note
+		];
+
+		$field = 'total_' . $type;
+		return new Money((integer) $entity->$field, new Currency($currency));
 	}
 }
 

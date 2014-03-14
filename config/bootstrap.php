@@ -23,8 +23,9 @@ Panes::register('cms_billing', 'billing', [
 	'group' => Panes::GROUP_AUTHORING,
 	'url' => $base = ['controller' => 'billing', 'library' => 'cms_billing', 'admin' => true],
 	'actions' => [
-		$t('List Invoices') => ['controller' => 'Invoices', 'action' => 'index'] + $base,
-		$t('New Invoice') => ['controller' => 'Invoices', 'action' => 'add'] + $base,
+		$t('List invoices') => ['controller' => 'Invoices', 'action' => 'index'] + $base,
+		$t('New invoice') => ['controller' => 'Invoices', 'action' => 'add'] + $base,
+		$t('New payment') => ['controller' => 'payments', 'action' => 'add'] + $base,
 	]
 ]);
 
@@ -38,5 +39,11 @@ Settings::register('cms_billing', 'invoiceNumberPattern.prefix', '%Y-');
 // Overdue, set to false if never overdue.
 // Parsed with strtotime.
 Settings::register('cms_billing', 'invoiceOverdueAfter', '+2 weeks');
+
+Settings::register('cms_billing', 'tax.vat.title', $t('VAT'));
+Settings::register('cms_billing', 'tax.vat.rate', 19);
+
+Settings::register('cms_billing', 'tax.reducedVat.title', $t('red. VAT'));
+Settings::register('cms_billing', 'tax.reducedVat.rate', 7);
 
 ?>

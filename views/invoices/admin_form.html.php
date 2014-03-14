@@ -1,5 +1,7 @@
 <?php
 
+use SebastianBergmann\Money\IntlFormatter;
+
 $untitled = $t('Untitled');
 
 $title = [
@@ -8,6 +10,8 @@ $title = [
 	'object' => [ucfirst($t('invoice')), ucfirst($t('invoices'))]
 ];
 $this->title("{$title['title']} - {$title['object'][1]}");
+
+$moneyFormatter = new IntlFormatter($locale);
 
 ?>
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> section-spacing">
@@ -26,17 +30,11 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			]) ?>
 			<div class="help"><?= $t('The invoice number is automatically generated.') ?></div>
 
-			<?= $this->form->field('user_id', [
-				'type' => 'select',
-				'disabled' => $item->is_locked,
-				'label' => $t('User'),
-				'list' => $users
-			]) ?>
-
-			<?= $this->form->field('user_address', [
+			<?= $this->form->field('address', [
 				'type' => 'textarea',
-				'label' => $t('User address'),
+				'label' => $t('Address'),
 				'disabled' => true,
+				'value' => $item->address()->format('postal', $locale)
 			]) ?>
 			<div class="help"><?= $t('Address taken is the billing address selected by user.') ?></div>
 
@@ -83,21 +81,20 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 				'label' => $t('User VAT Reg. No.'),
 				'disabled' => true
 			]) ?>
-			<div class="help"><?= $t('From user information.') ?></div>
 		</section>
 
 		<section>
-			<?= $this->form->field('total_currency', [
+			<?= $this->form->field('currency', [
 				'type' => 'select',
-				'label' => $t('Total currency'),
+				'label' => $t('Currency'),
 				'list' => $currencies,
 				'disabled' => true
 			]) ?>
-			<div class="help"><?= $t('Selected from user setting.') ?></div>
 
 			<?= $this->form->field('total_net', [
 				'type' => 'text',
 				'label' => $t('Total net'),
+				'value' => $item->totalAmount('net')->getAmount() / 100,
 				'disabled' => true
 			]) ?>
 			<div class="help"><?= $t('Derived from positions.') ?></div>
@@ -105,21 +102,18 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			<?= $this->form->field('total_gross', [
 				'type' => 'text',
 				'label' => $t('Total gross'),
+				'value' => $item->totalAmount('gross')->getAmount() / 100,
 				'disabled' => true
 			]) ?>
 			<div class="help"><?= $t('Derived from positions.') ?></div>
 
-			<?= $this->form->field('total_tax', [
-				'type' => 'text',
-				'label' => $t('Total tax'),
-				'disabled' => true
-			]) ?>
-			<div class="help"><?= $t('Derived from positions and calculated automatically.') ?></div>
-
 			<?= $this->form->field('total_gross_outstanding', [
 				'type' => 'text',
-				'label' => $t('Total gross outstanding')
+				'label' => $t('Total gross outstanding'),
+				'value' => $item->totalOutstanding('gross')->getAmount() / 100,
+				'disabled' => true,
 			]) ?>
+			<div class="help"><?= $t('Derived from positions and calculated automatically.') ?></div>
 		</section>
 
 		<section class="nested use-nested">
@@ -167,16 +161,17 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 						'value' => $child->description,
 						'disabled' => $item->is_locked
 					]) ?>
-					<?= $this->form->field("positions.{$key}.price_eur", [
-						'type' => 'text',
-						'label' => $t('Price (EUR)'),
-						'value' => $child->price_eur,
-						'disabled' => $item->is_locked
+					<?= $this->form->field("positions.{$key}.currency", [
+						'type' => 'select',
+						'label' => $t('Currency'),
+						'list' => $currencies,
+						'disabled' => true
 					]) ?>
-					<?= $this->form->field("positions.{$key}.price_usd", [
+
+					<?= $this->form->field("positions.{$key}.total_gross", [
 						'type' => 'text',
-						'label' => $t('Price (USD)'),
-						'value' => $child->price_usd,
+						'label' => $t('Total (gross)'),
+						'value' => $child->totalAmount('gross')->getAmount() / 100,
 						'disabled' => $item->is_locked
 					]) ?>
 					<?php if (!$item->is_locked): ?>

@@ -24,6 +24,16 @@ Router::connect('/admin/billing/invoices/{:action}/{:id:[0-9]+}', [
 	'controller' => 'Invoices', 'library' => 'cms_billing', 'admin' => true
 ], $persist);
 
+Router::connect('/admin/billing/payments/{:id:[0-9]+}', [
+	'controller' => 'payments', 'library' => 'cms_billing', 'action' => 'view', 'admin' => true
+], $persist);
+Router::connect('/admin/billing/payments/{:action}', [
+	'controller' => 'payments', 'library' => 'cms_billing', 'admin' => true
+], $persist);
+Router::connect('/admin/billing/payments/{:action}/{:id:[0-9]+}', [
+	'controller' => 'payments', 'library' => 'cms_billing', 'admin' => true
+], $persist);
+
 Router::connect('/admin/billing/{:id:[0-9]+}', [
 	'controller' => 'Billing', 'library' => 'cms_billing', 'action' => 'view', 'admin' => true
 ], $persist);

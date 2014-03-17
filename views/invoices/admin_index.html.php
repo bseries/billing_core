@@ -24,6 +24,7 @@ $moneyFormatter = new IntlFormatter($locale);
 					<td class="flag"><?= $t('locked?') ?>
 					<td class="emphasize"><?= $t('Number') ?>
 					<td class="status"><?= $t('Status') ?>
+					<td><?= $t('User') ?>
 					<td><?= $t('Total (gross)') ?>
 					<td><?= $t('Total (net)') ?>
 					<td><?= $t('Total outstanding (gross)') ?>
@@ -35,6 +36,7 @@ $moneyFormatter = new IntlFormatter($locale);
 					<td>(pos)
 					<td>
 					<td colspan="2" class="emphasize"><?= $t('Description') ?>
+					<td>
 					<td><?= $t('Total (gross)') ?>
 					<td><?= $t('Total (net)') ?>
 					<td>
@@ -46,6 +48,7 @@ $moneyFormatter = new IntlFormatter($locale);
 					<td>(pay)
 					<td>
 					<td colspan="2" class="emphasize"><?= $t('Method') ?>
+					<td>
 					<td><?= $t('Total') ?>
 					<td>
 					<td>
@@ -55,12 +58,30 @@ $moneyFormatter = new IntlFormatter($locale);
 			</thead>
 			<tbody>
 				<?php foreach ($data as $item): ?>
+					<?php $user = $item->user() ?>
 				<tr data-id="<?= $item->id ?>">
 					<td>
 					<td>
 					<td class="flag"><?= ($item->is_locked ? '✓' : '╳') ?>
 					<td class="emphasize"><?= $item->number ?: '–' ?>
 					<td class="status"><?= $item->status ?>
+					<?php if ($user->isVirtual()): ?>
+						<td>
+							<?= $this->html->link($user->name . '/' . $user->id, [
+								'controller' => 'VirtualUsers', 'action' => 'edit', 'id' => $user->id, 'library' => 'cms_core'
+							]) ?>
+							(<?= $this->html->link('virtual', [
+								'controller' => 'VirtualUsers', 'action' => 'index', 'library' => 'cms_core'
+							]) ?>)
+					<?php else: ?>
+						<td>
+							<?= $this->html->link($user->name . '/' . $user->id, [
+								'controller' => 'Users', 'action' => 'edit', 'id' => $user->id, 'library' => 'cms_core'
+							]) ?>
+							(<?= $this->html->link('real', [
+								'controller' => 'Users', 'action' => 'index', 'library' => 'cms_core'
+							]) ?>)
+					<?php endif ?>
 					<td><?= ($money = $item->totalAmount('gross')) ? $moneyFormatter->format($money) : null ?>
 					<td><?= ($money = $item->totalAmount('net')) ? $moneyFormatter->format($money) : null ?>
 					<td><?= ($money = $item->totalOutstanding('gross')) ? $moneyFormatter->format($money) : null ?>
@@ -75,6 +96,7 @@ $moneyFormatter = new IntlFormatter($locale);
 							<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($t('edit'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?= $this->html->link($t('export XLS'), ['id' => $item->id, 'action' => 'export_excel', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						</nav>
 					<?php foreach ($item->positions() as $sub): ?>
 						<tr class="sub-item">
@@ -82,6 +104,7 @@ $moneyFormatter = new IntlFormatter($locale);
 							<td>(pos)
 							<td>
 							<td colspan="2" class="emphasize"><?= $sub->description ?>
+							<td>
 							<td><?= ($money = $sub->totalAmount('gross')) ? $moneyFormatter->format($money) : null ?>
 							<td><?= ($money = $sub->totalAmount('net')) ? $moneyFormatter->format($money) : null ?>
 							<td>
@@ -102,6 +125,7 @@ $moneyFormatter = new IntlFormatter($locale);
 							<td>(pay)
 							<td>
 							<td colspan="2" class="emphasize"><?= $sub->method ?>
+							<td>
 							<td><?= ($money = $sub->totalAmount()) ? $moneyFormatter->format($money) : null ?>
 							<td>
 							<td>

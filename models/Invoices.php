@@ -57,11 +57,19 @@ class Invoices extends \cms_core\models\Base {
 		]
 	];
 
+	public function user($entity) {
+		if ($entity->user_id) {
+			return Users::findById($entity->user_id);
+		}
+		return VirtualUsers::findById($entity->virtual_user_id);
+	}
+
 	public static function createForUser($user) {
 		$item = static::create();
 
 		if ($user->id) {
-			$item->user_id = $user->id;
+			$field = $user->isVirtual() ? 'virtual_user_id' : 'user_id';
+			$item->$field = $user->id;
 		}
 
 		$item->user_vat_reg_no = $user->vat_reg_no;

@@ -3,6 +3,7 @@
         "vendor-dir": "libraries"
     },
     "require": {
-        "sebastian/money": "*"
+        "sebastian/money": "*",
+        "phpoffice/phpexcel": "1.8.0"
     }
 }

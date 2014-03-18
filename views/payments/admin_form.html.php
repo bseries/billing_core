@@ -48,7 +48,7 @@ $moneyFormatter = new IntlFormatter($locale);
 		<?= $this->form->field('amount', [
 			'type' => 'text',
 			'label' => $t('Amount'),
-			'value' => ($money = $item->totalAmount()) ? $money->getAmount() / 100 : null
+			'value' => $this->money->format($item->totalAmount(), 'decimal'),
 		]) ?>
 
 		<?= $this->form->button($t('save'), ['type' => 'submit', 'class' => 'button large']) ?>

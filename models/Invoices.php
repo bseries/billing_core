@@ -14,6 +14,7 @@ namespace cms_billing\models;
 
 use cms_core\models\Addresses;
 use cms_core\models\Users;
+use cms_core\models\VirtualUsers;
 use cms_core\extensions\cms\Settings;
 use cms_billing\models\Payments;
 use cms_billing\models\TaxZones;
@@ -176,14 +177,19 @@ class Invoices extends \cms_core\models\Base {
 		return $result;
 	}
 
-	public function paidInFull($entity, $method) {
+	public function payInFull($entity, $method) {
 		$payment = Payments::create([
 			'billing_invoice_id' => $entity->id,
 			'method' => $method,
+			'date' => date('Y-m-d'),
 			'currency' => $entity->currency,
-			'amount' => $entity->totalOutstanding('gross')
+			'amount' => $entity->totalOutstanding('gross')->getAmount()
 		]);
-		return $payment->save();
+		return $payment->save(null, ['localize' => false]);
+	}
+
+	public function isPaidInFull($entity) {
+		return $entity->totalOutstanding('gross')->getAmount() <= 0;
 	}
 
 	public function address($entity) {
@@ -191,7 +197,6 @@ class Invoices extends \cms_core\models\Base {
 	}
 }
 
-// @todo Extract into create method.
 Invoices::applyFilter('save', function($self, $params, $chain) {
 	static $useFilter = true;
 

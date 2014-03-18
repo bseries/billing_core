@@ -12,9 +12,10 @@
 
 namespace cms_billing\extensions\helper;
 
-use lihtium\core\Environment;
+use lithium\core\Environment;
 use SebastianBergmann\Money\Money as MoneyMoney;
 use SebastianBergmann\Money\IntlFormatter;
+use NumberFormatter;
 
 class Money extends \lithium\template\Helper {
 

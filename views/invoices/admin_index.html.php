@@ -1,15 +1,3 @@
-<?php
-
-use SebastianBergmann\Money\IntlFormatter;
-
-$dateFormatter = new IntlDateFormatter(
-	'de_DE',
-	IntlDateFormatter::SHORT,
-	IntlDateFormatter::SHORT,
-	$authedUser['timezone']
-);
-
-?>
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?>">
 	<h1 class="alpha"><?= $this->title($t('Invoices')) ?></h1>
 
@@ -80,15 +68,17 @@ $dateFormatter = new IntlDateFormatter(
 								'controller' => 'Users', 'action' => 'index', 'library' => 'cms_core'
 							]) ?>)
 					<?php endif ?>
-					<td><?= ($money = $item->totalAmount('gross')) ? $this->money->format($money, 'decimal') : null ?>
-					<td><?= ($money = $item->totalAmount('net')) ? $this->money->format($money, 'decimal') : null ?>
-					<td><?= ($money = $item->totalOutstanding('gross')) ? $this->money->format($money, 'decimal') : null ?>
+					<td><?= ($money = $item->totalAmount('gross')) ? $this->money->format($money, 'money') : null ?>
+					<td><?= ($money = $item->totalAmount('net')) ? $this->money->format($money, 'money') : null ?>
+					<td><?= ($money = $item->totalOutstanding('gross')) ? $this->money->format($money, 'money') : null ?>
 					<td class="date">
-						<?php $date = DateTime::createFromFormat('Y-m-d', $item->date) ?>
-						<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
+						<time datetime="<?= $this->date->format($item->date, 'w3c') ?>">
+							<?= $this->date->format($item->date, 'date') ?>
+						</time>
 					<td class="date created">
-						<?php $date = DateTime::createFromFormat('Y-m-d H:i:s', $item->created) ?>
-						<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
+						<time datetime="<?= $this->date->format($item->created, 'w3c') ?>">
+							<?= $this->date->format($item->created, 'date') ?>
+						</time>
 					<td>
 						<nav class="actions">
 							<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
@@ -103,13 +93,14 @@ $dateFormatter = new IntlDateFormatter(
 							<td>
 							<td colspan="2" class="emphasize"><?= $sub->description ?>
 							<td>
-							<td><?= ($money = $sub->totalAmount('gross')) ? $moneyFormatter->format($money) : null ?>
-							<td><?= ($money = $sub->totalAmount('net')) ? $moneyFormatter->format($money) : null ?>
+							<td><?= ($money = $sub->totalAmount('gross')) ? $this->money->format($money, 'money') : null ?>
+							<td><?= ($money = $sub->totalAmount('net')) ? $this->money->format($money, 'money') : null ?>
 							<td>
 							<td>
 							<td class="date created">
-								<?php $date = DateTime::createFromFormat('Y-m-d H:i:s', $sub->created) ?>
-								<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
+								<time datetime="<?= $this->date->format($sub->created, 'w3c') ?>">
+									<?= $this->date->format($sub->created, 'date') ?>
+								</time>
 							<td>
 								<nav class="actions">
 									<? // $this->html->link($t('delete'), ['id' => $sub->id, 'controller' => 'InvoicePositions', 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
@@ -124,15 +115,17 @@ $dateFormatter = new IntlDateFormatter(
 							<td>
 							<td colspan="2" class="emphasize"><?= $sub->method ?>
 							<td>
-							<td><?= ($money = $sub->totalAmount()) ? $moneyFormatter->format($money) : null ?>
+							<td><?= ($money = $sub->totalAmount()) ? $this->money->format($money, 'money') : null ?>
 							<td>
 							<td>
+							<td class="date">
+								<time datetime="<?= $this->date->format($sub->date, 'w3c') ?>">
+									<?= $this->date->format($sub->date, 'date') ?>
+								</time>
 							<td class="date created">
-								<?php $date = DateTime::createFromFormat('Y-m-d', $sub->date) ?>
-								<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
-							<td class="date created">
-								<?php $date = DateTime::createFromFormat('Y-m-d H:i:s', $sub->created) ?>
-								<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>
+								<time datetime="<?= $this->date->format($sub->created, 'w3c') ?>">
+									<?= $this->date->format($sub->created, 'date') ?>
+								</time>
 							<td>
 								<nav class="actions">
 									<?= $this->html->link($t('delete'), ['id' => $sub->id, 'controller' => 'Payments', 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>

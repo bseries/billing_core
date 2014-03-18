@@ -22,7 +22,12 @@ class Payments extends \cms_core\models\Base {
 	];
 
 	protected static $_actsAs = [
-		'cms_core\extensions\data\behavior\Timestamp'
+		'cms_core\extensions\data\behavior\Timestamp',
+		'cms_core\extensions\data\behavior\Localizable' => [
+			'fields' => [
+				'amount' => 'money'
+			]
+		]
 	];
 
 	public function totalAmount($entity) {

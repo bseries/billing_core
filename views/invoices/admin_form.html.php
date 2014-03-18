@@ -1,7 +1,5 @@
 <?php
 
-use SebastianBergmann\Money\IntlFormatter;
-
 $untitled = $t('Untitled');
 
 $title = [
@@ -10,8 +8,6 @@ $title = [
 	'object' => [ucfirst($t('invoice')), ucfirst($t('invoices'))]
 ];
 $this->title("{$title['title']} - {$title['object'][1]}");
-
-$moneyFormatter = new IntlFormatter($locale);
 
 ?>
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> section-spacing">
@@ -94,7 +90,7 @@ $moneyFormatter = new IntlFormatter($locale);
 			<?= $this->form->field('total_net', [
 				'type' => 'text',
 				'label' => $t('Total net'),
-				'value' => $item->totalAmount('net')->getAmount() / 100,
+				'value' => $this->money->format($item->totalAmount('net'), 'decimal'),
 				'disabled' => true
 			]) ?>
 			<div class="help"><?= $t('Derived from positions.') ?></div>
@@ -102,7 +98,7 @@ $moneyFormatter = new IntlFormatter($locale);
 			<?= $this->form->field('total_gross', [
 				'type' => 'text',
 				'label' => $t('Total gross'),
-				'value' => $item->totalAmount('gross')->getAmount() / 100,
+				'value' => $this->money->format($item->totalAmount('gross'), 'decimal'),
 				'disabled' => true
 			]) ?>
 			<div class="help"><?= $t('Derived from positions.') ?></div>
@@ -110,7 +106,7 @@ $moneyFormatter = new IntlFormatter($locale);
 			<?= $this->form->field('total_gross_outstanding', [
 				'type' => 'text',
 				'label' => $t('Total gross outstanding'),
-				'value' => $item->totalOutstanding('gross')->getAmount() / 100,
+				'value' => $this->money->format($item->totalOutstanding('gross'), 'decimal'),
 				'disabled' => true,
 			]) ?>
 			<div class="help"><?= $t('Derived from positions and calculated automatically.') ?></div>
@@ -171,7 +167,7 @@ $moneyFormatter = new IntlFormatter($locale);
 					<?= $this->form->field("positions.{$key}.total_gross", [
 						'type' => 'text',
 						'label' => $t('Total (gross)'),
-						'value' => $child->totalAmount('gross')->getAmount() / 100,
+						'value' => $this->money->format($child->totalAmount('gross'), 'decimal'),
 						'disabled' => $item->is_locked
 					]) ?>
 					<?php if (!$item->is_locked): ?>

@@ -9,8 +9,6 @@ $dateFormatter = new IntlDateFormatter(
 	$authedUser['timezone']
 );
 
-$moneyFormatter = new IntlFormatter($locale);
-
 ?>
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?>">
 	<h1 class="alpha"><?= $this->title($t('Invoices')) ?></h1>
@@ -82,9 +80,9 @@ $moneyFormatter = new IntlFormatter($locale);
 								'controller' => 'Users', 'action' => 'index', 'library' => 'cms_core'
 							]) ?>)
 					<?php endif ?>
-					<td><?= ($money = $item->totalAmount('gross')) ? $moneyFormatter->format($money) : null ?>
-					<td><?= ($money = $item->totalAmount('net')) ? $moneyFormatter->format($money) : null ?>
-					<td><?= ($money = $item->totalOutstanding('gross')) ? $moneyFormatter->format($money) : null ?>
+					<td><?= ($money = $item->totalAmount('gross')) ? $this->money->format($money, 'decimal') : null ?>
+					<td><?= ($money = $item->totalAmount('net')) ? $this->money->format($money, 'decimal') : null ?>
+					<td><?= ($money = $item->totalOutstanding('gross')) ? $this->money->format($money, 'decimal') : null ?>
 					<td class="date">
 						<?php $date = DateTime::createFromFormat('Y-m-d', $item->date) ?>
 						<time datetime="<?= $date->format(DateTime::W3C) ?>"><?= $dateFormatter->format($date) ?></time>

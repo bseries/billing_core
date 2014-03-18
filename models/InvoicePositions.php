@@ -24,7 +24,12 @@ class InvoicePositions extends \cms_core\models\Base {
 	];
 
 	protected static $_actsAs = [
-		'cms_core\extensions\data\behavior\Timestamp'
+		'cms_core\extensions\data\behavior\Timestamp',
+		'cms_core\extensions\data\behavior\Localizable' => [
+			'fields' => [
+				'total_amount' => 'money'
+			]
+		]
 	];
 
 	// This fills out all fields open for the position making it non-pending.

@@ -84,6 +84,7 @@
 							<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($t('edit'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?= $this->html->link($t('pay'), ['billing_invoice_id' => $item->id, 'controller' => 'Payments', 'action' => 'add', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($t('export XLS'), ['id' => $item->id, 'action' => 'export_excel', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						</nav>
 					<?php foreach ($item->positions() as $sub): ?>

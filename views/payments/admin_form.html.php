@@ -1,7 +1,5 @@
 <?php
 
-use SebastianBergmann\Money\IntlFormatter;
-
 $untitled = $t('Untitled');
 
 $title = [
@@ -10,8 +8,6 @@ $title = [
 	'object' => [ucfirst($t('payment')), ucfirst($t('payments'))]
 ];
 $this->title("{$title['title']} - {$title['object'][1]}");
-
-$moneyFormatter = new IntlFormatter($locale);
 
 ?>
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> section-spacing">
@@ -24,6 +20,7 @@ $moneyFormatter = new IntlFormatter($locale);
 		<?= $this->form->field('billing_invoice_id', [
 			'type' => 'select',
 			'label' => $t('Invoice'),
+			'disabled' => $this->_request->action == 'add' && $item->billing_invoice_id,
 			'list' => $invoices
 		]) ?>
 
@@ -48,7 +45,7 @@ $moneyFormatter = new IntlFormatter($locale);
 		<?= $this->form->field('amount', [
 			'type' => 'text',
 			'label' => $t('Amount'),
-			'value' => $this->money->format($item->totalAmount(), 'decimal'),
+			'value' => ($money = $item->totalAmount()) ? $this->money->format($money, 'decimal') : null,
 		]) ?>
 
 		<?= $this->form->button($t('save'), ['type' => 'submit', 'class' => 'button large']) ?>

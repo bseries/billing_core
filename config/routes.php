@@ -27,6 +27,9 @@ Router::connect('/admin/billing/invoices/{:action}/{:id:[0-9]+}', [
 Router::connect('/admin/billing/payments/{:id:[0-9]+}', [
 	'controller' => 'payments', 'library' => 'cms_billing', 'action' => 'view', 'admin' => true
 ], $persist);
+Router::connect('/admin/billing/payments/add/{:billing_invoice_id:[0-9]+}', [
+	'controller' => 'payments', 'action' => 'add', 'library' => 'cms_billing', 'admin' => true
+], $persist);
 Router::connect('/admin/billing/payments/{:action}', [
 	'controller' => 'payments', 'library' => 'cms_billing', 'admin' => true
 ], $persist);

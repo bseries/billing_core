@@ -33,12 +33,12 @@ Panes::register('cms_billing', 'billing', [
 //
 // Parsed with sprintf.
 // Parsed with strftime.
-Settings::register('cms_billing', 'invoiceNumberPattern.number', '%04.d');
-Settings::register('cms_billing', 'invoiceNumberPattern.prefix', '%Y-');
+Settings::register('cms_billing', 'invoice.numberPattern.number', '%04.d');
+Settings::register('cms_billing', 'invoice.numberPattern.prefix', '%Y-');
 
 // Overdue, set to false if never overdue.
 // Parsed with strtotime.
-Settings::register('cms_billing', 'invoiceOverdueAfter', '+2 weeks');
+Settings::register('cms_billing', 'invoice.overdueAfter', '+2 weeks');
 
 Settings::register('cms_billing', 'tax.vat.title', $t('VAT'));
 Settings::register('cms_billing', 'tax.vat.rate', 19);

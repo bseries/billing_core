@@ -119,7 +119,7 @@ class Invoices extends \cms_core\models\Base {
 
 	public function isOverdue($entity) {
 		$date = DateTime::createFromFormat('Y-m-d H:i:s', $entity->date);
-		$overdue = Settings::read('invoiceOverdueAfter');
+		$overdue = Settings::read('invoice.overdueAfter');
 
 		if (!$overdue) {
 			return false;
@@ -128,7 +128,7 @@ class Invoices extends \cms_core\models\Base {
 	}
 
 	public static function nextNumber() {
-		$pattern = Settings::read('invoiceNumberPattern');
+		$pattern = Settings::read('invoice.numberPattern');
 
 		$item = static::find('first', [
 			'conditions' => [

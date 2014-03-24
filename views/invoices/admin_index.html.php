@@ -11,8 +11,8 @@
 					<td class="emphasize"><?= $t('Number') ?>
 					<td class="status"><?= $t('Status') ?>
 					<td><?= $t('User') ?>
-					<td><?= $t('Total (gross)') ?>
 					<td><?= $t('Total (net)') ?>
+					<td><?= $t('Total (gross)') ?>
 					<td><?= $t('Total outstanding (gross)') ?>
 					<td class="date created"><?= $t('Date') ?>
 					<td class="date created"><?= $t('Created') ?>
@@ -22,9 +22,9 @@
 					<td>(pos)
 					<td>
 					<td colspan="2" class="emphasize"><?= $t('Description') ?>
-					<td>
-					<td><?= $t('Total (gross)') ?>
+					<td><?= $t('Quantity') ?>
 					<td><?= $t('Total (net)') ?>
+					<td><?= $t('Total (gross)') ?>
 					<td>
 					<td>
 					<td class="date created"><?= $t('Created') ?>
@@ -68,9 +68,9 @@
 								'controller' => 'Users', 'action' => 'index', 'library' => 'cms_core'
 							]) ?>)
 					<?php endif ?>
-					<td><?= ($money = $item->totalAmount('gross')) ? $this->money->format($money, 'money') : null ?>
-					<td><?= ($money = $item->totalAmount('net')) ? $this->money->format($money, 'money') : null ?>
-					<td><?= ($money = $item->totalOutstanding('gross')) ? $this->money->format($money, 'money') : null ?>
+					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
+					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
+					<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					<td class="date">
 						<time datetime="<?= $this->date->format($item->date, 'w3c') ?>">
 							<?= $this->date->format($item->date, 'date') ?>
@@ -93,9 +93,9 @@
 							<td>(pos)
 							<td>
 							<td colspan="2" class="emphasize"><?= $sub->description ?>
-							<td>
-							<td><?= ($money = $sub->totalAmount('gross')) ? $this->money->format($money, 'money') : null ?>
-							<td><?= ($money = $sub->totalAmount('net')) ? $this->money->format($money, 'money') : null ?>
+							<td><?= $sub->quantity ?>
+							<td><?= ($money = $sub->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
+							<td><?= ($money = $sub->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
 							<td>
 							<td>
 							<td class="date created">

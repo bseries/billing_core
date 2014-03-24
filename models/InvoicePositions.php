@@ -12,9 +12,8 @@
 
 namespace cms_billing\models;
 
+use cms_billing\extensions\finance\Price;
 use cms_billing\models\Invoices;
-use SebastianBergmann\Money\Money;
-use SebastianBergmann\Money\Currency;
 
 // In the moment of generating an invoice position the price is finalized.
 class InvoicePositions extends \cms_core\models\Base {
@@ -27,14 +26,14 @@ class InvoicePositions extends \cms_core\models\Base {
 		'cms_core\extensions\data\behavior\Timestamp',
 		'cms_core\extensions\data\behavior\Localizable' => [
 			'fields' => [
-				'total_amount' => 'money'
+				'amount' => 'money',
+				'quantity' => 'decimal'
 			]
 		]
 	];
 
-	// This fills out all fields open for the position making it non-pending.
-	public function finalize($entity, $invoice) {
-		return $entity->save(['billing_invoice_id' => $invoice]);
+	public function invoice($entity) {
+		return Invoices::findById($entity->billing_invoice_id);
 	}
 
 	public static function pending($user) {
@@ -46,17 +45,17 @@ class InvoicePositions extends \cms_core\models\Base {
 		]);
 	}
 
-	public function totalAmount($entity, $type) {
-		$invoice = Invoices::findById($entity->billing_invoice_id);
+	public function amount($entity) {
+		return new Price(
+			$entity->amount,
+			$entity->amount_currency,
+			$entity->amount_type,
+			$entity->invoice()->taxZone()
+		);
+	}
 
-		$currency = $entity->currency;
-		$taxZone = [
-			'rate' => $invoice->tax_rate,
-			'note' => $invoice->tax_note
-		];
-
-		$field = 'total_' . $type;
-		return new Money((integer) $entity->$field, new Currency($currency));
+	public function totalAmount($entity) {
+		return $entity->amount()->multiply($entity->quantity);
 	}
 }
 

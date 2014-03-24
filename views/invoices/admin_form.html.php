@@ -80,7 +80,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 		</section>
 
 		<section>
-			<?= $this->form->field('currency', [
+			<?= $this->form->field('total_currency', [
 				'type' => 'select',
 				'label' => $t('Currency'),
 				'list' => $currencies,
@@ -90,7 +90,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			<?= $this->form->field('total_net', [
 				'type' => 'text',
 				'label' => $t('Total net'),
-				'value' => $this->money->format($item->totalAmount('net'), 'decimal'),
+				'value' => $this->money->format($item->totalAmount()->getNet(), 'decimal'),
 				'disabled' => true
 			]) ?>
 			<div class="help"><?= $t('Derived from positions.') ?></div>
@@ -98,7 +98,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			<?= $this->form->field('total_gross', [
 				'type' => 'text',
 				'label' => $t('Total gross'),
-				'value' => $this->money->format($item->totalAmount('gross'), 'decimal'),
+				'value' => $this->money->format($item->totalAmount()->getGross(), 'decimal'),
 				'disabled' => true
 			]) ?>
 			<div class="help"><?= $t('Derived from positions.') ?></div>
@@ -106,7 +106,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			<?= $this->form->field('total_gross_outstanding', [
 				'type' => 'text',
 				'label' => $t('Total gross outstanding'),
-				'value' => $this->money->format($item->totalOutstanding('gross'), 'decimal'),
+				'value' => $this->money->format($item->totalOutstanding()->getGross(), 'decimal'),
 				'disabled' => true,
 			]) ?>
 			<div class="help"><?= $t('Derived from positions and calculated automatically.') ?></div>
@@ -123,13 +123,19 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 						'type' => 'text',
 						'label' => $t('Description')
 					]) ?>
-					<?= $this->form->field('positions.new.price_eur', [
-						'type' => 'text',
-						'label' => $t('Price (EUR)')
+					<?= $this->form->field("positions.new.amount_currency", [
+						'type' => 'select',
+						'label' => $t('Currency'),
+						'list' => $currencies
 					]) ?>
-					<?= $this->form->field('positions.new.price_usd', [
+					<?= $this->form->field("positions.new.amount_type", [
+						'type' => 'select',
+						'label' => $t('Type'),
+						'list' => ['net' => $t('net'), 'gross' => $t('gross')]
+					]) ?>
+					<?= $this->form->field('positions.new.amount', [
 						'type' => 'text',
-						'label' => $t('Price (USD)')
+						'label' => $t('Price')
 					]) ?>
 
 					<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
@@ -157,18 +163,37 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 						'value' => $child->description,
 						'disabled' => $item->is_locked
 					]) ?>
-					<?= $this->form->field("positions.{$key}.currency", [
+					<?= $this->form->field("positions.{$key}.amount_currency", [
 						'type' => 'select',
 						'label' => $t('Currency'),
 						'list' => $currencies,
-						'disabled' => true
+						'value' => $child->amount_currency
+					]) ?>
+					<?= $this->form->field("positions.{$key}.amount_type", [
+						'type' => 'select',
+						'label' => $t('Type'),
+						'value' => $child->amount_type,
+						'list' => ['net' => $t('net'), 'gross' => $t('gross')]
 					]) ?>
 
-					<?= $this->form->field("positions.{$key}.total_gross", [
+					<?= $this->form->field("positions.{$key}.amount", [
 						'type' => 'text',
-						'label' => $t('Total (gross)'),
-						'value' => $this->money->format($child->totalAmount('gross'), 'decimal'),
+						'label' => $t('Total'),
+						'value' => $this->money->format($child->totalAmount()->getAmount(), 'decimal'),
 						'disabled' => $item->is_locked
+					]) ?>
+
+					<?= $this->form->field("positions.{$key}.quantity", [
+						'type' => 'text',
+						'label' => $t('Quantity'),
+						'value' => $this->number->format($child->quantity, 'decimal'),
+						'disabled' => $item->is_locked
+					]) ?>
+					<?= $this->form->field("positions.{$key}.total_net", [
+						'type' => 'text',
+						'label' => $t('Total (net)'),
+						'value' => $this->money->format($child->totalAmount()->getNet(), 'decimal'),
+						'disabled' => true
 					]) ?>
 					<?php if (!$item->is_locked): ?>
 						<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>

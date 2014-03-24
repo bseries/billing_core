@@ -12,8 +12,7 @@
 
 namespace cms_billing\models;
 
-use SebastianBergmann\Money\Money;
-use SebastianBergmann\Money\Currency;
+use cms_billing\extensions\finance\Price;
 
 class Payments extends \cms_core\models\Base {
 
@@ -30,11 +29,9 @@ class Payments extends \cms_core\models\Base {
 		]
 	];
 
+	// Always gross.
 	public function totalAmount($entity) {
-		if (!$entity->amount || !$entity->currency) {
-			return false;
-		}
-		return new Money((integer) $entity->amount, new Currency($entity->currency));
+		return new Price($entity->amount, $entity->amount_currency, 'gross', null);
 	}
 }
 

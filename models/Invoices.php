@@ -21,8 +21,7 @@ use cms_billing\models\TaxZones;
 use cms_billing\models\InvoicePositions;
 use DateTime;
 use Exception;
-use SebastianBergmann\Money\Money;
-use SebastianBergmann\Money\Currency;
+use cms_billing\extensions\finance\Price;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).
@@ -46,7 +45,8 @@ class Invoices extends \cms_core\models\Base {
 	public $hasMany = ['InvoicePosition'];
 
 	protected static $_actsAs = [
-		'cms_core\extensions\data\behavior\Timestamp'
+		'cms_core\extensions\data\behavior\Timestamp',
+		'cms_core\extensions\data\behavior\ReferenceNumber'
 	];
 
 	public static $enum = [
@@ -58,11 +58,39 @@ class Invoices extends \cms_core\models\Base {
 		]
 	];
 
+	public static function init() {
+		$model = static::_object();
+
+		static::behavior('cms_core\extensions\data\behavior\ReferenceNumber')->config(
+			Settings::read('invoice.number')
+		);
+	}
+
+	public function quantity($entity) {
+		$result = preg_match('/^([0-9])\sx\s/', $entity->title, $matches);
+
+		if (!$result) {
+			return 1;
+		}
+		return (integer) $matches[1];
+	}
+
 	public function user($entity) {
 		if ($entity->user_id) {
 			return Users::findById($entity->user_id);
 		}
 		return VirtualUsers::findById($entity->virtual_user_id);
+	}
+
+	public function taxZone($entity) {
+		return TaxZones::create([
+			'rate' => $entity->tax_rate,
+			'note' => $entity->tax_note
+		]);
+	}
+
+	public function date($entity) {
+		return DateTime::createFromFormat('Y-m-d', $entity->date);
 	}
 
 	public static function createForUser($user) {
@@ -124,57 +152,51 @@ class Invoices extends \cms_core\models\Base {
 		if (!$overdue) {
 			return false;
 		}
-		return $entity->total_gross_outstanding & $date->getTimestamp() > strtotime($overdue);
+		return $entity->total_gross_outstanding && $date->getTimestamp() > strtotime($overdue);
 	}
 
-	public static function nextNumber() {
-		$pattern = Settings::read('invoice.numberPattern');
-
-		$item = static::find('first', [
-			'conditions' => [
-				'number' => [
-					'LIKE' => strftime($pattern['prefix']) . '%'
-				]
-			],
-			'order' => ['number' => 'DESC'],
-			'fields' => ['number']
-		]);
-		if ($item && ($number = $item->number)) {
-			$number++;
-		} else {
-			$number = strftime($pattern['prefix']) . sprintf($pattern['number'], 1);
-		}
-		return $number;
-	}
-
-	public function totalAmount($entity, $type) {
-		$result = new Money(0, new Currency($entity->currency));
+	// @fixme Assume positions habe same tax zone and currency and type.
+	public function totalAmount($entity) {
+		$result = new Price(0, 'EUR', 'net', $entity->taxZone());
 
 		$positions = $this->positions($entity);
 
 		foreach ($positions as $position) {
-			$result = $result->add($position->totalAmount($type));
+			$result = $result->add($position->totalAmount());
 		}
 		return $result;
 	}
 
 	public function totalTax($entity) {
-		$result = $this->totalAmount($entity, 'gross');
-		$result = $result->subtract($this->totalAmount($entity, 'net'));
+		$result = $entity->totalAmount()->getGross();
+		$result = $result->subtract($entity->totalAmount()->getNet());
 
 		return $result;
 	}
 
-	public function totalOutstanding($entity, $type) {
-		$result = new Money(0, new Currency($entity->currency));
+	// @fixme Payments is money outstanding is price
+	public function totalOutstanding($entity) {
+		$sum = null;
 
 		foreach ($entity->positions() as $position) {
-			$result = $result->add($position->totalAmount($type));
+			$result = $position->totalAmount();
+
+			if ($sum) {
+				$sum = $sum->add($result);
+			} else {
+				$sum = $result;
+			}
 		}
 		foreach ($entity->payments() as $payment) {
-			$result = $result->subtract($payment->totalAmount($type));
+			$result = $payment->totalAmount();
+
+			if ($sum) {
+				$sum = $sum->subtract($result);
+			} else {
+				$sum = $result;
+			}
 		}
-		return $result;
+		return $sum;
 	}
 
 	public function payInFull($entity, $method) {
@@ -182,14 +204,14 @@ class Invoices extends \cms_core\models\Base {
 			'billing_invoice_id' => $entity->id,
 			'method' => $method,
 			'date' => date('Y-m-d'),
-			'currency' => $entity->currency,
-			'amount' => $entity->totalOutstanding('gross')->getAmount()
+			'amount_currency' => $entity->total_currency,
+			'amount' => $entity->totalOutstanding()->getGross()->getAmount()
 		]);
 		return $payment->save(null, ['localize' => false]);
 	}
 
 	public function isPaidInFull($entity) {
-		return $entity->totalOutstanding('gross')->getAmount() <= 0;
+		return $entity->totalOutstanding()->getGross()->getAmount() <= 0;
 	}
 
 	public function address($entity) {
@@ -198,20 +220,11 @@ class Invoices extends \cms_core\models\Base {
 }
 
 Invoices::applyFilter('save', function($self, $params, $chain) {
-	static $useFilter = true;
-
 	$entity = $params['entity'];
 	$data = $params['data'];
 
-	if (!$useFilter) {
-		return $chain->next($self, $params, $chain);
-	}
 	if ($entity->is_locked || isset($data['is_locked'])) {
 		return $chain->next($self, $params, $chain);
-	}
-
-	if (!$entity->exists()) {
-		$entity->number = Invoices::nextNumber();
 	}
 
 	if (!$result = $chain->next($self, $params, $chain)) {
@@ -241,35 +254,6 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 			return false;
 		}
 	}
-
-	/*
-	$useFilter = false;
-
-
-	$positions = InvoicePositions::find('all', [
-		'conditions' => ['billing_invoice_id' => $entity->id]
-	]); // Refresh.
-
-	// 2nd step finalizing the invoice.
-	// Calculate invoice totals from positions.
-	$totalNet = 0;
-	$totalGross = 0;
-
-	foreach ($positions as $item) {
-		$field = 'price_' . strtolower($currency);
-		$price = $item->$field;
-		$totalNet += $price - ($price * $entity->tax_rate);
-		$totalGross += $price;
-	}
-	$result = $entity->save([
-		'total_currency' => $currency,
-		'total_net' => $totalNet,
-		'total_gross' => $totalGross,
-		'total_tax' => $totalGross - $totalNet,
-	]);
-
-	 */
-	$useFilter = true;
 	return true;
 });
 Invoices::applyFilter('delete', function($self, $params, $chain) {
@@ -287,5 +271,6 @@ Invoices::applyFilter('delete', function($self, $params, $chain) {
 	return $result;
 });
 
+Invoices::init();
 
 ?>

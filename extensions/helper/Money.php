@@ -13,13 +13,11 @@
 namespace cms_billing\extensions\helper;
 
 use lithium\core\Environment;
-use SebastianBergmann\Money\Money as MoneyMoney;
-use SebastianBergmann\Money\IntlFormatter;
 use NumberFormatter;
 
 class Money extends \lithium\template\Helper {
 
-	public function format(MoneyMoney $value, $type = null, array $options = []) {
+	public function format($value, $type = null, array $options = []) {
 		$options += [
 			'locale' => null
 		];
@@ -27,11 +25,17 @@ class Money extends \lithium\template\Helper {
 
 		switch ($type) {
 			case 'money':
-				$formatter = new IntlFormatter($locale);
-				return $formatter->format($value);
+				$formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+				return $formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency());
 			case 'decimal':
 				$formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
-				return $formatter->format($value->getAmount() / 100);
+				$formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+				$formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+
+				if (is_object($value)) {
+					$value = $value->getAmount();
+				}
+				return $formatter->format($value / 100);
 		}
 	}
 

@@ -36,7 +36,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			'label' => $t('Method')
 		]) ?>
 
-		<?= $this->form->field('currency', [
+		<?= $this->form->field('amount_currency', [
 			'type' => 'select',
 			'label' => $t('Currency'),
 			'list' => $currencies

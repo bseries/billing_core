@@ -15,6 +15,7 @@ namespace cms_billing\models;
 use lithium\g11n\Message;
 use lithium\analysis\Logger;
 use cms_core\extensions\cms\Settings;
+use SebastianBergmann\Money\Money;
 
 // In the moment of generating an invoice position the price is finalized.
 class TaxZones extends \cms_core\models\Base {

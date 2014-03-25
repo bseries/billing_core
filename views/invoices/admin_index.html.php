@@ -5,8 +5,6 @@
 		<table>
 			<thead>
 				<tr>
-					<td>
-					<td>
 					<td class="flag"><?= $t('locked?') ?>
 					<td class="emphasize"><?= $t('Number') ?>
 					<td class="status"><?= $t('Status') ?>
@@ -17,37 +15,11 @@
 					<td class="date created"><?= $t('Date') ?>
 					<td class="date created"><?= $t('Created') ?>
 					<td>
-				<tr>
-					<td>
-					<td>(pos)
-					<td>
-					<td colspan="2" class="emphasize"><?= $t('Description') ?>
-					<td><?= $t('Quantity') ?>
-					<td><?= $t('Total (net)') ?>
-					<td><?= $t('Total (gross)') ?>
-					<td>
-					<td>
-					<td class="date created"><?= $t('Created') ?>
-					<td>
-				<tr>
-					<td>
-					<td>(pay)
-					<td>
-					<td colspan="2" class="emphasize"><?= $t('Method') ?>
-					<td>
-					<td><?= $t('Total') ?>
-					<td>
-					<td>
-					<td class="date created"><?= $t('Date') ?>
-					<td class="date created"><?= $t('Created') ?>
-					<td>
 			</thead>
 			<tbody>
 				<?php foreach ($data as $item): ?>
 					<?php $user = $item->user() ?>
 				<tr data-id="<?= $item->id ?>">
-					<td>
-					<td>
 					<td class="flag"><?= ($item->is_locked ? '✓' : '╳') ?>
 					<td class="emphasize"><?= $item->number ?: '–' ?>
 					<td class="status"><?= $item->status ?>
@@ -87,54 +59,6 @@
 							<?= $this->html->link($t('pay'), ['billing_invoice_id' => $item->id, 'controller' => 'Payments', 'action' => 'add', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($t('export XLS'), ['id' => $item->id, 'action' => 'export_excel', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						</nav>
-					<?php foreach ($item->positions() as $sub): ?>
-						<tr class="sub-item">
-							<td>↳
-							<td>(pos)
-							<td>
-							<td colspan="2" class="emphasize"><?= $sub->description ?>
-							<td><?= $sub->quantity ?>
-							<td><?= ($money = $sub->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
-							<td><?= ($money = $sub->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
-							<td>
-							<td>
-							<td class="date created">
-								<time datetime="<?= $this->date->format($sub->created, 'w3c') ?>">
-									<?= $this->date->format($sub->created, 'date') ?>
-								</time>
-							<td>
-								<nav class="actions">
-									<? // $this->html->link($t('delete'), ['id' => $sub->id, 'controller' => 'InvoicePositions', 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-									<? // $this->html->link($t('edit'), ['id' => $sub->id, 'controller' => 'InvoicePositions', 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-								</nav>
-
-					<?php endforeach ?>
-					<?php foreach ($item->payments() as $sub): ?>
-						<tr class="sub-item">
-							<td>↳
-							<td>(pay)
-							<td>
-							<td colspan="2" class="emphasize"><?= $sub->method ?>
-							<td>
-							<td><?= ($money = $sub->totalAmount()) ? $this->money->format($money, 'money') : null ?>
-							<td>
-							<td>
-							<td class="date">
-								<time datetime="<?= $this->date->format($sub->date, 'w3c') ?>">
-									<?= $this->date->format($sub->date, 'date') ?>
-								</time>
-							<td class="date created">
-								<time datetime="<?= $this->date->format($sub->created, 'w3c') ?>">
-									<?= $this->date->format($sub->created, 'date') ?>
-								</time>
-							<td>
-								<nav class="actions">
-									<?= $this->html->link($t('delete'), ['id' => $sub->id, 'controller' => 'Payments', 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-									<?= $this->html->link($t('edit'), ['id' => $sub->id, 'controller' => 'Payments', 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-								</nav>
-
-					<?php endforeach ?>
-
 				<?php endforeach ?>
 			</tbody>
 		</table>

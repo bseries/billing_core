@@ -16,12 +16,15 @@ use cms_core\models\Addresses;
 use cms_core\models\Users;
 use cms_core\models\VirtualUsers;
 use cms_core\extensions\cms\Settings;
+use cms_core\extensions\cms\Features;
 use cms_billing\models\Payments;
 use cms_billing\models\TaxZones;
 use cms_billing\models\InvoicePositions;
 use DateTime;
 use Exception;
 use cms_billing\extensions\finance\Price;
+use li3_mailer\action\Mailer;
+use lithium\g11n\Message;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).
@@ -46,15 +49,15 @@ class Invoices extends \cms_core\models\Base {
 
 	protected static $_actsAs = [
 		'cms_core\extensions\data\behavior\Timestamp',
-		'cms_core\extensions\data\behavior\ReferenceNumber'
+		'cms_core\extensions\data\behavior\ReferenceNumber',
+		'cms_core\extensions\data\behavior\StatusChange'
 	];
 
 	public static $enum = [
 		'status' => [
 			'created', // open
-			'sent', // open
 			'paid',  // paid
-			'void', // storno
+			'cancelled', // storno
 
 			'awaiting-payment',
 			'payment-accepted',
@@ -179,7 +182,6 @@ class Invoices extends \cms_core\models\Base {
 		return $result;
 	}
 
-	// @fixme Payments is money outstanding is price
 	public function totalOutstanding($entity) {
 		$sum = null;
 
@@ -222,13 +224,39 @@ class Invoices extends \cms_core\models\Base {
 	public function address($entity) {
 		return Addresses::createFromPrefixed('address_', $entity->data());
 	}
+
+	public function statusChange($entity, $from, $to) {
+		extract(Message::aliases());
+
+		switch ($to) {
+			case 'paid':
+				if (!Features::enabled('invoice.sendPaidMail')) {
+					return true;
+				}
+				$user = $enitity->user();
+
+				return Mailer::deliver('invoice_paid', [
+					'to' => $user->email,
+					'subject' => $t('Invoice #{:number} paid.', [
+						'number' => $entity->number
+					]),
+					'data' => [
+						'user' => $user,
+						'item' => $entity
+					]
+				]);
+			default:
+				break;
+		}
+		return true;
+	}
 }
 
 Invoices::applyFilter('save', function($self, $params, $chain) {
 	$entity = $params['entity'];
 	$data = $params['data'];
 
-	if ($entity->is_locked || isset($data['is_locked'])) {
+	if ($entity->is_locked || !empty($data['is_locked'])) {
 		return $chain->next($self, $params, $chain);
 	}
 
@@ -237,7 +265,6 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 	}
 
 	$user = $entity->user();
-
 	// Save nested positions.
 	$new = $entity->positions ?: [];
 	foreach ($new as $key => $data) {
@@ -255,10 +282,11 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 			}
 		} else {
 			$item = InvoicePositions::create($data + [
+				'billing_invoice_id' => $entity->id,
 				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
 			]);
 		}
-		if (!$item->save(['billing_invoice_id' => $entity->id])) {
+		if (!$item->save($data)) {
 			return false;
 		}
 	}
@@ -279,11 +307,12 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 				continue;
 			}
 		} else {
-			$item = Payments::create($data + [
+			$item = Payments::create([
+				'billing_invoice_id' => $entity->id,
 				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
 			]);
 		}
-		if (!$item->save(['billing_invoice_id' => $entity->id])) {
+		if (!$item->save($data)) {
 			return false;
 		}
 	}

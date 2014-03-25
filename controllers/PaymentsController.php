@@ -12,6 +12,8 @@
 
 namespace cms_billing\controllers;
 
+use cms_core\models\Users;
+use cms_core\models\VirtualUsers;
 use cms_billing\models\Invoices;
 use cms_billing\models\Payments;
 use lithium\g11n\Message;
@@ -58,8 +60,10 @@ class PaymentsController extends \cms_core\controllers\BaseController {
 	}
 
 	protected function _selects($item) {
-		$invoices = [];
+		$virtualUsers = [null => '-- none --'] + VirtualUsers::find('list');
+		$users = [null => '-- none --'] + Users::find('list') ;
 
+		$invoices = [null => '-- none --'];
 		foreach (Invoices::find('all') as $item) {
 			$invoices[$item->id] = '#' . $item->number;
 		}
@@ -67,7 +71,7 @@ class PaymentsController extends \cms_core\controllers\BaseController {
 			'EUR' => 'EUR',
 			'USD' => 'USD'
 		];
-		return compact('currencies', 'invoices');
+		return compact('currencies', 'invoices', 'users', 'virtualUsers');
 	}
 }
 

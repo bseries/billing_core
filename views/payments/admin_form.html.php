@@ -13,6 +13,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> section-spacing">
 	<h1 class="alpha">
 		<span class="action"><?= $title['action'] ?></span>
+		<span class="object"><?= $title['object'][0] ?></span>
 		<span class="title" data-untitled="<?= $untitled ?>"><?= $title['title'] ?></span>
 	</h1>
 
@@ -20,10 +21,34 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 		<?= $this->form->field('billing_invoice_id', [
 			'type' => 'select',
 			'label' => $t('Invoice'),
-			'disabled' => $this->_request->action == 'add' && $item->billing_invoice_id,
 			'list' => $invoices
 		]) ?>
-
+		<div class="combined-users-fields">
+			<?= $this->form->field('user_id', [
+				'type' => 'select',
+				'label' => $t('User'),
+				'list' => $users
+			]) ?>
+			<div class="help">
+				<?= $this->html->link($t('Create new user.'), [
+					'controller' => 'Users',
+					'action' => 'add',
+					'library' => 'cms_core'
+				]) ?>
+			</div>
+			<?= $this->form->field('virtual_user_id', [
+				'type' => 'select',
+				'label' => $t('Virtual user'),
+				'list' => $virtualUsers
+			]) ?>
+			<div class="help">
+				<?= $this->html->link($t('Create new virtual user.'), [
+					'controller' => 'VirtualUsers',
+					'action' => 'add',
+					'library' => 'cms_core'
+				]) ?>
+			</div>
+		</div>
 		<?= $this->form->field('date', [
 			'type' => 'date',
 			'label' => $t('Date'),

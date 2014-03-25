@@ -10,6 +10,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+use cms_core\extensions\cms\Features;
 use cms_core\extensions\cms\Settings;
 use cms_core\extensions\cms\Panes;
 use lithium\g11n\Message;
@@ -45,5 +46,9 @@ Settings::register('cms_billing', 'tax.vat.rate', 19);
 
 Settings::register('cms_billing', 'tax.reducedVat.title', $t('red. VAT'));
 Settings::register('cms_billing', 'tax.reducedVat.rate', 7);
+
+Settings::register('cms_billing', 'invoice.terms', null);
+
+Features::register('cms_billing', 'invoice.sendPaidMail', false);
 
 ?>

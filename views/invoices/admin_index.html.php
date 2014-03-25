@@ -6,13 +6,13 @@
 			<thead>
 				<tr>
 					<td class="flag"><?= $t('locked?') ?>
+					<td class="date created"><?= $t('Date') ?>
 					<td class="emphasize"><?= $t('Number') ?>
 					<td class="status"><?= $t('Status') ?>
-					<td><?= $t('User') ?>
+					<td><?= $t('Recipient') ?>
 					<td><?= $t('Total (net)') ?>
 					<td><?= $t('Total (gross)') ?>
-					<td><?= $t('Total outstanding (gross)') ?>
-					<td class="date created"><?= $t('Date') ?>
+					<td><?= $t('Balance (gross)') ?>
 					<td class="date created"><?= $t('Created') ?>
 					<td>
 			</thead>
@@ -21,6 +21,10 @@
 					<?php $user = $item->user() ?>
 				<tr data-id="<?= $item->id ?>">
 					<td class="flag"><?= ($item->is_locked ? '✓' : '╳') ?>
+					<td class="date">
+						<time datetime="<?= $this->date->format($item->date, 'w3c') ?>">
+							<?= $this->date->format($item->date, 'date') ?>
+						</time>
 					<td class="emphasize"><?= $item->number ?: '–' ?>
 					<td class="status"><?= $item->status ?>
 					<?php if ($user->isVirtual()): ?>
@@ -43,21 +47,18 @@
 					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
 					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
-					<td class="date">
-						<time datetime="<?= $this->date->format($item->date, 'w3c') ?>">
-							<?= $this->date->format($item->date, 'date') ?>
-						</time>
 					<td class="date created">
 						<time datetime="<?= $this->date->format($item->created, 'w3c') ?>">
 							<?= $this->date->format($item->created, 'date') ?>
 						</time>
 					<td>
 						<nav class="actions">
-							<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?php // $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 							<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-							<?= $this->html->link($t('edit'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-							<?= $this->html->link($t('pay'), ['billing_invoice_id' => $item->id, 'controller' => 'Payments', 'action' => 'add', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-							<?= $this->html->link($t('export XLS'), ['id' => $item->id, 'action' => 'export_excel', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?php // $this->html->link($t('pay'), ['billing_invoice_id' => $item->id, 'controller' => 'Payments', 'action' => 'add', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?= $this->html->link($t('XLSX'), ['id' => $item->id, 'action' => 'export_excel', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?= $this->html->link($t('PDF'), ['id' => $item->id, 'action' => 'export_excel', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+							<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						</nav>
 				<?php endforeach ?>
 			</tbody>

@@ -14,6 +14,7 @@ namespace cms_billing\models;
 
 use cms_billing\extensions\finance\Price;
 use cms_billing\models\Invoices;
+use Exception;
 
 // In the moment of generating an invoice position the price is finalized.
 class InvoicePositions extends \cms_core\models\Base {
@@ -56,6 +57,22 @@ class InvoicePositions extends \cms_core\models\Base {
 
 	public function totalAmount($entity) {
 		return $entity->amount()->multiply($entity->quantity);
+	}
+
+	// Assumes format "Foobar (#12345)".
+	public function itemNumber($entity) {
+		if (!preg_match('/#([^\s])[\)\s]/', $entity->description, $matches)) {
+			throw new Exception('Failed to extract item number from description.');
+		}
+		return $matches[1];
+	}
+
+	// Assumes format "Foobar (#12345)".
+	public function itemTitle($entity) {
+		if (!preg_match('/^(.*)\(/', $entity->description, $matches)) {
+			throw new Exception('Failed to extract item title from description.');
+		}
+		return $matches[1];
 	}
 }
 

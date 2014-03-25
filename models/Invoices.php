@@ -236,9 +236,10 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 		return false;
 	}
 
+	$user = $entity->user();
+
 	// Save nested positions.
 	$new = $entity->positions ?: [];
-
 	foreach ($new as $key => $data) {
 		if ($key === 'new') {
 			continue;
@@ -253,7 +254,34 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 				continue;
 			}
 		} else {
-			$item = InvoicePositions::create($data + ['user_id' + $entity->user_id]);
+			$item = InvoicePositions::create($data + [
+				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
+			]);
+		}
+		if (!$item->save(['billing_invoice_id' => $entity->id])) {
+			return false;
+		}
+	}
+
+	// Save nested payments.
+	$new = $entity->payments ?: [];
+	foreach ($new as $key => $data) {
+		if ($key === 'new') {
+			continue;
+		}
+		if (isset($data['id'])) {
+			$item = Payments::findById($data['id']);
+
+			if ($data['_delete']) {
+				if (!$item->delete()) {
+					return false;
+				}
+				continue;
+			}
+		} else {
+			$item = Payments::create($data + [
+				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
+			]);
 		}
 		if (!$item->save(['billing_invoice_id' => $entity->id])) {
 			return false;

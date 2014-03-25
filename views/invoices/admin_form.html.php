@@ -65,52 +65,8 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			]) ?>
 
 		</section>
-		<section>
-			<?= $this->form->field('tax_rate', [
-				'type' => 'text',
-				'label' => $t('Tax rate'),
-				'disabled' => true
-			]) ?>
 
-			<?= $this->form->field('tax_note', [
-				'type' => 'text',
-				'label' => $t('Tax note'),
-				'disabled' => true
-			]) ?>
-
-		</section>
-
-		<section>
-			<?= $this->form->field('total_currency', [
-				'type' => 'select',
-				'label' => $t('Currency'),
-				'list' => $currencies,
-				'disabled' => true
-			]) ?>
-
-			<?= $this->form->field('total_net', [
-				'type' => 'text',
-				'label' => $t('Total (net)'),
-				'value' => $this->money->format($item->totalAmount()->getNet(), 'decimal'),
-				'disabled' => true
-			]) ?>
-
-			<?= $this->form->field('total_gross', [
-				'type' => 'text',
-				'label' => $t('Total (gross)'),
-				'value' => $this->money->format($item->totalAmount()->getGross(), 'decimal'),
-				'disabled' => true
-			]) ?>
-
-			<?= $this->form->field('total_gross_outstanding', [
-				'type' => 'text',
-				'label' => $t('Total outstanding (gross)'),
-				'value' => $this->money->format($item->totalOutstanding()->getGross(), 'decimal'),
-				'disabled' => true,
-			]) ?>
-		</section>
-		<section>
-			<h1 class="beta"><?= $t('Positions') ?></h1>
+		<section class="use-nested">
 			<table>
 				<thead>
 					<tr>
@@ -122,43 +78,8 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 						<td><?= $t('Line total (net)') ?>
 						<td>
 				</thead>
-				<tbody class="use-nested">
+				<tbody>
 				<?php foreach ($item->positions() as $key => $child): ?>
-					<?php if (!$item->is_locked): ?>
-						<tr class="nested-add nested-item">
-							<td>
-								<?= $this->form->field('positions.new.description', [
-									'type' => 'text',
-									'label' => false
-								]) ?>
-							<td>
-								<?= $this->form->field('positions.new.quantity', [
-									'type' => 'text',
-									'label' => false
-								]) ?>
-							<td>
-								<?= $this->form->field("positions.new.amount_currency", [
-									'type' => 'select',
-									'label' => false,
-									'list' => $currencies
-								]) ?>
-							<td>
-								<?= $this->form->field("positions.new.amount_type", [
-									'type' => 'select',
-									'label' => false,
-									'list' => ['net' => $t('net'), 'gross' => $t('gross')]
-								]) ?>
-							<td>
-								<?= $this->form->field('positions.new.amount', [
-									'type' => 'text',
-									'label' => false
-								]) ?>
-							<td>
-							<nav class="actions">
-								<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
-							</nav>
-					<?php endif ?>
-
 					<tr class="nested-item">
 						<td>
 							<?= $this->form->field("positions.{$key}.id", [
@@ -220,11 +141,180 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 						<?php endif ?>
 						</nav>
 				<?php endforeach ?>
+				<?php if (!$item->is_locked): ?>
+					<tr class="nested-add nested-item">
+						<td>
+							<?= $this->form->field('positions.new.description', [
+								'type' => 'text',
+								'label' => false
+							]) ?>
+						<td>
+							<?= $this->form->field('positions.new.quantity', [
+								'type' => 'text',
+								'label' => false
+							]) ?>
+						<td>
+							<?= $this->form->field("positions.new.amount_currency", [
+								'type' => 'select',
+								'label' => false,
+								'list' => $currencies
+							]) ?>
+						<td>
+							<?= $this->form->field("positions.new.amount_type", [
+								'type' => 'select',
+								'label' => false,
+								'list' => ['net' => $t('net'), 'gross' => $t('gross')]
+							]) ?>
+						<td>
+							<?= $this->form->field('positions.new.amount', [
+								'type' => 'text',
+								'label' => false
+							]) ?>
+						<td>
+						<td>
+						<nav class="actions">
+							<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
+						</nav>
+				<?php endif ?>
 				</tbody>
+				<tfoot>
+					<tr>
+						<td>
+							<?php if (!$item->is_locked): ?>
+								<?= $this->form->button($t('add position'), ['type' => 'button', 'class' => 'button add-nested']) ?>
+							<?php endif ?>
+					<tr>
+						<td colspan="3">
+						<td colspan="2"><?= $t('Total (net)') ?>
+						<td><?= $this->money->format($item->totalAmount()->getNet(), 'money') ?>
+					<tr>
+						<td colspan="3">
+						<td colspan="2"><?= $t('Tax ({:rate}%)', ['rate' => $item->tax_rate]) ?>
+						<td><?= $this->money->format($item->totalAmount()->getTax(), 'money') ?>
+					<tr>
+						<td colspan="3">
+						<td colspan="2"><?= $t('Total (gross)') ?>
+						<td><?= $this->money->format($item->totalAmount()->getGross(), 'money') ?>
+					<tr>
+						<td colspan="3">
+						<td colspan="2"><?= $t('Balance (gross)') ?>
+						<td><?= $this->money->format($item->totalOutstanding()->getGross(), 'money') ?>
+				</tfoot>
 			</table>
-			<?php if (!$item->is_locked): ?>
-				<?= $this->form->button($t('add another position'), ['type' => 'button', 'class' => 'button add-nested']) ?>
-			<?php endif ?>
+		</section>
+
+		<section>
+			<?= $this->form->field('terms', [
+				'type' => 'textarea',
+				'label' => $t('Terms'),
+				'disabled' => $item->is_locked
+			]) ?>
+			<div class="help"><?= $t('Visible to recipient.') ?>
+
+			<?= $this->form->field('note', [
+				'type' => 'textarea',
+				'label' => $t('Note'),
+				'disabled' => $item->is_locked
+			]) ?>
+			<div class="help"><?= $t('Visible to recipient.') ?>
+
+			<?= $this->form->field('tax_note', [
+				'type' => 'text',
+				'label' => $t('Tax note'),
+				'disabled' => true
+			]) ?>
+			<div class="help"><?= $t('Visible to recipient.') ?>
+		</section>
+
+		<section class="use-nested">
+			<h1 class="beta"><?= $t('Payments') ?></h1>
+			<table>
+				<thead>
+					<tr>
+						<td><?= $t('Date') ?>
+						<td><?= $t('Method') ?>
+						<td><?= $t('Currency') ?>
+						<td><?= $t('Amount') ?>
+						<td>
+				</thead>
+				<tbody>
+				<?php foreach ($item->payments() as $key => $child): ?>
+					<tr class="nested-item">
+						<td>
+							<?= $this->form->field("payments.{$key}.id", [
+								'type' => 'hidden',
+								'value' => $child->id
+							]) ?>
+							<?= $this->form->field("payments.{$key}._delete", [
+								'type' => 'hidden'
+							]) ?>
+							<?= $this->form->field("payments.{$key}.date", [
+								'type' => 'date',
+								'label' => false,
+								'value' => $child->date
+							]) ?>
+						<td>
+							<?= $this->form->field("payments.{$key}.method", [
+								'type' => 'text',
+								'label' => false,
+								'value' => $child->method
+							]) ?>
+						<td>
+							<?= $this->form->field("payments.{$key}.amount_currency", [
+								'type' => 'select',
+								'label' => false,
+								'list' => $currencies,
+								'value' => $child->amount_currency
+							]) ?>
+						<td>
+							<?= $this->form->field("payments.{$key}.amount", [
+								'type' => 'text',
+								'label' => false,
+								'value' => $this->money->format($child->totalAmount()->getAmount(), 'decimal'),
+							]) ?>
+						<td>
+						<nav class="actions">
+						<?php if (!$item->is_locked): ?>
+							<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
+						<?php endif ?>
+						</nav>
+				<?php endforeach ?>
+				<?php if (!$item->is_locked): ?>
+					<tr class="nested-add nested-item">
+						<td>
+							<?= $this->form->field("payments.new.date", [
+								'type' => 'date',
+								'label' => false,
+								'value' => date('Y-m-d')
+							]) ?>
+						<td>
+							<?= $this->form->field("payments.new.method", [
+								'type' => 'text',
+								'label' => false
+							]) ?>
+						<td>
+							<?= $this->form->field("payments.new.amount_currency", [
+								'type' => 'select',
+								'label' => false,
+								'list' => $currencies
+							]) ?>
+						<td>
+							<?= $this->form->field("payments.new.amount", [
+								'type' => 'text',
+								'label' => false
+							]) ?>
+						<td>
+						<nav class="actions">
+							<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
+						</nav>
+				<?php endif ?>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td>
+							<?= $this->form->button($t('add payment'), ['type' => 'button', 'class' => 'button add-nested']) ?>
+				</tfoot>
+			</table>
 		</section>
 
 		<?= $this->form->button($t('save'), ['type' => 'submit', 'class' => 'button large']) ?>

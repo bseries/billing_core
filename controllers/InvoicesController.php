@@ -92,7 +92,19 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 	}
 
 	protected function _selects($item) {
-		$statuses = Invoices::enum('status');
+		extract(Message::aliases());
+
+		$statuses = Invoices::enum('status', [
+			'created' => $t('created'), // open
+			'sent' => $t('sent'), // open
+			'paid' => $t('paid'),  // paid
+			'void' => $t('void'), // storno
+
+			'awaiting-payment' => $t('awaiting payment'),
+			'payment-accepted' => $t('payment accepted'),
+			'payment-remotely-accepted' => $t('payment remotely accepted'),
+			'payment-error' => $t('payment error'),
+		]);
 		$currencies = [
 			'EUR' => 'EUR',
 			'USD' => 'USD'

@@ -31,9 +31,9 @@ Panes::register('cms_billing', 'billing', [
 
 // Number Format
 Settings::register('cms_billing', 'invoice.number', [
-	'sort' => '/([0-9]{4}-[0-9]{4})/',
-	'extract' => '/[0-9]{4}-([0-9]{4})/',
-	'generate' => '%Y-%%04.d'
+	'sort' => '/([0-9]{4}[0-9]{4})/',
+	'extract' => '/[0-9]{4}([0-9]{4})/',
+	'generate' => '%Y%%04.d'
 ]);
 
 // Overdue, set to false if never overdue.

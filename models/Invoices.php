@@ -58,9 +58,9 @@ class Invoices extends \cms_core\models\Base {
 			'created', // open
 			'paid',  // paid
 			'cancelled', // storno
-
+			'sent',
 			'awaiting-payment',
-			'payment-accepted',
+			// 'payment-accepted',
 			'payment-remotely-accepted',
 			'payment-error',
 		]
@@ -233,6 +233,12 @@ class Invoices extends \cms_core\models\Base {
 		extract(Message::aliases());
 
 		switch ($to) {
+			case 'sent':
+				return $entity->save(['is_locked' => true], [
+					'whitelist' => ['is_locked'],
+					'validate' => false,
+					'lockWriteThrough' => true
+				]);
 			case 'paid':
 				if (!Features::enabled('invoice.sendPaidMail')) {
 					return true;
@@ -253,6 +259,15 @@ class Invoices extends \cms_core\models\Base {
 				break;
 		}
 		return true;
+	}
+
+	public function isCancelable($entity) {
+		return in_array($entity->status, [
+			'created',
+			'cancelled',
+			'awaiting-payment',
+			'payment-error',
+		]);
 	}
 }
 
@@ -308,7 +323,6 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 		}
 	}
 
-//var_dump($entity->payments);die;
 	// Save nested payments; alwas allow writing these.
 	$new = isset($data['payments']) ? $data['payments'] : [];
 	foreach ($new as $key => $data) {

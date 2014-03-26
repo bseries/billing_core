@@ -26,7 +26,8 @@ Panes::register('cms_billing', 'billing', [
 	'actions' => [
 		$t('List invoices') => ['controller' => 'Invoices', 'action' => 'index'] + $base,
 		$t('New invoice') => ['controller' => 'Invoices', 'action' => 'add'] + $base,
-		$t('New payment') => ['controller' => 'payments', 'action' => 'add'] + $base,
+		$t('List payments') => ['controller' => 'Payments', 'action' => 'index'] + $base,
+		$t('New payment') => ['controller' => 'Payments', 'action' => 'add'] + $base,
 	]
 ]);
 

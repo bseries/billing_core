@@ -12,6 +12,7 @@
 
 namespace cms_billing\controllers;
 
+use cms_core\models\VirtualUsers;
 use cms_core\models\Users;
 use cms_billing\models\Invoices;
 use PHPExcel as Excel;
@@ -162,9 +163,10 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 			'payment-error' => $t('payment error'),
 		]);
 		$currencies = Currencies::find('list');
-		$users = Users::find('list');
+		$virtualUsers = [null => '-'] + VirtualUsers::find('list');
+		$users = [null => '-'] + Users::find('list');
 
-		return compact('currencies', 'statuses', 'users');
+		return compact('currencies', 'statuses', 'users', 'virtualUsers');
 	}
 }
 

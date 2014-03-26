@@ -22,48 +22,22 @@ use li3_flash_message\extensions\storage\FlashMessage;
 
 class PaymentsController extends \cms_core\controllers\BaseController {
 
-	protected $_redirectUrl = [
-		'action' => 'index',
-		'controller' => 'Invoices'
-	];
-
 	use \cms_core\controllers\AdminAddTrait;
 	use \cms_core\controllers\AdminEditTrait;
 	use \cms_core\controllers\AdminDeleteTrait;
 
-	public function admin_add() {
-		extract(Message::aliases());
-
-		$model = $this->_model;
-		$redirectUrl = $this->_redirectUrl + [
-			'action' => 'index', 'library' => $this->_library
-		];
-
-		if ($invoiceId = $this->request->billing_invoice_id) {
-			$item = $model::create([
-				'billing_invoice_id' => $invoiceId
-			]);
-		} else {
-			$item = $model::create();
-		}
-
-		if ($this->request->data) {
-			if ($item->save($this->request->data)) {
-				FlashMessage::write($t('Successfully saved.'), ['level' => 'success']);
-
-				return $this->redirect($redirectUrl);
-			} else {
-				FlashMessage::write($t('Failed to save.'), ['level' => 'error']);
-			}
-		}
-		$this->_render['template'] = 'admin_form';
-		return compact('item') + $this->_selects($item);
+	public function admin_index() {
+		$data = Payments::find('all', [
+			'order' => ['date' => 'DESC']
+		]);
+		return compact('data');
 	}
 
 	protected function _selects($item) {
-		$virtualUsers = [null => '-- none --'] + VirtualUsers::find('list');
-		$users = [null => '-- none --'] + Users::find('list') ;
-		$invoices = [null => '-- none --'] + Invoices::find('list');
+		$virtualUsers = [null => '-'] + VirtualUsers::find('list');
+		$users = [null => '-'] + Users::find('list');
+
+		$invoices = [null => '-'] + Invoices::find('list');
 		$currencies = Currencies::find('list');
 
 		return compact('currencies', 'invoices', 'users', 'virtualUsers');

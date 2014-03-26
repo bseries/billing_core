@@ -12,7 +12,10 @@
 
 namespace cms_billing\models;
 
+use cms_billing\models\Invoices;
 use cms_billing\extensions\finance\Price;
+use cms_core\models\VirtualUsers;
+use cms_core\extensions\cms\Settings;
 
 class Payments extends \cms_core\models\Base {
 
@@ -28,6 +31,17 @@ class Payments extends \cms_core\models\Base {
 			]
 		]
 	];
+
+	public function user($entity) {
+		if ($entity->user_id) {
+			return Users::findById($entity->user_id);
+		}
+		return VirtualUsers::findById($entity->virtual_user_id);
+	}
+
+	public function invoice($entity) {
+		return Invoices::findById($entity->billing_invoice_id);
+	}
 
 	// Always gross.
 	public function totalAmount($entity) {

@@ -1,5 +1,7 @@
 <?php
 
+use cms_core\extensions\cms\Features;
+
 $untitled = $t('Untitled');
 
 $title = [
@@ -15,7 +17,31 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 		<span class="action"><?= $title['action'] ?></span>
 		<span class="object"><?= $title['object'][0] ?></span>
 		<span class="title" data-untitled="<?= $untitled ?>"><?= $title['title'] ?></span>
+		<span class="status"><?= $item->is_locked ? $t('locked') : $t('unlocked') ?></span>
+		<span class="status"><?= $statuses[$item->status] ?></span>
 	</h1>
+
+	<?php if ($item->exists()): ?>
+		<nav class="actions">
+			<?= $this->html->link($t('PDF'), [
+				'controller' => 'Invoices',
+				'id' => $item->id, 'action' => 'export_pdf',
+				'library' => 'cms_billing'
+			], ['class' => 'button']) ?>
+			<?= $this->html->link($t('XLSX'), [
+				'controller' => 'Invoices',
+				'id' => $item->id, 'action' => 'export_excel',
+				'library' => 'cms_billing'
+			], ['class' => 'button']) ?>
+			<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+		</nav>
+	<?php endif ?>
+
+	<div class="help">
+		<?= $t('When the invoice is locked it cannot be changed anymore with the exception of the outstanding amount.') ?>
+		<?= $t('The invoice is automatically locked once sent to the user.') ?>
+	</div>
+
 
 	<?=$this->form->create($item) ?>
 		<section>
@@ -24,17 +50,11 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 				'label' => $t('Status'),
 				'list' => $statuses
 			]) ?>
-			<?= $this->form->field('is_locked', [
-				'type' => 'checkbox',
-				'label' => $t('Locked?'),
-				'checked' => $item->is_locked,
-				'disabled' => true
-			]) ?>
 			<div class="help">
-				<?= $t('When the invoice is locked it cannot be changed anymore with the exception of the outstanding amount.') ?>
-				<?= $t('The invoice is automatically locked once sent to the user.') ?>
+			<?php if (Features::enabled('invoice.sendPaidMail')): ?>
+				<?= $t('The user will be notified by e-mail when the status is changed to `paid`.') ?>
+			<?php endif ?>
 			</div>
-
 			<?= $this->form->field('number', [
 				'type' => 'text',
 				'label' => $t('Number'),
@@ -51,19 +71,32 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 			]) ?>
 			<div class="help"><?= $t('Invoice date.') ?></div>
 
-			<?= $this->form->field('address', [
-				'type' => 'textarea',
-				'label' => $t('Recipient Address'),
-				'disabled' => true,
-				'value' => $item->address()->format('postal', $locale)
-			]) ?>
-
-			<?= $this->form->field('user_vat_reg_no', [
-				'type' => 'text',
-				'label' => $t('Recipient VAT Reg. No.'),
-				'disabled' => true
-			]) ?>
-
+			<div class="combined-users-fields">
+				<?= $this->form->field('user_id', [
+					'type' => 'select',
+					'label' => $t('Recipient user'),
+					'list' => $users
+				]) ?>
+				<div class="help">
+					<?= $this->html->link($t('Create new user.'), [
+						'controller' => 'Users',
+						'action' => 'add',
+						'library' => 'cms_core'
+					]) ?>
+				</div>
+				<?= $this->form->field('virtual_user_id', [
+					'type' => 'select',
+					'label' => $t('Recipient virtual user'),
+					'list' => $virtualUsers
+				]) ?>
+				<div class="help">
+					<?= $this->html->link($t('Create new virtual user.'), [
+						'controller' => 'VirtualUsers',
+						'action' => 'add',
+						'library' => 'cms_core'
+					]) ?>
+				</div>
+			</div>
 		</section>
 
 		<section class="use-nested">

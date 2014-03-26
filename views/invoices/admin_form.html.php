@@ -151,6 +151,7 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 						<td>
 							<?= $this->form->field('positions.new.quantity', [
 								'type' => 'text',
+								'value' => 1,
 								'label' => false
 							]) ?>
 						<td>
@@ -186,19 +187,19 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 					<tr>
 						<td colspan="3">
 						<td colspan="2"><?= $t('Total (net)') ?>
-						<td><?= $this->money->format($item->totalAmount()->getNet(), 'money') ?>
+						<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
 					<tr>
 						<td colspan="3">
 						<td colspan="2"><?= $t('Tax ({:rate}%)', ['rate' => $item->tax_rate]) ?>
-						<td><?= $this->money->format($item->totalAmount()->getTax(), 'money') ?>
+						<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getTax(), 'money') : null ?>
 					<tr>
 						<td colspan="3">
 						<td colspan="2"><?= $t('Total (gross)') ?>
-						<td><?= $this->money->format($item->totalAmount()->getGross(), 'money') ?>
+						<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					<tr>
 						<td colspan="3">
 						<td colspan="2"><?= $t('Balance (gross)') ?>
-						<td><?= $this->money->format($item->totalOutstanding()->getGross(), 'money') ?>
+						<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
 				</tfoot>
 			</table>
 		</section>
@@ -274,12 +275,9 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 							]) ?>
 						<td>
 						<nav class="actions">
-						<?php if (!$item->is_locked): ?>
 							<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
-						<?php endif ?>
 						</nav>
 				<?php endforeach ?>
-				<?php if (!$item->is_locked): ?>
 					<tr class="nested-add nested-item">
 						<td>
 							<?= $this->form->field("payments.new.date", [
@@ -307,7 +305,6 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 						<nav class="actions">
 							<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
 						</nav>
-				<?php endif ?>
 				</tbody>
 				<tfoot>
 					<tr>

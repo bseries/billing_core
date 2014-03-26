@@ -43,9 +43,9 @@ class Invoices extends \cms_core\models\Base {
 		'source' => 'billing_invoices'
 	];
 
-	public $belongsTo = ['User'];
+	// public $belongsTo = ['User'];
 
-	public $hasMany = ['InvoicePosition'];
+	// public $hasMany = ['InvoicePosition', 'Payments'];
 
 	protected static $_actsAs = [
 		'cms_core\extensions\data\behavior\Timestamp',
@@ -72,6 +72,10 @@ class Invoices extends \cms_core\models\Base {
 		static::behavior('cms_core\extensions\data\behavior\ReferenceNumber')->config(
 			Settings::read('invoice.number')
 		);
+	}
+
+	public function title($entity) {
+		return '#' . $entity->number;
 	}
 
 	public function quantity($entity) {
@@ -253,46 +257,60 @@ class Invoices extends \cms_core\models\Base {
 }
 
 Invoices::applyFilter('save', function($self, $params, $chain) {
+	$params['options'] += [
+		'lockWriteThrough' => false
+	];
 	$entity = $params['entity'];
 	$data = $params['data'];
 
-	if ($entity->is_locked || !empty($data['is_locked'])) {
-		return $chain->next($self, $params, $chain);
+	if ($entity->exists()) {
+		$isLocked = Invoices::find('first', [
+			'conditions' => ['id' => $entity->id],
+			'fields' => ['is_locked']
+		])->is_locked;
+	} else {
+		$isLocked = false;
 	}
 
+	if (!$params['options']['lockWriteThrough'] && $isLocked) {
+		$params['options']['whitelist'] = (array) $params['options']['whitelist'] + ['status'];
+	}
 	if (!$result = $chain->next($self, $params, $chain)) {
 		return false;
 	}
-
 	$user = $entity->user();
-	// Save nested positions.
-	$new = $entity->positions ?: [];
-	foreach ($new as $key => $data) {
-		if ($key === 'new') {
-			continue;
-		}
-		if (isset($data['id'])) {
-			$item = InvoicePositions::findById($data['id']);
 
-			if ($data['_delete']) {
-				if (!$item->delete()) {
-					return false;
-				}
+	// Save nested positions.
+	if (!empty($params['options']['lockWriteThrough']) || !$isLocked) {
+		$new = isset($data['positions']) ? $data['positions'] : [];
+		foreach ($new as $key => $data) {
+			if ($key === 'new') {
 				continue;
 			}
-		} else {
-			$item = InvoicePositions::create($data + [
-				'billing_invoice_id' => $entity->id,
-				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
-			]);
-		}
-		if (!$item->save($data)) {
-			return false;
+			if (isset($data['id'])) {
+				$item = InvoicePositions::findById($data['id']);
+
+				if ($data['_delete']) {
+					if (!$item->delete()) {
+						return false;
+					}
+					continue;
+				}
+			} else {
+				$item = InvoicePositions::create($data + [
+					'billing_invoice_id' => $entity->id,
+					$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
+				]);
+			}
+			if (!$item->save($data)) {
+				return false;
+			}
 		}
 	}
 
-	// Save nested payments.
-	$new = $entity->payments ?: [];
+//var_dump($entity->payments);die;
+	// Save nested payments; alwas allow writing these.
+	$new = isset($data['payments']) ? $data['payments'] : [];
 	foreach ($new as $key => $data) {
 		if ($key === 'new') {
 			continue;

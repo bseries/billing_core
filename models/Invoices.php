@@ -58,7 +58,6 @@ class Invoices extends \cms_core\models\Base {
 			'created', // open
 			'paid',  // paid
 			'cancelled', // storno
-			'sent',
 			'awaiting-payment',
 			// 'payment-accepted',
 			'payment-remotely-accepted',

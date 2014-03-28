@@ -243,21 +243,21 @@ $this->title("{$title['title']} - {$title['object'][1]}");
 				'label' => $t('Terms'),
 				'disabled' => $item->is_locked
 			]) ?>
-			<div class="help"><?= $t('Visible to recipient.') ?>
+			<div class="help"><?= $t('Visible to recipient.') ?></div>
 
 			<?= $this->form->field('note', [
 				'type' => 'textarea',
 				'label' => $t('Note'),
 				'disabled' => $item->is_locked
 			]) ?>
-			<div class="help"><?= $t('Visible to recipient.') ?>
+			<div class="help"><?= $t('Visible to recipient.') ?></div>
 
 			<?= $this->form->field('tax_note', [
 				'type' => 'text',
 				'label' => $t('Tax note'),
 				'disabled' => true
 			]) ?>
-			<div class="help"><?= $t('Visible to recipient.') ?>
+			<div class="help"><?= $t('Visible to recipient.') ?></div>
 		</section>
 
 		<section class="use-nested">

@@ -242,7 +242,7 @@ class Invoices extends \cms_core\models\Base {
 				if (!Features::enabled('invoice.sendPaidMail')) {
 					return true;
 				}
-				$user = $enitity->user();
+				$user = $entity->user();
 
 				return Mailer::deliver('invoice_paid', [
 					'to' => $user->email,

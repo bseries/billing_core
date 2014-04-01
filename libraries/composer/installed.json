@@ -106,5 +106,149 @@
             "xls",
             "xlsx"
         ]
+    },
+    {
+        "name": "zendframework/zend-stdlib",
+        "version": "2.3.0",
+        "version_normalized": "2.3.0.0",
+        "target-dir": "Zend/Stdlib",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/Component_ZendStdlib.git",
+            "reference": "d1c481b8a43f2f079b16d3567960ba539e9dacaa"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/d1c481b8a43f2f079b16d3567960ba539e9dacaa",
+            "reference": "d1c481b8a43f2f079b16d3567960ba539e9dacaa",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.23"
+        },
+        "require-dev": {
+            "zendframework/zend-eventmanager": "self.version",
+            "zendframework/zend-serializer": "self.version",
+            "zendframework/zend-servicemanager": "self.version"
+        },
+        "suggest": {
+            "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
+            "zendframework/zend-serializer": "Zend\\Serializer component",
+            "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
+        },
+        "time": "2014-03-14 16:22:22",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.2-dev",
+                "dev-develop": "2.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Zend\\Stdlib\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "keywords": [
+            "stdlib",
+            "zf2"
+        ]
+    },
+    {
+        "name": "zendframework/zend-memory",
+        "version": "2.3.0",
+        "version_normalized": "2.3.0.0",
+        "target-dir": "Zend/Memory",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/Component_ZendMemory.git",
+            "reference": "d647d5b726b89642e08823094b22266ae071f3c3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/Component_ZendMemory/zipball/d647d5b726b89642e08823094b22266ae071f3c3",
+            "reference": "d647d5b726b89642e08823094b22266ae071f3c3",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.23"
+        },
+        "require-dev": {
+            "zendframework/zend-cache": "self.version"
+        },
+        "suggest": {
+            "zendframework/zend-cache": "To support swap the memory objects"
+        },
+        "time": "2014-03-14 16:21:45",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.2-dev",
+                "dev-develop": "2.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Zend\\Memory\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "keywords": [
+            "memory",
+            "zf2"
+        ]
+    },
+    {
+        "name": "zendframework/zendpdf",
+        "version": "2.0.2",
+        "version_normalized": "2.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/ZendPdf.git",
+            "reference": "041f90c339cff63a3c4d03a28ef1ea5188059793"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/ZendPdf/zipball/041f90c339cff63a3c4d03a28ef1ea5188059793",
+            "reference": "041f90c339cff63a3c4d03a28ef1ea5188059793",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3",
+            "zendframework/zend-memory": ">=2.0.0",
+            "zendframework/zend-stdlib": ">=2.0.0"
+        },
+        "time": "2012-11-16 11:16:01",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "ZendPdf\\": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Zend Pdf Component",
+        "homepage": "http://packages.zendframework.com/",
+        "keywords": [
+            "pdf",
+            "zf2"
+        ]
     }
 ]

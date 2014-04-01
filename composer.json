@@ -4,6 +4,7 @@
     },
     "require": {
         "sebastian/money": "*",
-        "phpoffice/phpexcel": "1.8.0"
+        "phpoffice/phpexcel": "1.8.0",
+        "zendframework/zendpdf": "2.*"
     }
 }

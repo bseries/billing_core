@@ -6,5 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib'),
+    'Zend\\Memory\\' => array($vendorDir . '/zendframework/zend-memory'),
+    'ZendPdf\\' => array($vendorDir . '/zendframework/zendpdf/library'),
     'PHPExcel' => array($vendorDir . '/phpoffice/phpexcel/Classes'),
 );

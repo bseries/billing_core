@@ -48,7 +48,7 @@ Settings::register('cms_billing', 'tax.vat.rate', 19);
 Settings::register('cms_billing', 'tax.reducedVat.title', $t('red. VAT'));
 Settings::register('cms_billing', 'tax.reducedVat.rate', 7);
 
-Settings::register('cms_billing', 'invoice.bankAccount', [
+Settings::register('cms_billing', 'billing.bankAccount', [
 	'holder' => 'App',
 	'bank' => 'Lorem Bank Hamburg',
 	'bic' => 'ACBCDEE0123',
@@ -57,7 +57,9 @@ Settings::register('cms_billing', 'invoice.bankAccount', [
 	'account' => '123 1234 12'
 ]);
 
-Settings::register('cms_billing', 'invoice.terms', null);
+Settings::register('cms_billing', 'billing.paymentTerms', null);
+Settings::register('cms_billing', 'billing.vatRegNo', 'DE1231232');
+Settings::register('cms_billing', 'billing.taxNo', '12/12/12');
 
 Features::register('cms_billing', 'invoice.sendPaidMail', false);
 

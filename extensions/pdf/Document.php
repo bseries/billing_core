@@ -146,27 +146,26 @@ abstract class Document {
 		}
 	}
 
-	protected function _skipLines($offsetY = null, $number = 1) {
-		if (!$offsetY) {
-			$offsetY = $this->_currentHeight;
-		}
+	protected function _skipLines($number = 1) {
+		$offsetY = $this->_currentHeight;
 		return $offsetY - ($number * $this->_lineHeight);
 	}
 
 	// $align may be numeric then it is used as offsetX
-	protected function _drawText($text, $offsetY = null, $align = 'left') {
+	protected function _drawText($text, $align = 'left', array $options = []) {
+		$options += [
+			'offsetY' => $this->_currentHeight
+		];
 		if ($align == 'center') {
-			$offsetX = ($this->_pageWidth - $this->_width($text)) / 2;
+			list($offsetX, $offsetY) = $this->_alignText($text, 'center', $options);
 			$this->__page->drawText($text, $offsetX, $offsetY, $this->_encoding);
+
 		} elseif ($align == 'right') {
-			$offsetX = $this->_pageWidth - $this->_width($text) - $this->_borderHorizontal;
+			list($offsetX, $offsetY) = $this->_alignText($text, 'right', $options);
 			$this->__page->drawText($text, $offsetX, $offsetY, $this->_encoding);
-		} else {
-			if (is_numeric($align)) {
-				$offsetX = $align;
-			} else {
-				$offsetX = $this->_borderHorizontal;
-			}
+
+		} elseif ($align == 'left') {
+			list($offsetX, $offsetY) = $this->_alignText($text, 'left', $options);
 			$maxWidth = $this->_pageWidth - (2 * $this->_borderHorizontal);
 
 			if ($this->_width($text) > $maxWidth) {
@@ -175,13 +174,45 @@ abstract class Document {
 				$tokens = explode("\n", $text);
 				foreach ($tokens as $token) {
 					$this->__page->drawText($token, $offsetX, $offsetY, $this->_encoding);
-					$offsetY = $this->_skipLines($offsetY);
+					$offsetY -= $this->_lineHeight; // Skip 1 line.
 				}
 			} else {
 				$this->__page->drawText($text, $offsetX, $offsetY, $this->_encoding);
 			}
+		} else {
+			throw new Exception("Invalid text alignment {$align}.");
 		}
 		$this->_currentHeight = $offsetY;
+	}
+
+	protected function _alignText($text, $align, array $range = []) {
+		$range += [
+			'width' => null,
+			'offsetX' => 0,
+			'offsetY' => null
+		];
+		if ($align == 'center') {
+			$range['width'] = $range['width'] ?: $this->_pageWidth;
+
+			return [
+				($range['width'] - $this->_width($text) + $range['offsetX']) / 2,
+				$range['offsetY']
+			];
+		} elseif ($align == 'right') {
+			$range['width'] = $range['width'] ?: $this->_pageWidth;
+
+			return [
+				$range['width'] - $this->_width($text) - $this->_borderHorizontal +	$range['offsetX'],
+				$range['offsetY']
+			];
+		} else {
+			$range['width'] = $range['width'] ?: $this->_pageWidth - (2 * $this->_borderHorizontal);
+
+			return [
+				$this->_borderHorizontal + $range['offsetX'],
+				$range['offsetY']
+			];
+		}
 	}
 
 	/* Image Handling */

@@ -61,7 +61,7 @@ class InvoicePositions extends \cms_core\models\Base {
 
 	// Assumes format "Foobar (#12345)".
 	public function itemNumber($entity) {
-		if (!preg_match('/#([^\s])[\)\s]/', $entity->description, $matches)) {
+		if (!preg_match('/\(#(.*)\)/', $entity->description, $matches)) {
 			throw new Exception('Failed to extract item number from description.');
 		}
 		return $matches[1];

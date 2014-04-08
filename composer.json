@@ -1,10 +1,23 @@
 {
+    "name": "atelierdisko/cms_media",
+    "description": "Billing functionality for bureau.",
+    "license": "proprietary",
     "config": {
-        "vendor-dir": "libraries"
+        "vendor-dir": "libraries",
+        "preferred-install": "dist"
     },
     "require": {
+        "php": ">=5.5.0",
+        "cms_core": "dev-master",
+        "uor/li3_flash_message": "dev-master",
         "sebastian/money": "*",
         "phpoffice/phpexcel": "1.8.0",
         "zendframework/zendpdf": "2.*"
-    }
+    },
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "git@bitbucket.org:atelierdisko/cms_core.git"
+      }
+    ]
 }

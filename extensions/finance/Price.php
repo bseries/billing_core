@@ -26,7 +26,7 @@ class Price {
 
 	protected $_taxZone;
 
-	public function __construct($value, $currency, $type, $taxZone) {
+	public function __construct($value, $currency, $type, $taxZone = null) {
 		$this->_amount = $value;
 		$this->_currency = $currency;
 		$this->_type = $type;
@@ -60,6 +60,9 @@ class Price {
 	}
 
 	public function add(Price $value) {
+		if ($value->getCurrency() !== $this->getCurrency()) {
+			throw new Exception('Cannot add prices with different currencies.');
+		}
 		return new Price(
 			$this->getAmount() + $value->getAmount($this->getType()),
 			$this->getCurrency(),
@@ -69,6 +72,9 @@ class Price {
 	}
 
 	public function subtract(Price $value) {
+		if ($value->getCurrency() !== $this->getCurrency()) {
+			throw new Exception('Cannot subtract prices with different currencies.');
+		}
 		return new Price(
 			$this->getAmount() - $value->getAmount($this->getType()),
 			$this->getCurrency(),
@@ -90,10 +96,10 @@ class Price {
 	}
 
 	public function getTax() {
-		return new Money(
-			(integer)($this->getGross()->getAmount() - $this->getNet()->getAmount()),
-			new Currency($this->_currency)
-		);
+		$result = $this->getGross()->getMoney();
+		$result = $result->subtract($this->getNet()->getMoney());
+
+		return $result;
 	}
 
 	public function getNet() {

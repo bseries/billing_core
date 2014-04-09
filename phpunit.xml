@@ -2,7 +2,7 @@
 
 <phpunit backupGlobals="false"
 		 backupStaticAttributes="false"
-		 bootstrap="./config/test.php"
+		 bootstrap="./tests/bootstrap.php"
 		 syntaxCheck="false">
 	<testsuites>
 		<testsuite name="Default">

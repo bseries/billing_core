@@ -4,10 +4,13 @@
     "license": "proprietary",
     "homepage": "http://atelierdisko.de",
     "type": "lithium-library",
-    "authors": {
-      "name": "Atelier Disko",
-      "homepage": "http://atelierdisko.de"
-    },
+    "minimum-stability": "dev",
+    "authors": [
+      {
+        "name": "Atelier Disko",
+        "homepage": "http://atelierdisko.de"
+      }    
+    ],
     "require": {
         "php": ">=5.5.0",
         "atelierdisko/cms_core": "dev-master",
@@ -20,7 +23,14 @@
     "repositories": [
       {
         "type": "vcs",
+        "url": "https://github.com/uor/li3_flash_message"
+      },
+      {
+        "type": "vcs",
         "url": "git@bitbucket.org:atelierdisko/cms_core.git"
       }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "4.*"
+    }
 }

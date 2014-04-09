@@ -16,6 +16,14 @@ use SebastianBergmann\Money\Money;
 use SebastianBergmann\Money\Currency;
 use Exception;
 
+/**
+ * A class which is loosely based upon the Money class. In contrast to money
+ * Price can handle net/gross conversions and internally works with floating
+ * point numbers in order to minimize error when adding/subtracting prices.
+ *
+ * Price can optionally work without a given TaxZone but will throw an exception
+ * if a conversion from the internal type is attempted.
+ */
 class Price {
 
 	protected $_amount;
@@ -48,6 +56,51 @@ class Price {
 
 	public function getCurrency() {
 		return $this->_currency;
+	}
+
+	public function getType() {
+		return $this->_type;
+	}
+
+	public function getTaxZone() {
+		return $this->_taxZone;
+	}
+
+	public function getNet() {
+		if ($this->_type === 'net') {
+			return $this;
+		}
+		if (!$this->_taxZone) {
+			throw new Exception('Cannot calculate net price without tax zone.');
+		}
+		return new Price(
+			($this->_amount / (100 + $this->_taxZone->rate) * 100),
+			$this->_currency,
+			'net',
+			$this->_taxZone
+		);
+	}
+
+	public function getGross() {
+		if ($this->_type === 'gross') {
+			return $this;
+		}
+		if (!$this->_taxZone) {
+			throw new Exception('Cannot calculate gross price without tax zone.');
+		}
+		return new Price(
+			($this->_amount / 100 * (100 + $this->_taxZone->rate)),
+			$this->_currency,
+			'gross',
+			$this->_taxZone
+		);
+	}
+
+	public function getTax() {
+		$result = $this->getGross()->getMoney();
+		$result = $result->subtract($this->getNet()->getMoney());
+
+		return $result;
 	}
 
 	public function multiply($factor) {
@@ -85,51 +138,6 @@ class Price {
 
 	public function greaterThan(Price $value) {
 		return $this->getAmount($value->getType()) > $value->getAmount();
-	}
-
-	public function getType() {
-		return $this->_type;
-	}
-
-	public function getTaxZone() {
-		return $this->_taxZone;
-	}
-
-	public function getTax() {
-		$result = $this->getGross()->getMoney();
-		$result = $result->subtract($this->getNet()->getMoney());
-
-		return $result;
-	}
-
-	public function getNet() {
-		if ($this->_type === 'net') {
-			return $this;
-		}
-		if (!$this->_taxZone) {
-			throw new Exception('Cannot calculate net price without tax zone.');
-		}
-		return new Price(
-			($this->_amount / (100 + $this->_taxZone->rate) * 100),
-			$this->_currency,
-			'net',
-			$this->_taxZone
-		);
-	}
-
-	public function getGross() {
-		if ($this->_type === 'gross') {
-			return $this;
-		}
-		if (!$this->_taxZone) {
-			throw new Exception('Cannot calculate gross price without tax zone.');
-		}
-		return new Price(
-			($this->_amount / 100 * (100 + $this->_taxZone->rate)),
-			$this->_currency,
-			'gross',
-			$this->_taxZone
-		);
 	}
 }
 

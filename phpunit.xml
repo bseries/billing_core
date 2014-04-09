@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+		 backupStaticAttributes="false"
+		 bootstrap="./config/test.php"
+		 syntaxCheck="false">
+	<testsuites>
+		<testsuite name="Default">
+			<directory suffix="Test.php">tests/unit</directory>
+			<directory suffix="Test.php">tests/integration</directory>
+			<directory suffix="Test.php">tests/functional</directory> 
+		</testsuite>
+	</testsuites>
+	<php>
+		<const name="TEST_EXECUTION" value="true" />
+	</php>
+</phpunit>

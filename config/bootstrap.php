@@ -15,8 +15,6 @@ use cms_core\extensions\cms\Settings;
 use cms_core\extensions\cms\Panes;
 use lithium\g11n\Message;
 
-require_once dirname(__DIR__) . '/libraries/autoload.php';
-
 extract(Message::aliases());
 
 Panes::register('cms_billing', 'billing', [

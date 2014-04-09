@@ -1,18 +1,21 @@
 {
-    "name": "atelierdisko/cms_media",
+    "name": "atelierdisko/cms_billing",
     "description": "Billing functionality for bureau.",
     "license": "proprietary",
-    "config": {
-        "vendor-dir": "libraries",
-        "preferred-install": "dist"
+    "homepage": "http://atelierdisko.de",
+    "type": "lithium-library",
+    "authors": {
+      "name": "Atelier Disko",
+      "homepage": "http://atelierdisko.de"
     },
     "require": {
         "php": ">=5.5.0",
-        "cms_core": "dev-master",
+        "atelierdisko/cms_core": "dev-master",
         "uor/li3_flash_message": "dev-master",
         "sebastian/money": "*",
         "phpoffice/phpexcel": "1.8.0",
-        "zendframework/zendpdf": "2.*"
+        "zendframework/zendpdf": "2.*",
+        "composer/installers": "~1.0"
     },
     "repositories": [
       {

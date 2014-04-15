@@ -1,6 +1,14 @@
-<article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> use-list">
-	<h1 class="alpha"><?= $this->title($t('Invoices')) ?></h1>
+<?php
 
+$this->set([
+	'page' => [
+		'type' => 'multiple',
+		'object' => $t('invoices')
+	]
+]);
+
+?>
+<article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> use-list">
 	<?php if ($data->count()): ?>
 		<table>
 			<thead>
@@ -11,7 +19,6 @@
 					<td data-sort="status" class="status list-sort"><?= $t('Status') ?>
 					<td data-sort="user" class="user list-sort"><?= $t('Recipient') ?>
 					<td><?= $t('Total (net)') ?>
-					<td><?= $t('Total (gross)') ?>
 					<td><?= $t('Balance (gross)') ?>
 					<td data-sort="created" class="date created list-sort"><?= $t('Created') ?>
 					<td class="actions">
@@ -35,7 +42,7 @@
 					<td class="status"><?= $item->status ?>
 					<td class="user">
 						<?php if ($user): ?>
-							<?= $this->html->link($user->title(), [
+							<?= $this->html->link($user->number, [
 								'controller' => $user->isVirtual() ? 'VirtualUsers' : 'Users',
 								'action' => 'edit', 'id' => $user->id,
 								'library' => 'cms_core'
@@ -44,15 +51,12 @@
 							-
 						<?php endif ?>
 					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
-					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					<td class="date created">
 						<time datetime="<?= $this->date->format($item->created, 'w3c') ?>">
 							<?= $this->date->format($item->created, 'date') ?>
 						</time>
 					<td class="actions">
-						<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-						<?= $this->html->link($t('XLSX'), ['id' => $item->id, 'action' => 'export_excel', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						<?= $this->html->link($t('PDF'), ['id' => $item->id, 'action' => 'export_pdf', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
 				<?php endforeach ?>

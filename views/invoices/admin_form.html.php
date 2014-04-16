@@ -97,7 +97,7 @@ $this->set([
 							<td><?= $t('Type') ?>
 							<td><?= $t('Unit price') ?>
 							<td><?= $t('Line total (net)') ?>
-							<td>
+							<td class="actions">
 					</thead>
 					<tbody>
 					<?php foreach ($item->positions() as $key => $child): ?>
@@ -197,7 +197,7 @@ $this->set([
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="7">
+							<td colspan="7" class="nested-add-action">
 								<?php if (!$item->is_locked): ?>
 									<?= $this->form->button($t('add position'), ['type' => 'button', 'class' => 'button add-nested']) ?>
 								<?php endif ?>
@@ -319,7 +319,7 @@ $this->set([
 								<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
 					</tbody>
 					<tfoot>
-						<tr>
+						<tr class="nested-add-action">
 							<td colspan="4">
 								<?= $this->form->button($t('add payment'), ['type' => 'button', 'class' => 'button add-nested']) ?>
 					</tfoot>

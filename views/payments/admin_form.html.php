@@ -3,12 +3,9 @@
 $this->set([
 	'page' => [
 		'type' => 'single',
-		'title' => $item->number,
+		'title' => false,
 		'empty' => false,
 		'object' => $t('payment')
-	],
-	'meta' => [
-		'status' => $item->status
 	]
 ]);
 

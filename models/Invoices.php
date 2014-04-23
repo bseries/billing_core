@@ -191,6 +191,7 @@ class Invoices extends \cms_core\models\Base {
 		return $result;
 	}
 
+	// @fixme May later return money object here.
 	public function totalOutstanding($entity) {
 		$sum = null;
 
@@ -202,6 +203,10 @@ class Invoices extends \cms_core\models\Base {
 			} else {
 				$sum = $result;
 			}
+		}
+		if ($sum) {
+			// We need to convert to gross here as payments will be gross only.
+			$sum = $sum->getGross();
 		}
 		foreach ($entity->payments() as $payment) {
 			$result = $payment->totalAmount();

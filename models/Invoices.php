@@ -381,7 +381,7 @@ class Invoices extends \cms_core\models\Base {
 			->subject($t('Invoice #{:number}', $entity->data()))
 			->intro($t("As agreed, we're billing you for the provided services associated with your account on http://npiece.com. The costs for these services are the following."))
 			->template(Libraries::get('app', 'resources') . "/pdf/empty_document.pdf")
-			->paypalEmail(Settings::read('paypal.email'))
+			->paypalEmail(Settings::read('service.paypal.default.email'))
 			->bankAccount(Settings::read('billing.bankAccount'))
 			->paymentTerms(Settings::read('billing.paymentTerms'))
 			->vatRegNo(Settings::read('billing.vatRegNo'));

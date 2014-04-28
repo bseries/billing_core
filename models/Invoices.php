@@ -248,7 +248,7 @@ class Invoices extends \cms_core\models\Base {
 				$contact = Settings::read('contact.billing');
 				$result = true;
 
-				if (Features::enabled('invoice.sendSentMail')) {
+				if (Features::enabled('invoice.sendSentMail') && $user->is_notified) {
 					$result = Mailer::deliver('invoice_sent', [
 						'to' => $user->email,
 						'bcc' => $contact['email'],
@@ -274,12 +274,12 @@ class Invoices extends \cms_core\models\Base {
 					'lockWriteThrough' => true
 				]);
 			case 'paid':
-				if (!Features::enabled('invoice.sendPaidMail')) {
-					return true;
-				}
 				$user = $entity->user();
 				$contact = Settings::read('contact.billing');
 
+				if (!Features::enabled('invoice.sendPaidMail') || !$user->is_notified) {
+					return true;
+				}
 				return Mailer::deliver('invoice_paid', [
 					'to' => $user->email,
 					'bcc' => $contact['email'],

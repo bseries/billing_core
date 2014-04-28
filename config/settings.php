@@ -46,6 +46,7 @@ Settings::register('cms_billing', 'billing.paymentTerms', null);
 Settings::register('cms_billing', 'billing.vatRegNo', 'DE1231232');
 Settings::register('cms_billing', 'billing.taxNo', '12/12/12');
 
+Features::register('cms_billing', 'invoice.sendSentMail', false);
 Features::register('cms_billing', 'invoice.sendPaidMail', false);
 
 ?>

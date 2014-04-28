@@ -244,7 +244,31 @@ class Invoices extends \cms_core\models\Base {
 
 		switch ($to) {
 			case 'sent':
-				return $entity->save(['is_locked' => true], [
+				$user = $entity->user();
+				$contact = Settings::read('contact.billing');
+				$result = true;
+
+				if (Features::enabled('invoice.sendSentMail')) {
+					$result = Mailer::deliver('invoice_sent', [
+						'to' => $user->email,
+						'bcc' => $contact['email'],
+						'subject' => $t('Your invoice #{:number}.', [
+							'number' => $invoice->number
+						]),
+						'data' => [
+							'user' => $user,
+							'item' => $entity
+						],
+						'attach' => [
+							[
+								'data' => $entity->exportAsPdf(),
+								'filename' => 'invoice_' . $entity->number . '.pdf',
+								'content-type' => 'application/pdf'
+							]
+						]
+					]);
+				}
+				return $result && $entity->save(['is_locked' => true], [
 					'whitelist' => ['is_locked'],
 					'validate' => false,
 					'lockWriteThrough' => true
@@ -254,9 +278,11 @@ class Invoices extends \cms_core\models\Base {
 					return true;
 				}
 				$user = $entity->user();
+				$contact = Settings::read('contact.billing');
 
 				return Mailer::deliver('invoice_paid', [
 					'to' => $user->email,
+					'bcc' => $contact['email'],
 					'subject' => $t('Invoice #{:number} paid.', [
 						'number' => $entity->number
 					]),

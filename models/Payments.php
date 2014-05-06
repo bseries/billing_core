@@ -14,6 +14,7 @@ namespace cms_billing\models;
 
 use cms_billing\models\Invoices;
 use cms_billing\extensions\finance\Price;
+use cms_core\models\Users;
 use cms_core\models\VirtualUsers;
 
 class Payments extends \cms_core\models\Base {

@@ -19,7 +19,7 @@ $this->set([
 					<td data-sort="status" class="status list-sort"><?= $t('Status') ?>
 					<td data-sort="user" class="user list-sort"><?= $t('Recipient') ?>
 					<td><?= $t('Total (net)') ?>
-					<td><?= $t('Balance (gross)') ?>
+					<td><?= $t('Balance') ?>
 					<td data-sort="created" class="date created list-sort"><?= $t('Created') ?>
 					<td class="actions">
 						<?= $this->form->field('search', [
@@ -51,7 +51,7 @@ $this->set([
 							-
 						<?php endif ?>
 					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
-					<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
+					<td><?= ($money = $item->totalOutstanding()) && ($money->getGross()->getAmount()) ? '-' . $this->money->format($money->getGross(), 'money') : '–' ?>
 					<td class="date created">
 						<time datetime="<?= $this->date->format($item->created, 'w3c') ?>">
 							<?= $this->date->format($item->created, 'date') ?>

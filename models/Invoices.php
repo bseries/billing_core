@@ -185,10 +185,7 @@ class Invoices extends \cms_core\models\Base {
 	}
 
 	public function totalTax($entity) {
-		$result = $entity->totalAmount()->getGross();
-		$result = $result->subtract($entity->totalAmount()->getNet());
-
-		return $result;
+		return $entity->totalAmount()->getTax();
 	}
 
 	// @fixme May later return money object here.
@@ -410,8 +407,8 @@ class Invoices extends \cms_core\models\Base {
 			->senderContact($contact)
 			->type($t('Invoice'))
 			->subject($t('Invoice #{:number}', $entity->data()))
-			->intro($t("As agreed, we're billing you for the provided services associated with your account on http://npiece.com. The costs for these services are the following."))
-			->template(Libraries::get('app', 'resources') . "/pdf/empty_document.pdf")
+			// ->intro($t("As agreed, we're billing you for the provided services associated with your account on http://npiece.com. The costs for these services are the following."))
+			->template(Libraries::get('app', 'resources') . "/pdf/empty_invoice_document.pdf")
 			->paypalEmail(Settings::read('service.paypal.default.email'))
 			->bankAccount(Settings::read('billing.bankAccount'))
 			->paymentTerms(Settings::read('billing.paymentTerms'))

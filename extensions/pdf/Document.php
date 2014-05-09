@@ -24,9 +24,11 @@ abstract class Document {
 
 	protected $_template;
 
+	protected $_fontSize = 9;
+
 	protected $_lineHeight = 11;
 
-	protected $_borderHorizontal = 55;
+	protected $_borderHorizontal = [55, 55];
 
 	protected $_pageWidth = 594;
 
@@ -55,7 +57,7 @@ abstract class Document {
 		$this->__pdf = PdfDocument::load($this->_template);
 
 		$this->__page = $this->__pdf->pages[0];
-		$this->_setFont(9);
+		$this->_setFont($this->_fontSize);
 		$this->_compileHeaderFooter();
 
 		// Cloning after inserting header and footer, so
@@ -116,7 +118,7 @@ abstract class Document {
 	protected function _nextPage() {
 		$this->__page = clone $this->__pageTemplate;
 		$this->__pdf->pages[] = $this->__page;
-		$this->_setFont(9);
+		$this->_setFont($this->_fontSize);
 		$this->_currentHeight = $this->_heightHeader();
 	}
 
@@ -166,7 +168,7 @@ abstract class Document {
 
 		} elseif ($align == 'left') {
 			list($offsetX, $offsetY) = $this->_alignText($text, 'left', $options);
-			$maxWidth = $this->_pageWidth - (2 * $this->_borderHorizontal);
+			$maxWidth = $this->_pageWidth - (array_sum($this->_borderHorizontal));
 
 			if ($this->_width($text) > $maxWidth) {
 				$text = wordwrap($text, 100, "\n", false);
@@ -202,18 +204,27 @@ abstract class Document {
 			$range['width'] = $range['width'] ?: $this->_pageWidth;
 
 			return [
-				$range['width'] - $this->_width($text) - $this->_borderHorizontal +	$range['offsetX'],
+				$range['width'] - $this->_width($text) - $this->_borderHorizontal[1] + $range['offsetX'],
 				$range['offsetY']
 			];
 		} else {
-			$range['width'] = $range['width'] ?: $this->_pageWidth - (2 * $this->_borderHorizontal);
+			$range['width'] = $range['width'] ?: $this->_pageWidth - (array_sum($this->_borderHorizontal));
 
 			return [
-				$this->_borderHorizontal + $range['offsetX'],
+				$this->_borderHorizontal[0] + $range['offsetX'],
 				$range['offsetY']
 			];
 		}
 	}
+
+	/* Drawing */
+	protected function _drawHorizontalLine() {
+		$this->__page->drawLine(
+			$this->_borderHorizontal[0], ceil($this->_currentHeight + ($this->_lineHeight / 2)),
+			$this->_pageWidth - $this->_borderHorizontal[1] + 5, ceil($this->_currentHeight + ($this->_lineHeight / 2))
+		);
+	}
+
 
 	/* Image Handling */
 

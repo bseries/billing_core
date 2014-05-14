@@ -48,11 +48,17 @@ class Money extends \lithium\template\Helper {
 	// @todo Make this work with formats without currency symbols
 	// as well as ,/. separators. Use strrpos.
 	protected function _applyMarkup($string) {
-		$before = mb_substr($string, 0, -4);
+		$before = mb_substr($string, 0, -5);
+		$comma = mb_substr($string, -5, 1);
 		$places = mb_substr($string, -4, 2);
 		$after = mb_substr($string, -2, 2);
 
-		return $before . '<span class="decimal-places">' . $places . '</span>' . '<span class="currency-symbol">' . $after . '</span>';
+		$output  =  $before;
+		$output .= '<span class="comma">' . $comma . '</span>';
+		$output .= '<span class="decimal-places">' . $places . '</span>';
+		$output .= '<span class="currency-symbol">' . $after . '</span>';
+
+		return $output;
 	}
 
 	protected function _superscriptPlaces($string) {

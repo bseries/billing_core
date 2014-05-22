@@ -145,7 +145,7 @@ $this->set([
 								<?= $this->form->field("positions.{$key}.amount", [
 									'type' => 'text',
 									'label' => false,
-									'value' => $this->money->format($child->totalAmount()->getAmount(), 'decimal'),
+									'value' => $this->money->format($child->amount(), 'decimal'),
 									'disabled' => $item->is_locked
 								]) ?>
 							<td>

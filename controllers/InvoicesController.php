@@ -30,7 +30,7 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 		$data = Invoices::find('all', [
 			'order' => ['number' => 'DESC']
 		]);
-		return compact('data');
+		return compact('data') + $this->_selects();
 	}
 
 	public function admin_export_excel() {
@@ -67,7 +67,7 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 		fclose($stream);
 	}
 
-	protected function _selects($item) {
+	protected function _selects($item = null) {
 		extract(Message::aliases());
 
 		$statuses = Invoices::enum('status', [

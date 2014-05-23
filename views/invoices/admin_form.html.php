@@ -70,10 +70,9 @@ $this->set([
 				<?= $this->form->field('number', [
 					'type' => 'text',
 					'label' => $t('Number'),
-					'disabled' => true,
 					'class' => 'use-for-title'
 				]) ?>
-				<div class="help"><?= $t('The invoice number is automatically generated.') ?></div>
+				<div class="help"><?= $t('Leave empty to autogenerate number.') ?></div>
 
 				<?= $this->form->field('date', [
 					'type' => 'date',

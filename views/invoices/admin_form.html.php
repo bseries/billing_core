@@ -225,14 +225,20 @@ $this->set([
 					'disabled' => $item->is_locked
 				]) ?>
 				<div class="help"><?= $t('Visible to recipient.') ?></div>
-			</section>
-			<section class="grid-column-right">
+
 				<?= $this->form->field('note', [
 					'type' => 'textarea',
 					'label' => $t('Note'),
 					'disabled' => $item->is_locked
 				]) ?>
 				<div class="help"><?= $t('Visible to recipient.') ?></div>
+			</section>
+			<section class="grid-column-right">
+				<?= $this->form->field('tax_rate', [
+					'type' => 'text',
+					'label' => $t('Tax rate (%)'),
+					'disabled' => $item->is_locked
+				]) ?>
 
 				<?= $this->form->field('tax_note', [
 					'type' => 'text',

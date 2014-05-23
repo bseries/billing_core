@@ -189,6 +189,7 @@ class Invoices extends \cms_core\models\Base {
 	}
 
 	// @fixme May later return money object here.
+	// Should not return negative values? Rename to balance?
 	public function totalOutstanding($entity) {
 		$sum = null;
 

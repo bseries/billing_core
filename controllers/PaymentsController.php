@@ -34,8 +34,8 @@ class PaymentsController extends \cms_core\controllers\BaseController {
 	}
 
 	protected function _selects($item) {
-		$virtualUsers = [null => '-'] + VirtualUsers::find('list');
-		$users = [null => '-'] + Users::find('list');
+		$virtualUsers = [null => '-'] + VirtualUsers::find('list', ['order' => 'name']);
+		$users = [null => '-'] + Users::find('list', ['order' => 'name']);
 
 		$invoices = [null => '-'] + Invoices::find('list');
 		$currencies = Currencies::find('list');

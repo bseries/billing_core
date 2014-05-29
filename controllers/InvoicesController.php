@@ -82,8 +82,8 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 			'payment-error' => $t('payment error'),
 		]);
 		$currencies = Currencies::find('list');
-		$virtualUsers = [null => '-'] + VirtualUsers::find('list');
-		$users = [null => '-'] + Users::find('list');
+		$virtualUsers = [null => '-'] + VirtualUsers::find('list', ['order' => 'name']);
+		$users = [null => '-'] + Users::find('list', ['order' => 'name']);
 
 		return compact('currencies', 'statuses', 'users', 'virtualUsers');
 	}

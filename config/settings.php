@@ -16,6 +16,8 @@ use lithium\g11n\Message;
 
 extract(Message::aliases());
 
+Settings::register('contact.billing', Settings::read('contact.default'));
+
 // Number Format
 Settings::register('cms_billing', 'invoice.number', [
 	'sort' => '/([0-9]{4}[0-9]{4})/',

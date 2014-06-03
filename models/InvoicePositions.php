@@ -34,7 +34,11 @@ class InvoicePositions extends \cms_core\models\Base {
 	];
 
 	public function invoice($entity) {
-		return Invoices::findById($entity->billing_invoice_id);
+		return Invoices::find('first', [
+			'conditions' => [
+				'id' => $entity->billing_invoice_id
+			]
+		]);
 	}
 
 	public static function pending($user) {

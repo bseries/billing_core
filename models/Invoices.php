@@ -94,9 +94,17 @@ class Invoices extends \cms_core\models\Base {
 
 	public function user($entity) {
 		if ($entity->user_id) {
-			return Users::findById($entity->user_id);
+			return Users::find('first', [
+				'conditions' => [
+					'id' => $entity->user_id
+				]
+			]);
 		}
-		return VirtualUsers::findById($entity->virtual_user_id);
+		return VirtualUsers::find('first', [
+			'conditions' => [
+				'id' => $entity->virtual_user_id
+			]
+		]);
 	}
 
 	public function taxZone($entity) {
@@ -455,7 +463,7 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 				continue;
 			}
 			if (isset($data['id'])) {
-				$item = InvoicePositions::findById($data['id']);
+				$item = InvoicePositions::find('first', ['conditions' => ['id' => $data['id']]]);
 
 				if ($data['_delete']) {
 					if (!$item->delete()) {
@@ -482,7 +490,7 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 			continue;
 		}
 		if (isset($data['id'])) {
-			$item = Payments::findById($data['id']);
+			$item = Payments::find('first', ['conditions' => ['id' => $data['id']]]);
 
 			if ($data['_delete']) {
 				if (!$item->delete()) {

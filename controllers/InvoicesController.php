@@ -36,7 +36,11 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 	public function admin_export_excel() {
 		extract(Message::aliases());
 
-		$invoice = Invoices::findById($this->request->id);
+		$invoice = Invoices::find('first', [
+			'conditions' => [
+				'id' => $this->request->id
+			]
+		]);
 		$stream = $invoice->exportAsExcel();
 
 			$this->_renderDownload(
@@ -53,7 +57,11 @@ class InvoicesController extends \cms_core\controllers\BaseController {
 	public function admin_export_pdf() {
 		extract(Message::aliases());
 
-		$invoice = Invoices::findById($this->request->id);
+		$invoice = Invoices::find('first', [
+			'conditions' => [
+				'id' => $this->request->id
+			]
+		]);
 		$stream = $invoice->exportAsPdf();
 
 		$this->_renderDownload(

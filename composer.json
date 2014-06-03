@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "atelierdisko/cms_core": "1.*",
+        "atelierdisko/cms_core": "1.0.*",
         "uor/li3_flash_message": "dev-master",
         "sebastian/money": "1.*",
         "phpoffice/phpexcel": "1.8.0",

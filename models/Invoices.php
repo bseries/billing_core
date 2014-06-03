@@ -187,7 +187,7 @@ class Invoices extends \cms_core\models\Base {
 		$positions = $this->positions($entity);
 
 		foreach ($positions as $position) {
-			$result = $result->add($position->totalAmount());
+			$result = $result->add($position->totalAmount($entity->taxZone()));
 		}
 		return $result;
 	}

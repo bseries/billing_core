@@ -50,17 +50,17 @@ class InvoicePositions extends \cms_core\models\Base {
 		]);
 	}
 
-	public function amount($entity) {
+	public function amount($entity, $taxZone = null) {
 		return new Price(
 			$entity->amount,
 			$entity->amount_currency,
 			$entity->amount_type,
-			$entity->invoice()->taxZone()
+			$taxZone ?: $entity->invoice()->taxZone()
 		);
 	}
 
-	public function totalAmount($entity) {
-		return $entity->amount()->multiply($entity->quantity);
+	public function totalAmount($entity, $taxZone = null) {
+		return $entity->amount($taxZone)->multiply($entity->quantity);
 	}
 
 	// Assumes format "Foobar (#12345)".

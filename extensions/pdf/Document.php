@@ -158,6 +158,15 @@ abstract class Document {
 		$options += [
 			'offsetY' => $this->_currentHeight
 		];
+		if (strpos($text, "\n") !== false) {
+			$text = explode("\n", $text);
+
+			foreach ($text as $t) {
+				$this->_drawText($t, $align, $options);
+				$options['offsetY'] -= $this->_lineHeight; // Skip 1 line.
+			}
+			return true;
+		}
 		if ($align == 'center') {
 			list($offsetX, $offsetY) = $this->_alignText($text, 'center', $options);
 			$this->__page->drawText($text, $offsetX, $offsetY, $this->_encoding);

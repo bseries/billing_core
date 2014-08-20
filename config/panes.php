@@ -15,17 +15,19 @@ use lithium\g11n\Message;
 
 extract(Message::aliases());
 
-Panes::registerGroup('cms_billing', 'billing', [
+Panes::register('billing', [
 	'title' => $t('Billing'),
 	'order' => 80
 ]);
 
 $base = ['controller' => 'billing', 'library' => 'cms_billing', 'admin' => true];
-Panes::registerActions('cms_billing', 'billing', [
-	$t('List invoices') => ['controller' => 'Invoices', 'action' => 'index'] + $base,
-	$t('New invoice') => ['controller' => 'Invoices', 'action' => 'add'] + $base,
-	$t('List payments') => ['controller' => 'Payments', 'action' => 'index'] + $base,
-	$t('New payment') => ['controller' => 'Payments', 'action' => 'add'] + $base,
+Panes::register('billing.invoices', [
+	'title' => $t('Invoices'),
+	'url' => ['controller' => 'Invoices', 'action' => 'index'] + $base
+]);
+Panes::register('billing.payments', [
+	'title' => $t('Payments'),
+	'url' => ['controller' => 'Payments', 'action' => 'index'] + $base
 ]);
 
 ?>

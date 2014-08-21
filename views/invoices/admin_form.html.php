@@ -325,7 +325,7 @@ $this->set([
 					</tbody>
 					<tfoot>
 						<tr class="nested-add-action">
-							<td colspan="4">
+							<td colspan="5">
 								<?= $this->form->button($t('add payment'), ['type' => 'button', 'class' => 'button add-nested']) ?>
 					</tfoot>
 				</table>

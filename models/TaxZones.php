@@ -1,6 +1,6 @@
 <?php
 /**
- * Bureau Billing
+ * Billing Core
  *
  * Copyright (c) 2014 Atelier Disko - All rights reserved.
  *
@@ -10,7 +10,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace cms_billing\models;
+namespace billing_core\models;
 
 use lithium\g11n\Message;
 use lithium\analysis\Logger;

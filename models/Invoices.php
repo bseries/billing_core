@@ -1,6 +1,6 @@
 <?php
 /**
- * Bureau Billing
+ * Billing Core
  *
  * Copyright (c) 2014 Atelier Disko - All rights reserved.
  *
@@ -10,19 +10,19 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace cms_billing\models;
+namespace billing_core\models;
 
 use cms_core\models\Addresses;
 use cms_core\models\Users;
 use cms_core\models\VirtualUsers;
 use cms_core\extensions\cms\Settings;
 use cms_core\extensions\cms\Features;
-use cms_billing\models\Payments;
-use cms_billing\models\TaxZones;
-use cms_billing\models\InvoicePositions;
+use billing_core\models\Payments;
+use billing_core\models\TaxZones;
+use billing_core\models\InvoicePositions;
 use DateTime;
 use Exception;
-use cms_billing\extensions\finance\Price;
+use billing_core\extensions\finance\Price;
 use li3_mailer\action\Mailer;
 use lithium\g11n\Message;
 use app\extensions\pdf\InvoiceDocument;

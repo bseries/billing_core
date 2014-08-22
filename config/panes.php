@@ -1,6 +1,6 @@
 <?php
 /**
- * Bureau Billing
+ * Billing Core
  *
  * Copyright (c) 2014 Atelier Disko - All rights reserved.
  *
@@ -20,7 +20,7 @@ Panes::register('billing', [
 	'order' => 80
 ]);
 
-$base = ['controller' => 'billing', 'library' => 'cms_billing', 'admin' => true];
+$base = ['controller' => 'billing', 'library' => 'billing_core', 'admin' => true];
 Panes::register('billing.invoices', [
 	'title' => $t('Invoices'),
 	'url' => ['controller' => 'Invoices', 'action' => 'index'] + $base

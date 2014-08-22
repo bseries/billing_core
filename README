@@ -1,5 +1,5 @@
-BUREAU Billing
--- Billing module for bureau.
+Billing Core
+-- Billing core functionality for bureau.
 
 Synopsis
 --------

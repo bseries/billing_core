@@ -337,14 +337,14 @@ $this->set([
 				<?= $this->html->link($t('PDF'), [
 					'controller' => 'Invoices',
 					'id' => $item->id, 'action' => 'export_pdf',
-					'library' => 'cms_billing'
+					'library' => 'billing_core'
 				], ['class' => 'button large']) ?>
 				<?= $this->html->link($t('XLSX'), [
 					'controller' => 'Invoices',
 					'id' => $item->id, 'action' => 'export_excel',
-					'library' => 'cms_billing'
+					'library' => 'billing_core'
 				], ['class' => 'button large']) ?>
-				<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'cms_billing'], ['class' => 'button large']) ?>
+				<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'billing_core'], ['class' => 'button large']) ?>
 			<?php endif ?>
 
 			<?= $this->form->button($t('save'), ['type' => 'submit', 'class' => 'save large']) ?>

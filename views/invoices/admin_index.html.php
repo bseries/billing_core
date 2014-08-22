@@ -11,7 +11,7 @@ $this->set([
 <article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> use-list">
 
 	<div class="top-actions">
-		<?= $this->html->link($t('new invoice'), ['action' => 'add', 'library' => 'cms_billing'], ['class' => 'button add']) ?>
+		<?= $this->html->link($t('new invoice'), ['action' => 'add', 'library' => 'billing_core'], ['class' => 'button add']) ?>
 	</div>
 
 	<?php if ($data->count()): ?>
@@ -62,8 +62,8 @@ $this->set([
 							<?= $this->date->format($item->created, 'date') ?>
 						</time>
 					<td class="actions">
-						<?= $this->html->link($t('PDF'), ['id' => $item->id, 'action' => 'export_pdf', 'library' => 'cms_billing'], ['class' => 'button']) ?>
-						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+						<?= $this->html->link($t('PDF'), ['id' => $item->id, 'action' => 'export_pdf', 'library' => 'billing_core'], ['class' => 'button']) ?>
+						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'billing_core'], ['class' => 'button']) ?>
 				<?php endforeach ?>
 			</tbody>
 		</table>

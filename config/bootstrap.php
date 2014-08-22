@@ -1,6 +1,6 @@
 <?php
 /**
- * Bureau Billing
+ * Billing Core
  *
  * Copyright (c) 2014 Atelier Disko - All rights reserved.
  *

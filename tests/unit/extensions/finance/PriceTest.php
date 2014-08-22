@@ -1,6 +1,6 @@
 <?php
 /**
- * Bureau Billing
+ * Billing Core
  *
  * Copyright (c) 2014 Atelier Disko - All rights reserved.
  *
@@ -10,10 +10,10 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-namespace cms_billing\tests\unit\extensions\finance;
+namespace billing_core\tests\unit\extensions\finance;
 
-use cms_billing\extensions\finance\Price;
-use cms_billing\extensions\finance\TaxZone;
+use billing_core\extensions\finance\Price;
+use billing_core\extensions\finance\TaxZone;
 
 class PriceTest extends \PHPUnit_Framework_TestCase {
 

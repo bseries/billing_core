@@ -54,14 +54,14 @@ $this->set([
 							<?= $this->html->link($invoice->title(), [
 								'controller' => 'Invoices',
 								'action' => 'edit', 'id' => $invoice->id,
-								'library' => 'cms_billing'
+								'library' => 'billing_core'
 							]) ?>
 						<?php else: ?>
 							-
 						<?php endif ?>
 					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					<td class="actions">
-						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'cms_billing'], ['class' => 'button']) ?>
+						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'billing_core'], ['class' => 'button']) ?>
 				<?php endforeach ?>
 			</tbody>
 		</table>

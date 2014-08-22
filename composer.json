@@ -1,6 +1,6 @@
 {
-    "name": "atelierdisko/cms_billing",
-    "description": "Billing functionality for bureau.",
+    "name": "atelierdisko/billing_core",
+    "description": "Billing Core functionality.",
     "license": "proprietary",
     "homepage": "http://atelierdisko.de",
     "type": "lithium-library",

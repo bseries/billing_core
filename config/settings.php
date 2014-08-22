@@ -16,10 +16,10 @@ use lithium\g11n\Message;
 
 extract(Message::aliases());
 
-Settings::register('cms_billing', 'contact.billing', Settings::read('contact.default'));
+Settings::register('contact.billing', Settings::read('contact.default'));
 
 // Number Format
-Settings::register('cms_billing', 'invoice.number', [
+Settings::register('invoice.number', [
 	'sort' => '/([0-9]{4}[0-9]{4})/',
 	'extract' => '/[0-9]{4}([0-9]{4})/',
 	'generate' => '%Y%%04.d'
@@ -27,15 +27,15 @@ Settings::register('cms_billing', 'invoice.number', [
 
 // Overdue, set to false if never overdue.
 // Parsed with strtotime.
-Settings::register('cms_billing', 'invoice.overdueAfter', '+2 weeks');
+Settings::register('invoice.overdueAfter', '+2 weeks');
 
-Settings::register('cms_billing', 'tax.vat.title', $t('VAT'));
-Settings::register('cms_billing', 'tax.vat.rate', 19);
+Settings::register('tax.vat.title', $t('VAT'));
+Settings::register('tax.vat.rate', 19);
 
-Settings::register('cms_billing', 'tax.reducedVat.title', $t('red. VAT'));
-Settings::register('cms_billing', 'tax.reducedVat.rate', 7);
+Settings::register('tax.reducedVat.title', $t('red. VAT'));
+Settings::register('tax.reducedVat.rate', 7);
 
-Settings::register('cms_billing', 'billing.bankAccount', [
+Settings::register('billing.bankAccount', [
 	'holder' => 'App',
 	'bank' => 'Lorem Bank Hamburg',
 	'bic' => 'ACBCDEE0123',
@@ -44,11 +44,11 @@ Settings::register('cms_billing', 'billing.bankAccount', [
 	'account' => '123 1234 12'
 ]);
 
-Settings::register('cms_billing', 'billing.paymentTerms', null);
-Settings::register('cms_billing', 'billing.vatRegNo', 'DE1231232');
-Settings::register('cms_billing', 'billing.taxNo', '12/12/12');
+Settings::register('billing.paymentTerms', null);
+Settings::register('billing.vatRegNo', 'DE1231232');
+Settings::register('billing.taxNo', '12/12/12');
 
-Features::register('cms_billing', 'invoice.sendSentMail', false);
-Features::register('cms_billing', 'invoice.sendPaidMail', false);
+Features::register('invoice.sendSentMail', false);
+Features::register('invoice.sendPaidMail', false);
 
 ?>

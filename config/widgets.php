@@ -55,7 +55,6 @@ Widgets::register('invoices_value', function() use ($t) {
 		}
 	}
 
-
 	return [
 		'title' => $t('Invoices (net)'),
 		'url' => [

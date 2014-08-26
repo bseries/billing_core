@@ -41,12 +41,6 @@ Widgets::register('invoices_value', function() use ($t) {
 			$paid = $item->totalAmount();
 		}
 	}
-	$open = null;
-	$results = Invoices::find('all', [
-		'conditions' => [
-			'status' => ['!=' => ['paid', 'cancelled']]
-		]
-	]);
 	foreach ($results as $item) {
 		if ($open) {
 			$open = $open->add($item->totalAmount());
@@ -56,13 +50,13 @@ Widgets::register('invoices_value', function() use ($t) {
 	}
 
 	return [
-		'title' => $t('Invoices (net)'),
+		'title' => $t('Invoices'),
 		'url' => [
 			'controller' => 'Invoices', 'action' => 'index', 'library' => 'billing_core'
 		],
+		'class' => 'positive',
 		'data' => [
-			$t('paid') => $formatMoney($paid->getNet()),
-			$t('open') => $formatMoney($open->getNet()),
+			$t('paid') => $formatMoney($paid->getNet())
 		]
 	];
 }, [

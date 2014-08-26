@@ -21,9 +21,6 @@ extract(Message::aliases());
 
 Widgets::register('invoices_value', function() use ($t) {
 	$formatMoney = function($value) {
-		if (!$value) {
-			return 0;
-		}
 		$formatter = new NumberFormatter(Environment::get('locale'), NumberFormatter::CURRENCY);
 		return $formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency());
 	};
@@ -49,7 +46,7 @@ Widgets::register('invoices_value', function() use ($t) {
 		],
 		'class' => 'positive',
 		'data' => [
-			$t('paid') => $formatMoney($paid->getNet())
+			$t('paid') => $paid ? $formatMoney($paid->getNet()) : 0
 		]
 	];
 }, [

@@ -41,13 +41,6 @@ Widgets::register('invoices_value', function() use ($t) {
 			$paid = $item->totalAmount();
 		}
 	}
-	foreach ($results as $item) {
-		if ($open) {
-			$open = $open->add($item->totalAmount());
-		} else {
-			$open = $item->totalAmount();
-		}
-	}
 
 	return [
 		'title' => $t('Invoices'),

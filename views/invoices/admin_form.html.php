@@ -28,31 +28,27 @@ $this->set([
 
 		<div class="grid-row">
 			<div class="grid-column-left">
-				<div class="combined-users-fields">
+				<div class="compound-users">
+					<?php
+						$user = $item->exists() ? $item->user() : false;
+					?>
 					<?= $this->form->field('user_id', [
 						'type' => 'select',
 						'label' => $t('Recipient user'),
-						'list' => $users
+						'list' => $users,
+						'class' => !$user || !$user->isVirtual() ? null : 'hide'
 					]) ?>
-					<div class="help">
-						<?= $this->html->link($t('Create new user.'), [
-							'controller' => 'Users',
-							'action' => 'add',
-							'library' => 'cms_core'
-						]) ?>
-					</div>
 					<?= $this->form->field('virtual_user_id', [
 						'type' => 'select',
-						'label' => $t('Recipient virtual user'),
-						'list' => $virtualUsers
+						'label' => false,
+						'list' => $virtualUsers,
+						'class' => $user && $user->isVirtual() ? null : 'hide'
 					]) ?>
-					<div class="help">
-						<?= $this->html->link($t('Create new virtual user.'), [
-							'controller' => 'VirtualUsers',
-							'action' => 'add',
-							'library' => 'cms_core'
-						]) ?>
-					</div>
+					<?= $this->form->field('user.is_real', [
+						'type' => 'checkbox',
+						'label' => $t('real user'),
+						'checked' => $user ? !$user->isVirtual() : true
+					]) ?>
 				</div>
 			</div>
 			<div class="grid-column-right">

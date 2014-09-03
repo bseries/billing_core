@@ -437,13 +437,19 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 	];
 	$entity = $params['entity'];
 	$data = $params['data'];
+	$user = $entity->user();
 
 	if ($entity->exists()) {
 		$isLocked = Invoices::find('first', [
 			'conditions' => ['id' => $entity->id],
 			'fields' => ['is_locked']
 		])->is_locked;
-	} else {
+	} else { // We're creating a brandnew invoice.
+
+		// Set when we last billed the user, once.
+		$user->save(['invoiced' => date('Y-m-d')], ['whitelist' => ['invoiced', 'modified']]);
+
+		// Initial invoices are not locked.
 		$isLocked = false;
 	}
 
@@ -453,7 +459,6 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 	if (!$result = $chain->next($self, $params, $chain)) {
 		return false;
 	}
-	$user = $entity->user();
 
 	// Save nested positions.
 	if (!empty($params['options']['lockWriteThrough']) || !$isLocked) {

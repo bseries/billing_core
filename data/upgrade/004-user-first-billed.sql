@@ -1,2 +1,3 @@
-ALTER TABLE `users` ADD `first_billed` DATETIME  NULL  AFTER `is_notified`;
+ALTER TABLE `users` ADD `invoiced` DATETIME  NULL  AFTER `is_notified`;
+ALTER TABLE `virtual_users` ADD `invoiced` DATETIME  NULL  AFTER `is_notified`;
 

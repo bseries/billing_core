@@ -11,7 +11,7 @@
  */
 
 use lithium\g11n\Message;
-use cms_core\extensions\cms\Widgets;
+use base_core\extensions\cms\Widgets;
 use billing_core\models\Invoices;
 use lithium\storage\Cache;
 use lithium\core\Environment;

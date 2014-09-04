@@ -17,15 +17,15 @@ use billing_core\models\Invoices;
 use Exception;
 
 // In the moment of generating an invoice position the price is finalized.
-class InvoicePositions extends \cms_core\models\Base {
+class InvoicePositions extends \base_core\models\Base {
 
 	protected $_meta = [
 		'source' => 'billing_invoice_positions'
 	];
 
 	protected static $_actsAs = [
-		'cms_core\extensions\data\behavior\Timestamp',
-		'cms_core\extensions\data\behavior\Localizable' => [
+		'base_core\extensions\data\behavior\Timestamp',
+		'base_core\extensions\data\behavior\Localizable' => [
 			'fields' => [
 				'amount' => 'money',
 				'quantity' => 'decimal'

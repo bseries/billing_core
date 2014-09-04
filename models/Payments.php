@@ -15,17 +15,17 @@ namespace billing_core\models;
 use billing_core\models\Invoices;
 use Finance\Price;
 
-class Payments extends \cms_core\models\Base {
+class Payments extends \base_core\models\Base {
 
-	use \cms_core\models\UserTrait;
+	use \base_core\models\UserTrait;
 
 	protected $_meta = [
 		'source' => 'billing_payments'
 	];
 
 	protected static $_actsAs = [
-		'cms_core\extensions\data\behavior\Timestamp',
-		'cms_core\extensions\data\behavior\Localizable' => [
+		'base_core\extensions\data\behavior\Timestamp',
+		'base_core\extensions\data\behavior\Localizable' => [
 			'fields' => [
 				'amount' => 'money'
 			]

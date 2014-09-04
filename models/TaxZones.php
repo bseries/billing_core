@@ -14,11 +14,11 @@ namespace billing_core\models;
 
 use lithium\g11n\Message;
 use lithium\analysis\Logger;
-use cms_core\extensions\cms\Settings;
+use base_core\extensions\cms\Settings;
 use SebastianBergmann\Money\Money;
 
 // In the moment of generating an invoice position the price is finalized.
-class TaxZones extends \cms_core\models\Base {
+class TaxZones extends \base_core\models\Base {
 
 	protected $_meta = [
 		'connection' => false

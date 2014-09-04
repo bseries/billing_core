@@ -1,5 +1,5 @@
 Billing Core
--- Billing core functionality for bureau.
+-- Core functionality for Billing.
 
 Synopsis
 --------
@@ -11,7 +11,7 @@ David M. Persson for Atelier Disko (david@atelierdisko.de).
 
 Copyright & License
 -------------------
-Bureau Billing is Copyright (c) 2014 Atelier Disko - All rights reserved.
+This Library is Copyright (c) 2014 Atelier Disko - All rights reserved.
 
 -- This software is proprietary and confidential. Redistributions   --
 -- not permitted. Unless required by applicable law or agreed to    --

@@ -44,7 +44,7 @@ $this->set([
 							<?= $this->html->link($user->title(), [
 								'controller' => $user->isVirtual() ? 'VirtualUsers' : 'Users',
 								'action' => 'edit', 'id' => $user->id,
-								'library' => 'cms_core'
+								'library' => 'base_core'
 							]) ?>
 						<?php else: ?>
 							-

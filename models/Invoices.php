@@ -12,9 +12,9 @@
 
 namespace billing_core\models;
 
-use cms_core\models\Addresses;
-use cms_core\extensions\cms\Settings;
-use cms_core\extensions\cms\Features;
+use base_core\models\Addresses;
+use base_core\extensions\cms\Settings;
+use base_core\extensions\cms\Features;
 use billing_core\models\Payments;
 use billing_core\models\TaxZones;
 use billing_core\models\InvoicePositions;
@@ -41,9 +41,9 @@ use lithium\core\Libraries;
 // @link http://www.hk24.de/en/international/tax/347922/vat_goods_trading_eu.html
 // @link http://www.stuttgart.ihk24.de/recht_und_steuern/steuerrecht/Umsatzsteuer_Verbrauchssteuer/Umsatzsteuer_international/971988/Steuern_und_Abgaben_grenzueberschreitend.html#121
 // @link http://www.hk24.de/recht_und_steuern/steuerrecht/umsatzsteuer_mehrwertsteuer/umsatzsteuer_mehrwertsteuer_international/644156/Uebersetzung_Steuerschuldnerschaft_des_Leistungsempfaengers.html
-class Invoices extends \cms_core\models\Base {
+class Invoices extends \base_core\models\Base {
 
-	use \cms_core\models\UserTrait;
+	use \base_core\models\UserTrait;
 
 	protected $_meta = [
 		'source' => 'billing_invoices'
@@ -54,9 +54,9 @@ class Invoices extends \cms_core\models\Base {
 	// public $hasMany = ['InvoicePosition', 'Payments'];
 
 	protected static $_actsAs = [
-		'cms_core\extensions\data\behavior\Timestamp',
-		'cms_core\extensions\data\behavior\ReferenceNumber',
-		'cms_core\extensions\data\behavior\StatusChange'
+		'base_core\extensions\data\behavior\Timestamp',
+		'base_core\extensions\data\behavior\ReferenceNumber',
+		'base_core\extensions\data\behavior\StatusChange'
 	];
 
 	public static $enum = [
@@ -74,7 +74,7 @@ class Invoices extends \cms_core\models\Base {
 	public static function init() {
 		$model = static::_object();
 
-		static::behavior('cms_core\extensions\data\behavior\ReferenceNumber')->config(
+		static::behavior('base_core\extensions\data\behavior\ReferenceNumber')->config(
 			Settings::read('invoice.number')
 		);
 	}

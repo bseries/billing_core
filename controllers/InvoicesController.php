@@ -12,19 +12,19 @@
 
 namespace billing_core\controllers;
 
-use cms_core\models\VirtualUsers;
-use cms_core\models\Users;
+use base_core\models\VirtualUsers;
+use base_core\models\Users;
 use billing_core\models\Invoices;
 use lithium\g11n\Message;
-use cms_core\models\Currencies;
+use base_core\models\Currencies;
 
-class InvoicesController extends \cms_core\controllers\BaseController {
+class InvoicesController extends \base_core\controllers\BaseController {
 
-	use \cms_core\controllers\AdminAddTrait;
-	use \cms_core\controllers\AdminEditTrait;
-	use \cms_core\controllers\AdminDeleteTrait;
+	use \base_core\controllers\AdminAddTrait;
+	use \base_core\controllers\AdminEditTrait;
+	use \base_core\controllers\AdminDeleteTrait;
 
-	use \cms_core\controllers\AdminLockTrait;
+	use \base_core\controllers\AdminLockTrait;
 
 	public function admin_index() {
 		$data = Invoices::find('all', [

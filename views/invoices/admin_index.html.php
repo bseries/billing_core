@@ -50,7 +50,7 @@ $this->set([
 							<?= $this->html->link($user->number, [
 								'controller' => $user->isVirtual() ? 'VirtualUsers' : 'Users',
 								'action' => 'edit', 'id' => $user->id,
-								'library' => 'cms_core'
+								'library' => 'base_core'
 							]) ?>
 						<?php else: ?>
 							-

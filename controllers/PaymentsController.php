@@ -12,19 +12,19 @@
 
 namespace billing_core\controllers;
 
-use cms_core\models\Users;
-use cms_core\models\VirtualUsers;
+use base_core\models\Users;
+use base_core\models\VirtualUsers;
 use billing_core\models\Invoices;
 use billing_core\models\Payments;
-use cms_core\models\Currencies;
+use base_core\models\Currencies;
 use lithium\g11n\Message;
 use li3_flash_message\extensions\storage\FlashMessage;
 
-class PaymentsController extends \cms_core\controllers\BaseController {
+class PaymentsController extends \base_core\controllers\BaseController {
 
-	use \cms_core\controllers\AdminAddTrait;
-	use \cms_core\controllers\AdminEditTrait;
-	use \cms_core\controllers\AdminDeleteTrait;
+	use \base_core\controllers\AdminAddTrait;
+	use \base_core\controllers\AdminEditTrait;
+	use \base_core\controllers\AdminDeleteTrait;
 
 	public function admin_index() {
 		$data = Payments::find('all', [

@@ -13,7 +13,7 @@
 namespace billing_core\models;
 
 use billing_core\models\Invoices;
-use billing_core\extensions\finance\Price;
+use Finance\Price;
 
 class Payments extends \cms_core\models\Base {
 

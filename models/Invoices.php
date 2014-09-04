@@ -20,7 +20,7 @@ use billing_core\models\TaxZones;
 use billing_core\models\InvoicePositions;
 use DateTime;
 use Exception;
-use billing_core\extensions\finance\Price;
+use Finance\Price;
 use li3_mailer\action\Mailer;
 use lithium\g11n\Message;
 use app\extensions\pdf\InvoiceDocument;

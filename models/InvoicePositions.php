@@ -12,7 +12,7 @@
 
 namespace billing_core\models;
 
-use billing_core\extensions\finance\Price;
+use Finance\Price;
 use billing_core\models\Invoices;
 use Exception;
 

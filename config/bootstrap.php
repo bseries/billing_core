@@ -10,6 +10,8 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+define('BILLING_CORE_VERSION', '1.2.0');
+
 require 'settings.php';
 // require 'media.php';
 require 'panes.php';

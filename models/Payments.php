@@ -14,10 +14,10 @@ namespace billing_core\models;
 
 use billing_core\models\Invoices;
 use billing_core\extensions\finance\Price;
-use cms_core\models\Users;
-use cms_core\models\VirtualUsers;
 
 class Payments extends \cms_core\models\Base {
+
+	use \cms_core\models\UserTrait;
 
 	protected $_meta = [
 		'source' => 'billing_payments'
@@ -31,13 +31,6 @@ class Payments extends \cms_core\models\Base {
 			]
 		]
 	];
-
-	public function user($entity) {
-		if ($entity->user_id) {
-			return Users::find('first', ['conditions' => ['id' => $entity->user_id]]);
-		}
-		return VirtualUsers::find('first', ['conditions' => ['id' => $entity->virtual_user_id]]);
-	}
 
 	public function invoice($entity) {
 		return Invoices::find('first', ['conditions' => ['id' => $entity->billing_invoice_id]]);

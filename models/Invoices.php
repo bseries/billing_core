@@ -13,8 +13,6 @@
 namespace billing_core\models;
 
 use cms_core\models\Addresses;
-use cms_core\models\Users;
-use cms_core\models\VirtualUsers;
 use cms_core\extensions\cms\Settings;
 use cms_core\extensions\cms\Features;
 use billing_core\models\Payments;
@@ -44,6 +42,8 @@ use lithium\core\Libraries;
 // @link http://www.stuttgart.ihk24.de/recht_und_steuern/steuerrecht/Umsatzsteuer_Verbrauchssteuer/Umsatzsteuer_international/971988/Steuern_und_Abgaben_grenzueberschreitend.html#121
 // @link http://www.hk24.de/recht_und_steuern/steuerrecht/umsatzsteuer_mehrwertsteuer/umsatzsteuer_mehrwertsteuer_international/644156/Uebersetzung_Steuerschuldnerschaft_des_Leistungsempfaengers.html
 class Invoices extends \cms_core\models\Base {
+
+	use \cms_core\models\UserTrait;
 
 	protected $_meta = [
 		'source' => 'billing_invoices'
@@ -90,21 +90,6 @@ class Invoices extends \cms_core\models\Base {
 			return 1;
 		}
 		return (integer) $matches[1];
-	}
-
-	public function user($entity) {
-		if ($entity->user_id) {
-			return Users::find('first', [
-				'conditions' => [
-					'id' => $entity->user_id
-				]
-			]);
-		}
-		return VirtualUsers::find('first', [
-			'conditions' => [
-				'id' => $entity->virtual_user_id
-			]
-		]);
 	}
 
 	public function taxZone($entity) {

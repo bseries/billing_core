@@ -121,23 +121,8 @@ class Invoices extends \base_core\models\Base {
 		return $item;
 	}
 
-	public function positions($entity, array $options = []) {
-		$options += ['collectPendingFor' => false];
-
-		if (!$entity->id) {
-			return [];
-		}
-		if ($options['collectPendingFor']) {
-			return InvoicePositions::find('all', [
-				'conditions' => [
-					'or' => [
-						'user_id' => $options['collectPendingFor'],
-						'billing_invoice_id' => $entity->id
-					]
-				]
-			]);
-		}
-		return InvoicePositions::find('all', [
+	public function positions($entity) {
+		return !$entity->id ? [] : InvoicePositions::find('all', [
 			'conditions' => [
 				'billing_invoice_id' => $entity->id
 			]

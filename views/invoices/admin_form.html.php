@@ -28,13 +28,50 @@ $this->set([
 
 		<div class="grid-row">
 			<div class="grid-column-left">
+				<?= $this->form->field('number', [
+					'type' => 'text',
+					'label' => $t('Number'),
+					'class' => 'use-for-title'
+				]) ?>
+				<div class="help"><?= $t('Leave empty to autogenerate number.') ?></div>
+			</div>
+			<div class="grid-column-right">
+				<?= $this->form->field('status', [
+					'type' => 'select',
+					'label' => $t('Status'),
+					'list' => $statuses
+				]) ?>
+				<?php if (Features::enabled('invoice.sendPaidMail')): ?>
+				<div class="help">
+					<?= $t('The user will be notified by e-mail when the status is changed to `paid`.') ?>
+				</div>
+				<?php endif ?>
+				<?= $this->form->field('date', [
+					'type' => 'date',
+					'label' => $t('Date'),
+					'value' => $item->date ?: date('Y-m-d'),
+					'disabled' => $item->is_locked
+				]) ?>
+				<div class="help"><?= $t('Invoice date.') ?></div>
+			</div>
+		</div>
+		<div class="grid-row">
+			<div class="grid-column-left">
+				<?= $this->form->field('address', [
+					'type' => 'textarea',
+					'label' => $t('Address'),
+					'disabled' => true,
+					'value' => $item->address()->format('postal', $locale)
+				]) ?>
+			</div>
+			<div class="grid-column-right">
 				<div class="compound-users">
 					<?php
 						$user = $item->exists() ? $item->user() : false;
 					?>
 					<?= $this->form->field('user_id', [
 						'type' => 'select',
-						'label' => $t('Recipient user'),
+						'label' => $t('User'),
 						'list' => $users,
 						'class' => !$user || !$user->isVirtual() ? null : 'hide'
 					]) ?>
@@ -51,33 +88,25 @@ $this->set([
 					]) ?>
 				</div>
 			</div>
-			<div class="grid-column-right">
-				<?= $this->form->field('status', [
-					'type' => 'select',
-					'label' => $t('Status'),
-					'list' => $statuses
-				]) ?>
-				<div class="help">
-				<?php if (Features::enabled('invoice.sendPaidMail')): ?>
-					<?= $t('The user will be notified by e-mail when the status is changed to `paid`.') ?>
-				<?php endif ?>
-				</div>
+		</div>
 
-				<?= $this->form->field('number', [
-					'type' => 'text',
-					'label' => $t('Number'),
-					'class' => 'use-for-title'
-				]) ?>
-				<div class="help"><?= $t('Leave empty to autogenerate number.') ?></div>
-
-				<?= $this->form->field('date', [
-					'type' => 'date',
-					'label' => $t('Date'),
-					'value' => $item->date ?: date('Y-m-d'),
+		<div class="grid-row">
+			<section class="grid-column-left">
+				<?= $this->form->field('terms', [
+					'type' => 'textarea',
+					'label' => $t('Terms'),
 					'disabled' => $item->is_locked
 				]) ?>
-				<div class="help"><?= $t('Invoice date.') ?></div>
-			</div>
+				<div class="help"><?= $t('Visible to recipient.') ?></div>
+			</section>
+			<section class="grid-column-right">
+				<?= $this->form->field('note', [
+					'type' => 'textarea',
+					'label' => $t('Note'),
+					'disabled' => $item->is_locked
+				]) ?>
+				<div class="help"><?= $t('Visible to recipient.') ?></div>
+			</section>
 		</div>
 
 		<div class="grid-row">
@@ -213,21 +242,6 @@ $this->set([
 			</section>
 		</div>
 		<div class="grid-row">
-			<section class="grid-column-left">
-				<?= $this->form->field('terms', [
-					'type' => 'textarea',
-					'label' => $t('Terms'),
-					'disabled' => $item->is_locked
-				]) ?>
-				<div class="help"><?= $t('Visible to recipient.') ?></div>
-
-				<?= $this->form->field('note', [
-					'type' => 'textarea',
-					'label' => $t('Note'),
-					'disabled' => $item->is_locked
-				]) ?>
-				<div class="help"><?= $t('Visible to recipient.') ?></div>
-			</section>
 			<section class="grid-column-right">
 				<?= $this->form->field('tax_rate', [
 					'type' => 'text',

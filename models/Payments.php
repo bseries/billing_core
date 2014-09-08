@@ -36,7 +36,7 @@ class Payments extends \base_core\models\Base {
 		return Invoices::find('first', ['conditions' => ['id' => $entity->billing_invoice_id]]);
 	}
 
-	// Always gross.
+	// Always gross. Should use money object?
 	public function totalAmount($entity) {
 		return new Price($entity->amount, $entity->amount_currency, 'gross', null);
 	}

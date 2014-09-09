@@ -108,3 +108,14 @@ CREATE TABLE `billing_payments` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+ALTER TABLE `users` ADD `billing_currency` char(3) NOT NULL DEFAULT 'EUR' AFTER `timezone`;
+ALTER TABLE `users` ADD `billing_vat_reg_no` varchar(100) DEFAULT NULL AFTER `billing_currency`;
+ALTER TABLE `users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL AFTER `billing_vat_reg_no`;
+ALTER TABLE `users` ADD `invoiced` DATETIME  NULL  AFTER `is_notified`;
+
+ALTER TABLE `virtual_users` ADD `billing_currency` char(3) NOT NULL DEFAULT 'EUR' AFTER `timezone`;
+ALTER TABLE `virtual_users` ADD `billing_vat_reg_no` varchar(100) DEFAULT NULL AFTER `billing_currency`;
+ALTER TABLE `virtual_users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL AFTER `billing_vat_reg_no`;
+ALTER TABLE `virtual_users` ADD `invoiced` DATETIME  NULL  AFTER `is_notified`;
+

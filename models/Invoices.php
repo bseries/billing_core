@@ -96,33 +96,13 @@ class Invoices extends \base_core\models\Base {
 		return (integer) $matches[1];
 	}
 
-	public function taxZone($entity) {
-		return TaxZones::create([
-			'rate' => $entity->tax_rate,
-			'note' => $entity->tax_note
-		]);
+	public function taxNote($entity) {
+		// Iterate over taxes an retrieve unique tax notes.
+		throw new Exception('Not implemented');
 	}
 
 	public function date($entity) {
 		return DateTime::createFromFormat('Y-m-d', $entity->date);
-	}
-
-	public static function createForUser($user) {
-		$item = static::create();
-
-		if ($user->id) {
-			$field = $user->isVirtual() ? 'virtual_user_id' : 'user_id';
-			$item->$field = $user->id;
-		}
-
-		$item->user_vat_reg_no = $user->vat_reg_no;
-		$item = $user->address('billing')->copy($item, 'address_');
-
-		$taxZone = $user->taxZone();
-		$item->tax_rate = $taxZone->rate;
-		$item->tax_note = $taxZone->note;
-
-		return $item;
 	}
 
 	public function positions($entity) {
@@ -156,12 +136,12 @@ class Invoices extends \base_core\models\Base {
 
 	// @fixme Assume positions habe same tax zone and currency and type.
 	public function totalAmount($entity) {
-		$result = new Price(0, 'EUR', 'net', $entity->taxZone());
+		$result = new Price(0, 'EUR', 'net');
 
 		$positions = $this->positions($entity);
 
 		foreach ($positions as $position) {
-			$result = $result->add($position->totalAmount($entity->taxZone()));
+			$result = $result->add($position->totalAmount());
 		}
 		return $result;
 	}

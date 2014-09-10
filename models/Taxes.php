@@ -12,73 +12,47 @@
 
 namespace billing_core\models;
 
-use lithium\g11n\Message;
-use lithium\analysis\Logger;
-use base_core\extensions\cms\Settings;
-use SebastianBergmann\Money\Money;
+use lithium\util\Collection;
 
-// In the moment of generating an invoice position the price is finalized.
-//
-// TODO Move this into Finance Package. While taking care of translations.
-class TaxZones extends \base_core\models\Base {
+class Taxes extends \base_core\models\Base {
 
 	protected $_meta = [
 		'connection' => false
 	];
 
-	public static function generate($territory, $vatRegNo, $locale) {
-		extract(Message::aliases());
+	protected static $_data = [];
 
-		$vat = Settings::read('tax.vat');
+	public static function register($name, array $data) {
+		$data += [
+			'id' => $name,
+			'name' => $name,
+			'title' => null,
+			// May return null if tax does not apply at all,
+			// otherwise an integer indicating the tax rate to apply.
+			'rate' => function($territory, $vatRegNo) {
 
-		// Enable if becomes required.
-		// if ($vatRegNo && $this->_mustValidateVatRegNo($territory)) {
-		//	if (!$this->_validateVatRegNo($vatRegNo)) {
-		//		return false;
-		//	}
-		//}
+			},
+			// Called only if rate returns !== null.
+			'note' => function($territory, $vatRegNo, $rate, $locale) {
 
-		// National
-		if ($territory == 'DE' || $territory === null) {
-			return parent::create([
-				'name' => 'National, Germany',
-				'rate' => $vat['rate'],
-				'note' => $t('Includes {:rate}% {:title}.', compact('locale') + $vat)
-			]);
-		}
-
-		// EU
-		if (static::_isEuTerritory($territory)) {
-			// German VAT applies, § 3 a Abs. 1 S. 2 UStG
-			if (static::_recipientType($vatRegNo) == 'C') {
-				return parent::create([
-					'name' => 'Inter-community, country inside EU',
-					'rate' => $vat['rate'],
-					'note' => $t('Includes {:rate}% {:title}.', compact('locale') + $vat)
-				]);
 			}
-			// Reverse charge, § 13 b UStG
-			return parent::create([
-				'name' => 'Inter-community, country inside EU',
-				'rate' => 0,
-				// For translations see:
-				// @link http://www.hk24.de/recht_und_steuern/steuerrecht/umsatzsteuer_mehrwertsteuer/umsatzsteuer_mehrwertsteuer_international/644156/Uebersetzung_Steuerschuldnerschaft_des_Leistungsempfaengers.html
-				'note' => $t('Reverse Charge.', compact('locale'))
-			]);
-		}
+		];
+		static::$_data[$name] = static::create($data);
+	}
 
-		// Third country
-		// Reverse charge, B2B, § 13 b UStG
-		// Reverse charge, B2C + Katalogleistung
-		if (!static::_reverseChargeGood($territory)) {
-			Logger::write('error', "Territory {$territory} not good for reverse charge.");
-			return false;
+	public static function find($type, array $options = []) {
+		if ($type == 'all') {
+			return new Collection(['data' => static::$_data]);
+		} elseif ($type == 'first') {
+			return static::$_data[$options['conditions']['id']];
+		} elseif ($type == 'list') {
+			$results = [];
+
+			foreach (static::$_data as $item) {
+				$results[$item->id] = $item->title;
+			}
+			return $results;
 		}
-		return parent::create([
-			'name' => 'International, third-country outside EU',
-			'rate' => 0,
-			'note' => $t('Reverse Charge.', compact('locale'))
-		]);
 	}
 
 	// Detect if beneficiary recipient is business (B) or non-business (C).
@@ -88,13 +62,13 @@ class TaxZones extends \base_core\models\Base {
 	//
 	// We can take a shorter route here (see "Vertrauensschutz") and rely
 	// solely on the presence of the VAT Reg. No.
-	protected static function _recipientType($vatRegNo) {
+	public static function recipientType($vatRegNo) {
 		return $vatRegNo ? 'B' : 'C';
 	}
 
 	// Note: Includes Germany
 	// @link http://publications.europa.eu/code/de/de-370100.htm
-	protected static function _isEuTerritory($territory) {
+	public static function isEuTerritory($territory) {
 		$territories = [
 			'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'IE', 'EL', 'ES', 'FR',
 			'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'AT', 'PL',
@@ -112,9 +86,9 @@ class TaxZones extends \base_core\models\Base {
 	// jeweiligen anderen EU-Mitgliedstaat notwendig ist."
 	//
 	// @link http://www.ihk-bonn.de/fileadmin/dokumente/Downloads/Recht_und_Steuern/Umsatzsteuer_National_Vorsteuer/BMF-Schreiben-Gegenseitigkeit10-07.pdf
-	protected static function _reverseChargeGood($territory) {
+	public static function reverseChargeGood($territory) {
 		if ($territory == 'DE') {
-			return false;
+			return false; // TODO only valid if inside DE
 		}
 		if (static::_isEuTerritory($territory)) {
 			return true;
@@ -172,20 +146,6 @@ class TaxZones extends \base_core\models\Base {
 			'US'  // USA
 		];
 		return in_array($territory, $territories);
-	}
-
-	// VAT reg no must be validated inside EU
-	// Germany B2B                        : need to check VAT with Bundeszentralamt für Steuern
-	// EU B2B                             : need to check VAT with Bundeszentralamt für Steuern
-	// third country B2B                  : Do not need to check VAT reg no because reverse charge applies
-	// third countr B2C + Katalogleistung : Do not need to check VAT reg no because reverse charge applies
-	protected static function _mustValidateVatRegNo($territory) {
-		return static::_isEuTerritory($territory); // Implictly includes DE.
-	}
-
-	// @todo implement, stub
-	protected static function _validateVatRegNo($vatRegNo) {
-		return true;
 	}
 }
 

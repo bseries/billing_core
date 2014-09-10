@@ -13,7 +13,7 @@
 namespace billing_core\models;
 
 use billing_core\models\Invoices;
-use Finance\Price;
+use SebastianBergmann\Money\Money;
 
 class Payments extends \base_core\models\Base {
 
@@ -36,9 +36,8 @@ class Payments extends \base_core\models\Base {
 		return Invoices::find('first', ['conditions' => ['id' => $entity->billing_invoice_id]]);
 	}
 
-	// Always gross. Should use money object?
 	public function totalAmount($entity) {
-		return new Price($entity->amount, $entity->amount_currency, 'gross', null);
+		return new Money($entity->amount, $entity->amount_currency);
 	}
 }
 

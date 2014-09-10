@@ -18,6 +18,8 @@ use base_core\extensions\cms\Settings;
 use SebastianBergmann\Money\Money;
 
 // In the moment of generating an invoice position the price is finalized.
+//
+// TODO Move this into Finance Package. While taking care of translations.
 class TaxZones extends \base_core\models\Base {
 
 	protected $_meta = [

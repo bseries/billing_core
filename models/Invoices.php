@@ -20,7 +20,6 @@ use billing_core\models\TaxZones;
 use billing_core\models\InvoicePositions;
 use DateTime;
 use Exception;
-use Finance\Price;
 use li3_mailer\action\Mailer;
 use lithium\g11n\Message;
 use app\extensions\pdf\InvoiceDocument;
@@ -29,6 +28,8 @@ use PHPExcel_Writer_Excel2007 as WriterExcel2007;
 use PHPExcel_IOFactory as ExcelIOFactory;
 use temporary\Manager as Temporary;
 use lithium\core\Libraries;
+use Finance\Price;
+use Finance\PriceSum;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).
@@ -134,20 +135,31 @@ class Invoices extends \base_core\models\Base {
 		return $entity->total_gross_outstanding && $date->getTimestamp() > strtotime($overdue);
 	}
 
-	// @fixme Assume positions habe same tax zone and currency and type.
 	public function totalAmount($entity) {
-		$result = new Price(0, 'EUR', 'net');
+		$sum = new PriceSum();
 
-		$positions = $this->positions($entity);
-
-		foreach ($positions as $position) {
-			$result = $result->add($position->totalAmount());
+		foreach ($entity->positions() as $position) {
+			$sum = $sum->add($position->totalAmount());
 		}
-		return $result;
+		return $sum;
 	}
 
 	public function totalTax($entity) {
 		return $entity->totalAmount()->getTax();
+	}
+
+	public function totalTaxes($entity) {
+		$results = [];
+
+		foreach ($this->positions($entity) as $position) {
+			$results[] = [
+				'rate' => $position->tax_rate,
+				'amount' => $position->totalAmount()->getTax()
+			];
+		}
+
+		return $results;
+
 	}
 
 	// @fixme May later return money object here.

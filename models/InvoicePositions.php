@@ -55,7 +55,7 @@ class InvoicePositions extends \base_core\models\Base {
 			$entity->amount,
 			$entity->amount_currency,
 			$entity->amount_type,
-			$entity->tax_rate
+			(integer) $entity->tax_rate
 		);
 	}
 

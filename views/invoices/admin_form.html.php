@@ -110,8 +110,8 @@ $this->set([
 		</div>
 
 		<div class="grid-row">
+			<h1 class="h-gamma"><?= $t('Positions') ?></h1>
 			<section class="use-nested">
-				<h1 class="h-gamma"><?= $t('Positions') ?></h1>
 				<table>
 					<thead>
 						<tr>
@@ -120,6 +120,8 @@ $this->set([
 							<td><?= $t('Currency') ?>
 							<td><?= $t('Type') ?>
 							<td><?= $t('Unit price') ?>
+							<td><?= $t('Tax') ?>
+							<td><?= $t('Tax rate (%)') ?>
 							<td><?= $t('Line total (net)') ?>
 							<td class="actions">
 					</thead>
@@ -173,6 +175,21 @@ $this->set([
 									'disabled' => $item->is_locked
 								]) ?>
 							<td>
+								<?= $this->form->field("positions.{$key}.tax", [
+									'type' => 'select',
+									'label' => false,
+									'list' => $taxes,
+									'value' => $child->tax,
+									'disabled' => $item->is_locked
+								]) ?>
+							<td>
+								<?= $this->form->field("positions.{$key}.tax_rate", [
+									'type' => 'text',
+									'label' => false,
+									'value' => $child->tax_rate,
+									'disabled' => $item->is_locked
+								]) ?>
+							<td>
 								<?= $this->form->field("positions.{$key}.total_net", [
 									'type' => 'text',
 									'label' => false,
@@ -215,27 +232,41 @@ $this->set([
 									'label' => false
 								]) ?>
 							<td>
+								<?= $this->form->field("positions.new.tax", [
+									'type' => 'select',
+									'label' => false,
+									'list' => $taxes
+								]) ?>
+							<td>
+								<?= $this->form->field("positions.new.tax_rate", [
+									'type' => 'text',
+									'label' => false
+								]) ?>
+							<td>
 							<td class="actions">
 								<?= $this->form->button($t('delete'), ['class' => 'button delete delete-nested']) ?>
 					<?php endif ?>
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="7" class="nested-add-action">
+							<td colspan="9" class="nested-add-action">
 								<?php if (!$item->is_locked): ?>
 									<?= $this->form->button($t('add position'), ['type' => 'button', 'class' => 'button add-nested']) ?>
 								<?php endif ?>
 						<tr>
-							<td colspan="6"><?= $t('Total (net)') ?>
+							<td colspan="7"><?= $t('Total (net)') ?>
 							<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
+						<?php foreach ($item->totalTaxes() as $tax): ?>
 						<tr>
-							<td colspan="6"><?= $t('Tax ({:rate}%)', ['rate' => $item->tax_rate]) ?>
-							<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getTax(), 'money') : null ?>
+							<td colspan="7"><?= $t('Tax ({:rate}%)', ['rate' => $tax['rate']]) ?>
+							<td><?= $this->money->format($tax['amount'], 'money') ?>
+
+						<?php endforeach ?>
 						<tr>
-							<td colspan="6"><?= $t('Total (gross)') ?>
+							<td colspan="7"><?= $t('Total (gross)') ?>
 							<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
 						<tr>
-							<td colspan="6"><?= $t('Balance (gross)') ?>
+							<td colspan="7"><?= $t('Balance (gross)') ?>
 							<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					</tfoot>
 				</table>
@@ -243,12 +274,6 @@ $this->set([
 		</div>
 		<div class="grid-row">
 			<section class="grid-column-right">
-				<?= $this->form->field('tax_rate', [
-					'type' => 'text',
-					'label' => $t('Tax rate (%)'),
-					'disabled' => $item->is_locked
-				]) ?>
-
 				<?= $this->form->field('tax_note', [
 					'type' => 'text',
 					'label' => $t('Tax note'),
@@ -258,8 +283,8 @@ $this->set([
 			</section>
 		</div>
 		<div class="grid-row grid-row-last">
+			<h1 class="h-gamma"><?= $t('Payments') ?></h1>
 			<section class="use-nested">
-				<h1 class="h-gamma"><?= $t('Payments') ?></h1>
 				<table>
 					<thead>
 						<tr>

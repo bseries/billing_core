@@ -15,7 +15,7 @@ namespace billing_core\controllers;
 use base_core\models\VirtualUsers;
 use base_core\models\Users;
 use billing_core\models\Invoices;
-use billing_core\models\Taxes;
+use billing_core\models\TaxTypes;
 use lithium\g11n\Message;
 use base_core\models\Currencies;
 
@@ -95,10 +95,10 @@ class InvoicesController extends \base_core\controllers\BaseController {
 		$users = [null => '-'] + Users::find('list', ['order' => 'name']);
 
 		if ($item) {
-			$taxes = Taxes::find('list');
+			$taxTypes = TaxTypes::find('list');
 		}
 
-		return compact('currencies', 'statuses', 'users', 'virtualUsers', 'taxes');
+		return compact('currencies', 'statuses', 'users', 'virtualUsers', 'taxTypes');
 	}
 }
 

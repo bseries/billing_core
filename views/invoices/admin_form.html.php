@@ -175,11 +175,11 @@ $this->set([
 									'disabled' => $item->is_locked
 								]) ?>
 							<td>
-								<?= $this->form->field("positions.{$key}.tax", [
+								<?= $this->form->field("positions.{$key}.tax_type", [
 									'type' => 'select',
 									'label' => false,
-									'list' => $taxes,
-									'value' => $child->tax,
+									'list' => $taxTypes,
+									'value' => $child->tax_type,
 									'disabled' => $item->is_locked
 								]) ?>
 							<td>
@@ -232,10 +232,10 @@ $this->set([
 									'label' => false
 								]) ?>
 							<td>
-								<?= $this->form->field("positions.new.tax", [
+								<?= $this->form->field("positions.new.tax_type", [
 									'type' => 'select',
 									'label' => false,
-									'list' => $taxes
+									'list' => $taxTypes
 								]) ?>
 							<td>
 								<?= $this->form->field("positions.new.tax_rate", [

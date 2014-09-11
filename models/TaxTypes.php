@@ -14,7 +14,7 @@ namespace billing_core\models;
 
 use lithium\util\Collection;
 
-class Taxes extends \base_core\models\Base {
+class TaxTypes extends \base_core\models\Base {
 
 	protected $_meta = [
 		'connection' => false
@@ -27,15 +27,10 @@ class Taxes extends \base_core\models\Base {
 			'id' => $name,
 			'name' => $name,
 			'title' => null,
-			// May return null if tax does not apply at all,
-			// otherwise an integer indicating the tax rate to apply.
-			'rate' => function($territory, $vatRegNo) {
-
-			},
-			// Called only if rate returns !== null.
-			'note' => function($territory, $vatRegNo, $rate, $locale) {
-
-			}
+			// Either percentage as integer or `false` to indicate
+			// that no rate is calculated at all.
+			'rate' => false,
+			'note' => null
 		];
 		static::$_data[$name] = static::create($data);
 	}

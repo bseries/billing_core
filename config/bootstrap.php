@@ -17,28 +17,28 @@ require 'settings.php';
 require 'panes.php';
 require 'widgets.php';
 
-use billing_core\models\TaxeTypes;
+use billing_core\models\TaxTypes;
 use lithium\g11n\Message;
 
 extract(Message::aliases());
 
 // Tax that applies on all goods when business resides in Germany.
 // B2B & B2C
-TaxeTypes::register('DE.vat.standard', [
+TaxTypes::register('DE.vat.standard', [
 	'title' => $t('VAT Standard DE'),
 	'rate' => 19,
 	'note' => $t('Includes 19% VAT.')
 ]);
 
 // Tax that applies on certain googs when business resides in Germany.
-TaxeTypes::register('DE.vat.reduced', [
+TaxTypes::register('DE.vat.reduced', [
 	'title' => $t('VAT Reduced DE'),
 	'rate' => 7,
 	'note' => $t('Includes 7% VAT.')
 ]);
 
 // Applies under certain circumstances worldwide.
-TaxeTypes::register('*.vat.reverse', [
+TaxTypes::register('*.vat.reverse', [
 	'title' => $t('VAT Reverse Charge'),
 	'rate' => false,
 	'note' => $t('Reverse Charge.')

@@ -13,6 +13,7 @@
 namespace billing_core\models;
 
 use lithium\util\Collection;
+use OutOfBoundsException;
 
 class TaxTypes extends \base_core\models\Base {
 
@@ -39,7 +40,10 @@ class TaxTypes extends \base_core\models\Base {
 		if ($type == 'all') {
 			return new Collection(['data' => static::$_data]);
 		} elseif ($type == 'first') {
-			return static::$_data[$options['conditions']['id']];
+			if (!isset(static::$_data[$key = $options['conditions']['id']])) {
+				throw new OutOfBoundsException("Tax type `{$key}` not registered.");
+			}
+			return static::$_data[$key];
 		} elseif ($type == 'list') {
 			$results = [];
 

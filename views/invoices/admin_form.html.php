@@ -275,11 +275,15 @@ $this->set([
 		<div class="grid-row">
 			<section class="grid-column-right">
 				<?= $this->form->field('tax_note', [
-					'type' => 'text',
+					'type' => 'textarea',
 					'label' => $t('Tax note'),
-					'disabled' => $item->is_locked
+					'value' => $item->taxNote(),
+					'disabled' => true
 				]) ?>
-				<div class="help"><?= $t('Visible to recipient.') ?></div>
+				<div class="help">
+					<?= $t('Visible to recipient.') ?>
+					<?= $t('Automatically generated.') ?>
+				</div>
 			</section>
 		</div>
 		<div class="grid-row grid-row-last">

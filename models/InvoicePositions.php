@@ -15,6 +15,7 @@ namespace billing_core\models;
 use Finance\Price;
 use billing_core\models\Invoices;
 use Exception;
+use billing_core\models\TaxTypes;
 
 // In the moment of generating an invoice position the price is finalized.
 class InvoicePositions extends \base_core\models\Base {
@@ -57,6 +58,10 @@ class InvoicePositions extends \base_core\models\Base {
 			$entity->amount_type,
 			(integer) $entity->tax_rate
 		);
+	}
+
+	public function taxType($entity) {
+		return TaxTypes::find('first', ['conditions' => ['id' => $entity->tax_type]]);
 	}
 
 	public function totalAmount($entity) {

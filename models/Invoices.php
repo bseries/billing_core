@@ -97,9 +97,14 @@ class Invoices extends \base_core\models\Base {
 		return (integer) $matches[1];
 	}
 
+	// Iterate over taxes an retrieve unique tax notes.
 	public function taxNote($entity) {
-		// Iterate over taxes an retrieve unique tax notes.
-		throw new Exception('Not implemented');
+		$results = [];
+
+		foreach ($entity->positions() as $position) {
+			$results[] = $position->taxType()->note;
+		}
+		return implode("\n", array_unique($results));
 	}
 
 	public function date($entity) {
@@ -165,29 +170,14 @@ class Invoices extends \base_core\models\Base {
 	// @fixme May later return money object here.
 	// Should not return negative values? Rename to balance?
 	public function totalOutstanding($entity) {
-		$sum = null;
+		$sum = new PriceSum();
 
 		foreach ($entity->positions() as $position) {
-			$result = $position->totalAmount();
-
-			if ($sum) {
-				$sum = $sum->add($result);
-			} else {
-				$sum = $result;
-			}
-		}
-		if ($sum) {
 			// We need to convert to gross here as payments will be gross only.
-			$sum = $sum->getGross();
+			$sum = $sum->subtract($position->totalAmount());
 		}
 		foreach ($entity->payments() as $payment) {
-			$result = $payment->totalAmount();
-
-			if ($sum) {
-				$sum = $sum->subtract($result);
-			} else {
-				$sum = $result;
-			}
+			$sum = $sum->add($payment->totalAmount());
 		}
 		return $sum;
 	}
@@ -342,7 +332,7 @@ class Invoices extends \base_core\models\Base {
 		$sheet->setCellValue('A' . ($offset + 3), $t('Note'));
 		$sheet->setCellValue('B' . ($offset + 3) , $entity->note);
 		$sheet->setCellValue('A' . ($offset + 4), $t('Tax note'));
-		$sheet->setCellValue('B' . ($offset + 4), $entity->tax_note);
+		$sheet->setCellValue('B' . ($offset + 4), $entity->taxNote());
 
 		$sheet->getStyle('A1:A45')->getFont()->setBold(true);
 		$sheet->getStyle('A1:A45')->getAlignment()->setVertical('top');

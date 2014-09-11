@@ -14,7 +14,7 @@ $this->set([
 	<?=$this->form->create($item) ?>
 		<?= $this->form->field('id', ['type' => 'hidden']) ?>
 
-		<div class="grid-row grid-row-last">
+		<div class="grid-row">
 			<div class="grid-column-left">
 				<?= $this->form->field('date', [
 					'type' => 'date',

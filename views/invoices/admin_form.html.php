@@ -286,7 +286,7 @@ $this->set([
 				</div>
 			</section>
 		</div>
-		<div class="grid-row grid-row-last">
+		<div class="grid-row">
 			<h1 class="h-gamma"><?= $t('Payments') ?></h1>
 			<section class="use-nested">
 				<table>

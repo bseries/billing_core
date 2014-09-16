@@ -16,6 +16,7 @@ require 'settings.php';
 // require 'media.php';
 require 'panes.php';
 require 'widgets.php';
+require 'jobs.php';
 
 use billing_core\models\TaxTypes;
 use lithium\g11n\Message;

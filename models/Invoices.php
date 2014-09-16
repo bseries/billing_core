@@ -69,6 +69,8 @@ class Invoices extends \base_core\models\Base {
 			// 'payment-accepted',
 			'payment-remotely-accepted',
 			'payment-error',
+			'send-scheduled',
+			'sent'
 		],
 		'frequency' => [
 			'always',
@@ -82,6 +84,72 @@ class Invoices extends \base_core\models\Base {
 		static::behavior('base_core\extensions\data\behavior\ReferenceNumber')->config(
 			Settings::read('invoice.number')
 		);
+	}
+
+	public static function generateFromPending($user, array $data = []) {
+		$positions = InvoicePositions::pending($user->id);
+
+		if (!$positions) {
+			return null;
+		}
+		$invoice = InvoicesModel::create($data + [
+			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
+			'user_vat_reg_no' => $user->vat_reg_no,
+			'date' => date('Y-m-d'),
+			'status' => 'created',
+			// 'note' => $t('Order No.') . ': ' . $entity->number,
+			'terms' => Settings::read('billing.paymentTerms')
+		]);
+		$invoice = $user->address('billing')->copy($invoice, 'address_');
+
+		if (!$invoice->save()) {
+			return false;
+		}
+
+		foreach ($positions as $position) {
+			$result = $position->save([
+				'billing_invoice_id' => $invoice->id
+			], ['whitelist' => ['billing_invoice_id']]);
+
+			if (!$result) {
+				return false;
+			}
+		}
+		return $invoice;
+	}
+
+	public function send($entity) {
+		$user = $entity->user();
+		$contact = Settings::read('contact.billing');
+
+		if (!$user->is_notified) {
+			return;
+		}
+
+		$result = Mailer::deliver('invoice_sent', [
+			'to' => $user->email,
+			'bcc' => $contact['email'],
+			'subject' => $t('Your invoice #{:number}.', [
+				'number' => $invoice->number
+			]),
+			'data' => [
+				'user' => $user,
+				'item' => $entity
+			],
+			'attach' => [
+				[
+					'data' => $entity->exportAsPdf(),
+					'filename' => 'invoice_' . $entity->number . '.pdf',
+					'content-type' => 'application/pdf'
+				]
+			]
+		]);
+
+		return $result && $entity->save(['status' => 'sent'], [
+			'whitelist' => ['status'],
+			'validate' => false,
+			'lockWriteThrough' => true
+		]);
 	}
 
 	public function title($entity) {
@@ -205,35 +273,14 @@ class Invoices extends \base_core\models\Base {
 		extract(Message::aliases());
 
 		switch ($to) {
+			// Lock invoice when its got sent.
 			case 'sent':
-				$user = $entity->user();
-				$contact = Settings::read('contact.billing');
-				$result = true;
-
-				if (Features::enabled('invoice.sendSentMail') && $user->is_notified) {
-					$result = Mailer::deliver('invoice_sent', [
-						'to' => $user->email,
-						'bcc' => $contact['email'],
-						'subject' => $t('Your invoice #{:number}.', [
-							'number' => $invoice->number
-						]),
-						'data' => [
-							'user' => $user,
-							'item' => $entity
-						],
-						'attach' => [
-							[
-								'data' => $entity->exportAsPdf(),
-								'filename' => 'invoice_' . $entity->number . '.pdf',
-								'content-type' => 'application/pdf'
-							]
-						]
-					]);
+				if ($entity->is_locked) {
+					return true;
 				}
-				return $result && $entity->save(['is_locked' => true], [
+				return $entity->save(['is_locked' => true], [
 					'whitelist' => ['is_locked'],
-					'validate' => false,
-					'lockWriteThrough' => true
+					'validate' => false
 				]);
 			case 'paid':
 				$user = $entity->user();

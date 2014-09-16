@@ -48,7 +48,6 @@ Settings::register('billing.paymentTerms', null);
 Settings::register('billing.vatRegNo', 'DE1231232');
 Settings::register('billing.taxNo', '12/12/12');
 
-Features::register('invoice.sendSentMail', false);
 Features::register('invoice.sendPaidMail', false);
 
 ?>

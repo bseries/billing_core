@@ -19,7 +19,7 @@ Jobs::recur('auto_invoice', function() {
 
 	$users = Users::find('all', [
 		'conditions' => [
-			// 'is_auto_billed' => true
+			'is_auto_invoiced' => true
 			// 'is_active' => true
 		]
 	]);

@@ -90,7 +90,7 @@ class Invoices extends \base_core\models\Base {
 		$positions = InvoicePositions::pending($user->id);
 
 		if (!$positions) {
-			return null;
+			return true;
 		}
 		$invoice = InvoicesModel::create($data + [
 			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
@@ -452,7 +452,7 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 	} else { // We're creating a brandnew invoice.
 
 		// Set when we last billed the user, once.
-		$user->save(['invoiced' => date('Y-m-d')], ['whitelist' => ['invoiced', 'modified']]);
+		// $user->save(['invoiced' => date('Y-m-d')], ['whitelist' => ['invoiced', 'modified']]);
 
 		// Initial invoices are not locked.
 		$isLocked = false;

@@ -10,6 +10,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+use DateTime;
 use base_core\extensions\cms\Jobs;
 use base_core\models\Users;
 use billing_core\models\Invoices;
@@ -23,7 +24,26 @@ Jobs::recur('auto_invoice', function() {
 			// 'is_active' => true
 		]
 	]);
+
+	// TODO check frequency
+
 	foreach ($users as $user) {
+		$mustInvoice = false;
+
+		$map = [
+			'weekly' => '+1 week',
+			'monthly' => '+1 month',
+			'yearly' => '+1 year'
+		];
+		$now = new DateTime();
+		$invoiced = DateTime::createFromFormat('Y-m-d H:i:s');
+
+		// $invoiced will also be set when manually creating an invoice
+
+		if (!$mustInvoice) {
+			continue;
+		}
+
 		$invoice = Invoices::generateFromPending($user);
 
 		if ($invoice === null) {

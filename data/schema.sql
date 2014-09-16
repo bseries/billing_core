@@ -68,10 +68,12 @@ ALTER TABLE `users` ADD `billing_vat_reg_no` varchar(100) DEFAULT NULL AFTER `bi
 ALTER TABLE `users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL AFTER `billing_vat_reg_no`;
 ALTER TABLE `users` ADD `invoiced` DATETIME  NULL  AFTER `is_notified`;
 ALTER TABLE `users` ADD `billing_tax_country` CHAR(2)  NULL  DEFAULT NULL  AFTER `billing_vat_reg_no`;
+ALTER TABLE `users` ADD `is_auto_invoiced` TINYINT(1)  UNSIGNED  NOT NULL  DEFAULT '0'  AFTER `is_notified`;
 
 ALTER TABLE `virtual_users` ADD `billing_currency` char(3) NOT NULL DEFAULT 'EUR' AFTER `timezone`;
 ALTER TABLE `virtual_users` ADD `billing_vat_reg_no` varchar(100) DEFAULT NULL AFTER `billing_currency`;
 ALTER TABLE `virtual_users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL AFTER `billing_vat_reg_no`;
 ALTER TABLE `virtual_users` ADD `invoiced` DATETIME  NULL  AFTER `is_notified`;
 ALTER TABLE `virtual_users` ADD `billing_tax_country` CHAR(2)  NULL  DEFAULT NULL  AFTER `billing_vat_reg_no`;
+ALTER TABLE `virtual_users` ADD `is_auto_invoiced` TINYINT(1)  UNSIGNED  NOT NULL  DEFAULT '0'  AFTER `is_notified`;
 

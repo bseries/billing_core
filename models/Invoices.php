@@ -26,6 +26,7 @@ use app\extensions\pdf\InvoiceDocument;
 use li3_mailer\action\Mailer;
 use temporary\Manager as Temporary;
 use Finance\Price;
+use Finance\NullPrice;
 use Finance\PriceSum;
 use PHPExcel as Excel;
 use PHPExcel_Writer_Excel2007 as WriterExcel2007;
@@ -71,6 +72,13 @@ class Invoices extends \base_core\models\Base {
 			'payment-error',
 			'send-scheduled',
 			'sent'
+		],
+		'payment_status' => [
+			'paid',  // paid
+			'awaiting-payment',
+			// 'payment-accepted',
+			'payment-remotely-accepted',
+			'payment-error'
 		],
 		'frequency' => [
 			'always',
@@ -249,7 +257,21 @@ class Invoices extends \base_core\models\Base {
 		return $sum;
 	}
 
-	public function payInFull($entity, $method) {
+	public function pay($entity, $payment) {
+		$sum = $entity->balance();
+
+		if (!$sum->greaterThan(new NullPrice())) {
+			throw new Exception("Invoice is already paid in full.");
+		}
+
+		return $payment->save(['billing_invoice_id' => $entity->id], [
+			'localize' => false,
+			'whitelist' => ['billing_invoice_id']
+		]);
+	}
+
+	/*
+	public function payInFull($entity, $payment = null) {
 		$sum = $entity->balance();
 
 		if (!$sum->greaterThan(new NullPrice())) {
@@ -265,9 +287,10 @@ class Invoices extends \base_core\models\Base {
 		]);
 		return $payment->save(null, ['localize' => false]);
 	}
+	*/
 
 	public function isPaidInFull($entity) {
-		return $entity->totalOutstanding()->getGross()->getAmount() <= 0;
+		return !$entity->balance()->greaterThan(new NullPrice());
 	}
 
 	public function address($entity) {

@@ -267,7 +267,7 @@ $this->set([
 							<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
 						<tr>
 							<td colspan="7"><?= $t('Balance (gross)') ?>
-							<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
+							<td><?= ($money = $item->balance()) ? $this->money->format($money->getGross(), 'money') : null ?>
 					</tfoot>
 				</table>
 			</section>

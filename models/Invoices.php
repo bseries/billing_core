@@ -235,9 +235,8 @@ class Invoices extends \base_core\models\Base {
 
 	}
 
-	// @fixme May later return money object here.
-	// Should not return negative values? Rename to balance?
-	public function totalOutstanding($entity) {
+	// May return positive or negative values.
+	public function balance($entity) {
 		$sum = new PriceSum();
 
 		foreach ($entity->positions() as $position) {
@@ -251,7 +250,11 @@ class Invoices extends \base_core\models\Base {
 	}
 
 	public function payInFull($entity, $method) {
-		$sum = $entity->totalOutstanding();
+		$sum = $entity->balance();
+
+		if (!$sum->greaterThan(new NullPrice())) {
+			throw new Exception("Invoice is already paid in full.");
+		}
 
 		$payment = Payments::create([
 			'billing_invoice_id' => $entity->id,
@@ -433,6 +436,12 @@ class Invoices extends \base_core\models\Base {
 
 		rewind($stream);
 		return $stream;
+	}
+
+	// @deprecated
+	public function totalOutstanding($entity) {
+		trigger_error('totalOutstanding() is deprecated in favor of balance().', E_USER_DEPRECATED);
+		return $entity->balance();
 	}
 }
 

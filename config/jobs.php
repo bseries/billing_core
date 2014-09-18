@@ -20,7 +20,7 @@ use billing_core\models\Invoices;
 //
 // Assumes that if a user is auto invoiced
 // we also should auto assign the payments.
-Jobs::recur('auto_invoice', function() {
+Jobs::recur('billing_core:auto_invoice', function() {
 	Invoices::pdo()->beginTransaction();
 
 	// FIXME Make this work for virtual users, too?
@@ -41,11 +41,12 @@ Jobs::recur('auto_invoice', function() {
 	}
 	Invoices::pdo()->commit();
 }, [
-	'frequency' => Jobs::FREQUENCY_LOW
+	'frequency' => Jobs::FREQUENCY_LOW,
+	'depends' => ['billing_time:invoice_place_timed' => 'optional']
 ]);
 
 // This will auto send any invoice that is plain created but not sent.
-Jobs::recur('auto_send_invoices', function() {
+Jobs::recur('billing_core:auto_send_invoices', function() {
 	$invoices = Invoices::find('all', [
 		'status' => 'created'
 	]);
@@ -59,7 +60,8 @@ Jobs::recur('auto_send_invoices', function() {
 		Invoices::pdo()->commit();
 	}
 }, [
-	'frequency' => Jobs::FREQUENCY_LOW
+	'frequency' => Jobs::FREQUENCY_LOW,
+	'depends' => ['billing_core:auto_invoice']
 ]);
 
 ?>

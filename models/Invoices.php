@@ -73,16 +73,9 @@ class Invoices extends \base_core\models\Base {
 			'send-scheduled',
 			'sent'
 		],
-		'payment_status' => [
-			'paid',  // paid
-			'awaiting-payment',
-			// 'payment-accepted',
-			'payment-remotely-accepted',
-			'payment-error'
-		],
 		'frequency' => [
-			'always',
-			'monthly'
+			'monthly',
+			'yearly'
 		]
 	];
 

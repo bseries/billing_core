@@ -13,6 +13,7 @@
 namespace billing_core\models;
 
 use DateTime;
+use DateInterval;
 use Exception;
 use lithium\g11n\Message;
 use lithium\core\Libraries;
@@ -125,7 +126,7 @@ class Invoices extends \base_core\models\Base {
 			return false;
 		}
 		if (!$user->auto_invoiced) {
-			return true;
+			return true;
 		}
 		$last = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
 		$diff = $last->diff(new DateTime());
@@ -135,8 +136,33 @@ class Invoices extends \base_core\models\Base {
 				return $diff->m >= 1;
 			case 'yearly':
 				return $diff->y >= 1;
+			default:
+				throw new Exception("Unsupported frequency `$user->auto_invoice_frequency`.");
 		}
 		return false;
+	}
+
+	public static function nextAutoInvoiceDate($user) {
+		if (!$user->auto_invoice_frequency) {
+			trigger_error("User `{$user->id}` has not auto invoice frequency.", E_USER_NOTICE);
+			return false;
+		}
+		if (!$user->auto_invoiced) {
+			return false;
+		}
+		$date = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
+
+		switch ($user->auto_invoice_frequency) {
+			case 'monthly':
+				$interval = DateInterval::createFromDateString('1 month');
+				break;
+			case 'yearly':
+				$interval = DateInterval::createFromDateString('1 year');
+			break;
+			default:
+				throw new Exception("Unsupported frequency `$user->auto_invoice_frequency`.");
+		}
+		return $date->add($interval);
 	}
 
 	public static function autoInvoice($user) {

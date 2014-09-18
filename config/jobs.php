@@ -30,50 +30,15 @@ Jobs::recur('auto_invoice', function() {
 			// 'is_active' => true
 		]
 	]);
-
-	// TODO check frequency
-
-	/*
-	$map = [
-		'weekly' => '+1 week',
-		'monthly' => '+1 month',
-		'yearly' => '+1 year'
-	];
-	 */
 	foreach ($users as $user) {
-		// $mustInvoice = false;
-
-		// $now = new DateTime();
-		// $invoiced = DateTime::createFromFormat('Y-m-d H:i:s');
-
-		// $invoiced will also be set when manually creating an invoice
-
-		// if (!$mustInvoice) {
-		//	continue;
-		// }
-
-		$invoice = Invoices::generateFromPending($user);
-
-		if ($invoice === null) {
-			continue; // No pending positions, no invoice to send.
+		if (!Invoices::mustAutoInvoice($user)) {
+			continue;
 		}
-		if ($invoice === false) {
-			Invoices::pdo()->rollback();
-			return false;
-		}
-
-		$payments = Payments::find('all', [
-			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
-			'billing_invoice_id' => null // Only unassigned payments.
-		]);
-		// Assumes the invoice we just created is not paid.
-
-		if (!Payments::assignToInvoices($payments, [$invoice])) {
+		if (!Invoices::autoInvoice($user)) {
 			Invoices::pdo()->rollback();
 			return false;
 		}
 	}
-
 	Invoices::pdo()->commit();
 }, [
 	'frequency' => Jobs::FREQUENCY_LOW
@@ -85,12 +50,14 @@ Jobs::recur('auto_send_invoices', function() {
 		'status' => 'created'
 	]);
 	foreach ($invoice as $invoice) {
+		Invoices::pdo()->beginTransaction();
+
 		if (!$invoice->send()) {
 			Invoices::pdo()->rollback();
 			return false;
 		}
+		Invoices::pdo()->commit();
 	}
-	Invoices::pdo()->commit();
 }, [
 	'frequency' => Jobs::FREQUENCY_LOW
 ]);

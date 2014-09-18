@@ -126,6 +126,55 @@ class Invoices extends \base_core\models\Base {
 		return $invoice;
 	}
 
+	public static function mustAutoInvoice($user) {
+		if (!$user->auto_invoice_frequency) {
+			trigger_error("User `{$user->id}` has not auto invoice frequency.", E_USER_NOTICE);
+			return false;
+		}
+		if (!$user->auto_invoiced) {
+			return true;
+		}
+		$last = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
+		$diff = $last->diff(new DateTime());
+
+		switch ($user->auto_invoice_frequency) {
+			case 'monthly':
+				return $diff->m >= 1;
+			case 'yearly':
+				return $diff->y >= 1;
+		}
+		return false;
+	}
+
+	public static function autoInvoice($user) {
+		$invoice = static::generateFromPending($user);
+
+		if ($invoice === null) {
+			continue; // No pending positions, no invoice to send.
+		}
+		if ($invoice === false) {
+			return false;
+		}
+		$result = $user->save([
+			'auto_invoiced' => date('Y-m-d H:i:s')
+		], ['whitelist' => ['auto_invoiced']]);
+
+		if (!$result) {
+			return false;
+		}
+
+		$payments = Payments::find('all', [
+			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
+			'billing_invoice_id' => null // Only unassigned payments.
+		]);
+		// Assumes the invoice we just created is not paid.
+
+		if (!Payments::assignToInvoices($payments, [$invoice])) {
+			return false;
+		}
+		return true;
+	}
+
 	public function send($entity) {
 		$user = $entity->user();
 		$contact = Settings::read('contact.billing');
@@ -134,7 +183,13 @@ class Invoices extends \base_core\models\Base {
 			return;
 		}
 
-		$result = Mailer::deliver('invoice_sent', [
+		$result = $entity->save(['status' => 'sent'], [
+			'whitelist' => ['status'],
+			'validate' => false,
+			'lockWriteThrough' => true
+		]);
+
+		return $result && Mailer::deliver('invoice_sent', [
 			'to' => $user->email,
 			'bcc' => $contact['email'],
 			'subject' => $t('Your invoice #{:number}.', [
@@ -151,12 +206,6 @@ class Invoices extends \base_core\models\Base {
 					'content-type' => 'application/pdf'
 				]
 			]
-		]);
-
-		return $result && $entity->save(['status' => 'sent'], [
-			'whitelist' => ['status'],
-			'validate' => false,
-			'lockWriteThrough' => true
 		]);
 	}
 

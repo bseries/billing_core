@@ -209,6 +209,7 @@ class Invoices extends \base_core\models\Base {
 		]);
 
 		return $result && Mailer::deliver('invoice_sent', [
+			'library' => 'billing_core',
 			'to' => $user->email,
 			'bcc' => $contact['email'],
 			'subject' => $t('Your invoice #{:number}.', [
@@ -386,6 +387,7 @@ class Invoices extends \base_core\models\Base {
 					return true;
 				}
 				return Mailer::deliver('invoice_paid', [
+					'library' => 'billing_core',
 					'to' => $user->email,
 					'bcc' => $contact['email'],
 					'subject' => $t('Invoice #{:number} paid.', [

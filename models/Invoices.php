@@ -19,7 +19,6 @@ use lithium\g11n\Message;
 use lithium\core\Libraries;
 use base_core\models\Addresses;
 use base_core\extensions\cms\Settings;
-use base_core\extensions\cms\Features;
 use billing_core\models\Payments;
 use billing_core\models\TaxZones;
 use billing_core\models\InvoicePositions;
@@ -383,7 +382,7 @@ class Invoices extends \base_core\models\Base {
 				$user = $entity->user();
 				$contact = Settings::read('contact.billing');
 
-				if (!Features::enabled('invoice.sendPaidMail') || !$user->is_notified) {
+				if (!Settings::read('invoice.sendPaidMail') || !$user->is_notified) {
 					return true;
 				}
 				return Mailer::deliver('invoice_paid', [

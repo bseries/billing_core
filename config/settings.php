@@ -10,7 +10,6 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-use base_core\extensions\cms\Features;
 use base_core\extensions\cms\Settings;
 use lithium\g11n\Message;
 
@@ -28,6 +27,7 @@ Settings::register('invoice.number', [
 // Overdue, set to false if never overdue.
 // Parsed with strtotime.
 Settings::register('invoice.overdueAfter', '+2 weeks');
+Settings::register('invoice.sendPaidMail', false);
 
 Settings::register('tax.vat.title', $t('VAT'));
 Settings::register('tax.vat.rate', 19);
@@ -48,6 +48,5 @@ Settings::register('billing.paymentTerms', null);
 Settings::register('billing.vatRegNo', 'DE1231232');
 Settings::register('billing.taxNo', '12/12/12');
 
-Features::register('invoice.sendPaidMail', false);
 
 ?>

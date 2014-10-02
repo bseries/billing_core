@@ -1,6 +1,6 @@
 <?php
 
-use base_core\extensions\cms\Features;
+use base_core\extensions\cms\Settings;
 
 $this->set([
 	'page' => [
@@ -41,7 +41,7 @@ $this->set([
 					'label' => $t('Status'),
 					'list' => $statuses
 				]) ?>
-				<?php if (Features::enabled('invoice.sendPaidMail')): ?>
+				<?php if (Settings::read('invoice.sendPaidMail')): ?>
 				<div class="help">
 					<?= $t('The user will be notified by e-mail when the status is changed to `paid`.') ?>
 				</div>

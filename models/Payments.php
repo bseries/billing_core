@@ -39,7 +39,7 @@ class Payments extends \base_core\models\Base {
 	}
 
 	public function totalAmount($entity) {
-		return new Money($entity->amount, $entity->amount_currency);
+		return new Money((integer) $entity->amount, $entity->amount_currency);
 	}
 
 	// Assigns payments to invoices to make them fully paid.

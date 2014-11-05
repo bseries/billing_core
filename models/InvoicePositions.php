@@ -45,7 +45,7 @@ class InvoicePositions extends \base_core\models\Base {
 	public static function pending($user) {
 		return static::find('all', [
 			'conditions' => [
-				'user_id' => $user,
+				'user_id' => $user->id,
 				'billing_invoice_id' => null
 			]
 		]);

@@ -88,12 +88,12 @@ class Invoices extends \base_core\models\Base {
 	}
 
 	public static function generateFromPending($user, array $data = []) {
-		$positions = InvoicePositions::pending($user->id);
+		$positions = InvoicePositions::pending($user);
 
 		if (!$positions) {
 			return true;
 		}
-		$invoice = InvoicesModel::create($data + [
+		$invoice = static::create($data + [
 			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
 			'user_vat_reg_no' => $user->vat_reg_no,
 			'date' => date('Y-m-d'),

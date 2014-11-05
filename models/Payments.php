@@ -54,13 +54,13 @@ class Payments extends \base_core\models\Base {
 		// First sort by amounts, highest first.
 		// This must be done here as we cannot do this realiably in the DB.
 
-		$stack = new BalanceMayHeap();
+		$stack = new BalanceMaxHeap();
 		foreach ($invoices as $invoice) {
 			$stack->insert($invoice);
 		}
 		$invoices = $stack;
 
-		$stack = new PaymentTotalHeap();
+		$stack = new TotalAmountMaxHeap();
 		foreach ($payments as $payment) {
 			$stack->insert($payment);
 		}

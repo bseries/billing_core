@@ -338,25 +338,6 @@ class Invoices extends \base_core\models\Base {
 		]);
 	}
 
-	/*
-	public function payInFull($entity, $payment = null) {
-		$sum = $entity->balance();
-
-		if (!$sum->greaterThan(new NullPrice())) {
-			throw new Exception("Invoice is already paid in full.");
-		}
-
-		$payment = Payments::create([
-			'billing_invoice_id' => $entity->id,
-			'method' => $method,
-			'date' => date('Y-m-d'),
-			'amount' => $sum->getGross()->getAmount(),
-			'amount_currency' => (string) $sum->getCurrency(),
-		]);
-		return $payment->save(null, ['localize' => false]);
-	}
-	*/
-
 	public function isPaidInFull($entity) {
 		return !$entity->balance()->greaterThan(new NullPrice());
 	}

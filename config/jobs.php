@@ -11,6 +11,7 @@
  */
 
 use \DateTime;
+use base_core\extensions\cms\Settings;
 use base_core\extensions\cms\Jobs;
 use base_core\models\Users;
 use billing_core\models\Invoices;
@@ -47,6 +48,9 @@ Jobs::recur('billing_core:auto_invoice', function() {
 
 // This will auto send any invoice that is plain created but not sent.
 Jobs::recur('billing_core:auto_send_invoices', function() {
+	if (!Settings::read('invoce.autoSend')) {
+		return true;
+	}
 	$invoices = Invoices::find('all', [
 		'status' => 'created'
 	]);

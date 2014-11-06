@@ -29,6 +29,9 @@ Settings::register('invoice.number', [
 Settings::register('invoice.overdueAfter', '+2 weeks');
 Settings::register('invoice.sendPaidMail', false);
 
+// Enable/disable auto mailing invoices to recipients once one becomes availablet.
+Settings::register('invoice.autoSend', false);
+
 Settings::register('tax.vat.title', $t('VAT'));
 Settings::register('tax.vat.rate', 19);
 

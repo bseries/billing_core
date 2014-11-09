@@ -27,6 +27,7 @@ use li3_mailer\action\Mailer;
 use temporary\Manager as Temporary;
 use Finance\Price;
 use Finance\NullPrice;
+use Finance\MoneySum;
 use Finance\PriceSum;
 use PHPExcel as Excel;
 use PHPExcel_Writer_Excel2007 as WriterExcel2007;
@@ -85,147 +86,6 @@ class Invoices extends \base_core\models\Base {
 		static::behavior('base_core\extensions\data\behavior\ReferenceNumber')->config(
 			Settings::read('invoice.number')
 		);
-	}
-
-	public static function generateFromPending($user, array $data = []) {
-		$positions = InvoicePositions::pending($user);
-
-		if (!$positions) {
-			return true;
-		}
-		$invoice = static::create($data + [
-			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
-			'user_vat_reg_no' => $user->vat_reg_no,
-			'date' => date('Y-m-d'),
-			'status' => 'created',
-			// 'note' => $t('Order No.') . ': ' . $entity->number,
-			'terms' => Settings::read('billing.paymentTerms')
-		]);
-		$invoice = $user->address('billing')->copy($invoice, 'address_');
-
-		if (!$invoice->save()) {
-			return false;
-		}
-
-		foreach ($positions as $position) {
-			$result = $position->save([
-				'billing_invoice_id' => $invoice->id
-			], ['whitelist' => ['billing_invoice_id']]);
-
-			if (!$result) {
-				return false;
-			}
-		}
-		return $invoice;
-	}
-
-	public static function mustAutoInvoice($user) {
-		if (!$user->auto_invoice_frequency) {
-			trigger_error("User `{$user->id}` has not auto invoice frequency.", E_USER_NOTICE);
-			return false;
-		}
-		if (!$user->auto_invoiced) {
-			return true;
-		}
-		$last = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
-		$diff = $last->diff(new DateTime());
-
-		switch ($user->auto_invoice_frequency) {
-			case 'monthly':
-				return $diff->m >= 1;
-			case 'yearly':
-				return $diff->y >= 1;
-			default:
-				throw new Exception("Unsupported frequency `$user->auto_invoice_frequency`.");
-		}
-		return false;
-	}
-
-	public static function nextAutoInvoiceDate($user) {
-		if (!$user->auto_invoice_frequency) {
-			trigger_error("User `{$user->id}` has not auto invoice frequency.", E_USER_NOTICE);
-			return false;
-		}
-		if (!$user->auto_invoiced) {
-			return false;
-		}
-		$date = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
-
-		switch ($user->auto_invoice_frequency) {
-			case 'monthly':
-				$interval = DateInterval::createFromDateString('1 month');
-				break;
-			case 'yearly':
-				$interval = DateInterval::createFromDateString('1 year');
-			break;
-			default:
-				throw new Exception("Unsupported frequency `$user->auto_invoice_frequency`.");
-		}
-		return $date->add($interval);
-	}
-
-	public static function autoInvoice($user) {
-		$invoice = static::generateFromPending($user);
-
-		if ($invoice === null) {
-			continue; // No pending positions, no invoice to send.
-		}
-		if ($invoice === false) {
-			return false;
-		}
-		$result = $user->save([
-			'auto_invoiced' => date('Y-m-d H:i:s')
-		], ['whitelist' => ['auto_invoiced']]);
-
-		if (!$result) {
-			return false;
-		}
-
-		$payments = Payments::find('all', [
-			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
-			'billing_invoice_id' => null // Only unassigned payments.
-		]);
-		// Assumes the invoice we just created is not paid.
-
-		if (!Payments::assignToInvoices($payments, [$invoice])) {
-			return false;
-		}
-		return true;
-	}
-
-	public function send($entity) {
-		$user = $entity->user();
-		$contact = Settings::read('contact.billing');
-
-		if (!$user->is_notified) {
-			return;
-		}
-
-		$result = $entity->save(['status' => 'sent'], [
-			'whitelist' => ['status'],
-			'validate' => false,
-			'lockWriteThrough' => true
-		]);
-
-		return $result && Mailer::deliver('invoice_sent', [
-			'library' => 'billing_core',
-			'to' => $user->email,
-			'bcc' => $contact['email'],
-			'subject' => $t('Your invoice #{:number}.', [
-				'number' => $invoice->number
-			]),
-			'data' => [
-				'user' => $user,
-				'item' => $entity
-			],
-			'attach' => [
-				[
-					'data' => $entity->exportAsPdf(),
-					'filename' => 'invoice_' . $entity->number . '.pdf',
-					'content-type' => 'application/pdf'
-				]
-			]
-		]);
 	}
 
 	public function title($entity) {
@@ -313,11 +173,11 @@ class Invoices extends \base_core\models\Base {
 
 	// May return positive or negative values.
 	public function balance($entity) {
-		$sum = new PriceSum();
+		$sum = new MoneySum();
 
 		foreach ($entity->positions() as $position) {
 			// We need to convert to gross here as payments will be gross only.
-			$sum = $sum->subtract($position->totalAmount());
+			$sum = $sum->subtract($position->totalAmount()->getGross()->getMoney());
 		}
 		foreach ($entity->payments() as $payment) {
 			$sum = $sum->add($payment->totalAmount());
@@ -511,6 +371,151 @@ class Invoices extends \base_core\models\Base {
 		return $stream;
 	}
 
+	/* Auto invoicing */
+
+	public static function generateFromPending($user, array $data = []) {
+		$positions = InvoicePositions::pending($user);
+
+		if (!$positions) {
+			return true;
+		}
+		$invoice = static::create($data + [
+			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
+			'user_vat_reg_no' => $user->vat_reg_no,
+			'date' => date('Y-m-d'),
+			'status' => 'created',
+			// 'note' => $t('Order No.') . ': ' . $entity->number,
+			'terms' => Settings::read('billing.paymentTerms')
+		]);
+		$invoice = $user->address('billing')->copy($invoice, 'address_');
+
+		if (!$invoice->save()) {
+			return false;
+		}
+
+		foreach ($positions as $position) {
+			$result = $position->save([
+				'billing_invoice_id' => $invoice->id
+			], ['whitelist' => ['billing_invoice_id']]);
+
+			if (!$result) {
+				return false;
+			}
+		}
+		return $invoice;
+	}
+
+	public static function mustAutoInvoice($user) {
+		if (!$user->auto_invoice_frequency) {
+			trigger_error("User `{$user->id}` has not auto invoice frequency.", E_USER_NOTICE);
+			return false;
+		}
+		if (!$user->auto_invoiced) {
+			return true;
+		}
+		$last = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
+		$diff = $last->diff(new DateTime());
+
+		switch ($user->auto_invoice_frequency) {
+			case 'monthly':
+				return $diff->m >= 1;
+			case 'yearly':
+				return $diff->y >= 1;
+			default:
+				throw new Exception("Unsupported frequency `$user->auto_invoice_frequency`.");
+		}
+		return false;
+	}
+
+	public static function nextAutoInvoiceDate($user) {
+		if (!$user->auto_invoice_frequency) {
+			trigger_error("User `{$user->id}` has not auto invoice frequency.", E_USER_NOTICE);
+			return false;
+		}
+		if (!$user->auto_invoiced) {
+			return false;
+		}
+		$date = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
+
+		switch ($user->auto_invoice_frequency) {
+			case 'monthly':
+				$interval = DateInterval::createFromDateString('1 month');
+				break;
+			case 'yearly':
+				$interval = DateInterval::createFromDateString('1 year');
+			break;
+			default:
+				throw new Exception("Unsupported frequency `$user->auto_invoice_frequency`.");
+		}
+		return $date->add($interval);
+	}
+
+	public static function autoInvoice($user) {
+		$invoice = static::generateFromPending($user);
+
+		if ($invoice === null) {
+			continue; // No pending positions, no invoice to send.
+		}
+		if ($invoice === false) {
+			return false;
+		}
+		$result = $user->save([
+			'auto_invoiced' => date('Y-m-d H:i:s')
+		], ['whitelist' => ['auto_invoiced']]);
+
+		if (!$result) {
+			return false;
+		}
+
+		$payments = Payments::find('all', [
+			'conditions' => [
+				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
+				'billing_invoice_id' => null // Only unassigned payments.
+			]
+		]);
+		// Assumes the invoice we just created is not paid.
+
+		if (!Payments::assignToInvoices($payments, [$invoice])) {
+			return false;
+		}
+		return true;
+	}
+
+	public function send($entity) {
+		$user = $entity->user();
+		$contact = Settings::read('contact.billing');
+
+		if (!$user->is_notified) {
+			return;
+		}
+
+		$result = $entity->save(['status' => 'sent'], [
+			'whitelist' => ['status'],
+			'validate' => false,
+			'lockWriteThrough' => true
+		]);
+
+		return $result && Mailer::deliver('invoice_sent', [
+			'library' => 'billing_core',
+			'to' => $user->email,
+			'bcc' => $contact['email'],
+			'subject' => $t('Your invoice #{:number}.', [
+				'number' => $invoice->number
+			]),
+			'data' => [
+				'user' => $user,
+				'item' => $entity
+			],
+			'attach' => [
+				[
+					'data' => $entity->exportAsPdf(),
+					'filename' => 'invoice_' . $entity->number . '.pdf',
+					'content-type' => 'application/pdf'
+				]
+			]
+		]);
+	}
+
 	// @deprecated
 	public function totalOutstanding($entity) {
 		trigger_error('totalOutstanding() is deprecated in favor of balance().', E_USER_DEPRECATED);
@@ -550,26 +555,26 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 	// Save nested positions.
 	if (!empty($params['options']['lockWriteThrough']) || !$isLocked) {
 		$new = isset($data['positions']) ? $data['positions'] : [];
-		foreach ($new as $key => $data) {
+		foreach ($new as $key => $value) {
 			if ($key === 'new') {
 				continue;
 			}
-			if (isset($data['id'])) {
-				$item = InvoicePositions::find('first', ['conditions' => ['id' => $data['id']]]);
+			if (isset($value['id'])) {
+				$item = InvoicePositions::find('first', ['conditions' => ['id' => $value['id']]]);
 
-				if ($data['_delete']) {
+				if ($value['_delete']) {
 					if (!$item->delete()) {
 						return false;
 					}
 					continue;
 				}
 			} else {
-				$item = InvoicePositions::create($data + [
+				$item = InvoicePositions::create($value + [
 					'billing_invoice_id' => $entity->id,
 					$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
 				]);
 			}
-			if (!$item->save($data)) {
+			if (!$item->save($value)) {
 				return false;
 			}
 		}
@@ -577,14 +582,14 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 
 	// Save nested payments; alwas allow writing these.
 	$new = isset($data['payments']) ? $data['payments'] : [];
-	foreach ($new as $key => $data) {
+	foreach ($new as $key => $value) {
 		if ($key === 'new') {
 			continue;
 		}
-		if (isset($data['id'])) {
-			$item = Payments::find('first', ['conditions' => ['id' => $data['id']]]);
+		if (isset($value['id'])) {
+			$item = Payments::find('first', ['conditions' => ['id' => $value['id']]]);
 
-			if ($data['_delete']) {
+			if ($value['_delete']) {
 				if (!$item->delete()) {
 					return false;
 				}
@@ -596,7 +601,7 @@ Invoices::applyFilter('save', function($self, $params, $chain) {
 				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id
 			]);
 		}
-		if (!$item->save($data)) {
+		if (!$item->save($value)) {
 			return false;
 		}
 	}

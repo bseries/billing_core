@@ -61,6 +61,7 @@ $this->set([
 						<?php endif ?>
 					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money, 'money') : null ?>
 					<td class="actions">
+						<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'billing_core'], ['class' => 'button delete']) ?>
 						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'billing_core'], ['class' => 'button']) ?>
 				<?php endforeach ?>
 			</tbody>

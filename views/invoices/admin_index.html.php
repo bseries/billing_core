@@ -56,7 +56,7 @@ $this->set([
 							-
 						<?php endif ?>
 					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
-					<td><?= ($money = $item->totalOutstanding()) ? $this->money->format($money->getGross(), 'money') : null ?>
+					<td><?= ($money = $item->balance()) ? $this->money->format($money, 'money') : null ?>
 					<td class="date created">
 						<time datetime="<?= $this->date->format($item->created, 'w3c') ?>">
 							<?= $this->date->format($item->created, 'date') ?>

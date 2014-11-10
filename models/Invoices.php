@@ -32,6 +32,7 @@ use Finance\PriceSum;
 use PHPExcel as Excel;
 use PHPExcel_Writer_Excel2007 as WriterExcel2007;
 use PHPExcel_IOFactory as ExcelIOFactory;
+use SebastianBergmann\Money\Money;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).
@@ -188,7 +189,7 @@ class Invoices extends \base_core\models\Base {
 	public function pay($entity, $payment) {
 		$sum = $entity->balance();
 
-		if (!$sum->greaterThan(new NullPrice())) {
+		if ($entity->isPaidInFull()) {
 			throw new Exception("Invoice is already paid in full.");
 		}
 
@@ -199,7 +200,10 @@ class Invoices extends \base_core\models\Base {
 	}
 
 	public function isPaidInFull($entity) {
-		return !$entity->balance()->greaterThan(new NullPrice());
+		if (!($balance = $entity->balance())) {
+			return false;
+		}
+		return $balance->getAmount() > 0;
 	}
 
 	public function address($entity) {
@@ -413,7 +417,7 @@ class Invoices extends \base_core\models\Base {
 		if (!$user->auto_invoiced) {
 			return true;
 		}
-		$last = DateTime::createFromFormat('Y-m-d', $user->auto_invoiced);
+		$last = DateTime::createFromFormat('Y-m-d H:i:s', $user->auto_invoiced);
 		$diff = $last->diff(new DateTime());
 
 		switch ($user->auto_invoice_frequency) {
@@ -473,12 +477,12 @@ class Invoices extends \base_core\models\Base {
 				'billing_invoice_id' => null // Only unassigned payments.
 			]
 		]);
-		// Assumes the invoice we just created is not paid.
-
-		if (!Payments::assignToInvoices($payments, [$invoice])) {
-			return false;
+		if (!$payments) {
+			return true;
 		}
-		return true;
+
+		// Assumes the invoice we just created is not paid.
+		return Payments::assignToInvoices($payments, [$invoice]);
 	}
 
 	public function send($entity) {

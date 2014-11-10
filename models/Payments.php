@@ -73,17 +73,18 @@ class Payments extends \base_core\models\Base {
 
 			while (!$invoice->isPaidInFull() && !$payments->isEmpty()) {
 				// Need to refresh balance each time a payment was made.
-				$balance = $invoice->balance()->getGross()->getMoney();
+				$balance = $invoice->balance()->getMoney();
 				$payment = $payments->extract();
 
 				if ($payment->totalAmount()->greaterThan($balance)) {
 					// We need to split the payment and end the loop.
 					// FIXME optimize to search for next smallest payment that fits.
-
 					$result = $payment->split([
-						$balance->getAmount(),
-						$payment->totalAmount()->subtract($balance)->getAmount()
+						// Balance is already negative.
+						$balance->negate()->getAmount(),
+						$payment->totalAmount()->add($balance)->getAmount()
 					]);
+
 					if (!$result) {
 						return false;
 					}
@@ -123,9 +124,9 @@ class Payments extends \base_core\models\Base {
 		$results = array_fill_keys(array_keys($amounts), null);
 
 		foreach ($amounts as $key => $amount) {
-			$payment = static::create(compact('amount') + $entity->data());
+			$payment = static::create(['id' => null] + compact('amount') + $entity->data());
 
-			if (!$payment->save()) {
+			if (!$payment->save(null, ['localize' => false])) {
 				return false;
 			}
 			$results[$key] = $payment;

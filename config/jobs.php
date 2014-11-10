@@ -16,37 +16,7 @@ use base_core\extensions\cms\Jobs;
 use base_core\models\Users;
 use billing_core\models\Invoices;
 
-Jobs::recur('foo', function() {
-	Invoices::pdo()->beginTransaction();
-
-	// FIXME Make this work for virtual users, too?
-	$users = Users::find('all', [
-		'conditions' => [
-			'is_auto_invoiced' => true
-			// 'is_active' => true
-		]
-	]);
-	foreach ($users as $user) {
-		if (!Invoices::mustAutoInvoice($user)) {
-			continue;
-		}
-		if (!Invoices::autoInvoice($user)) {
-			Invoices::pdo()->rollback();
-			return false;
-		}
-	}
-	Invoices::pdo()->commit();
-}, [
-	'frequency' => Jobs::FREQUENCY_LOW,
-	'depends' => ['billing_time:invoice_place_timed' => 'optional']
-]);
-
-
-// Generates invoices from pending invoice positions
-// automatically then assigns payments.
-//
-// Assumes that if a user is auto invoiced
-// we also should auto assign the payments.
+// Generates invoices from pending invoice positions.
 Jobs::recur('billing_core:auto_invoice', function() {
 	Invoices::pdo()->beginTransaction();
 

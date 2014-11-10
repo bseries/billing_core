@@ -471,6 +471,8 @@ class Invoices extends \base_core\models\Base {
 			return false;
 		}
 
+		// TODO Implement assignToInvoices.
+		/*
 		$payments = Payments::find('all', [
 			'conditions' => [
 				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
@@ -483,6 +485,8 @@ class Invoices extends \base_core\models\Base {
 
 		// Assumes the invoice we just created is not paid.
 		return Payments::assignToInvoices($payments, [$invoice]);
+		*/
+		return $result;
 	}
 
 	public function send($entity) {

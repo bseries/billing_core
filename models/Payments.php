@@ -47,9 +47,12 @@ class Payments extends \base_core\models\Base {
 	// The more payments and invoices are passed the better
 	// can the algorithm optimize the assignments.
 	//
+	// TODO Implement actually working version.
+	//
 	// FIXME This algorithm should be optimized to search
 	// for the closest matching payment instead of using the largest
 	// one available. To reduce amount of split payments.
+	/*
 	public static function assignToInvoices($payments, $invoices) {
 		// First sort by amounts, highest first.
 		// This must be done here as we cannot do this realiably in the DB.
@@ -76,9 +79,17 @@ class Payments extends \base_core\models\Base {
 				$balance = $invoice->balance()->getMoney();
 				$payment = $payments->extract();
 
-				if ($payment->totalAmount()->greaterThan($balance)) {
+				if ($payment->totalAmount()->greaterThan($balance->negate())) {
 					// We need to split the payment and end the loop.
 					// FIXME optimize to search for next smallest payment that fits.
+
+
+					// if ($balance->negate()->getAmount() === $payment->totalAmount()->getAmount()) {
+					// 	if (!$invoice->pay($payment)) {
+					// 		return false;
+					// 	}
+					// }
+
 					$result = $payment->split([
 						// Balance is already negative.
 						$balance->negate()->getAmount(),
@@ -112,11 +123,11 @@ class Payments extends \base_core\models\Base {
 		}
 		return true;
 	}
+	*/
 
 	// Splits the payment into given amounts.
 	// Amounts must be cents. This must be wrapped in a transaction.
-	//
-	// Returns
+	/*
 	public function split($entity, array $amounts) {
 		if (array_sum($amounts) > $entity->totalAmount()->getAmount()) {
 			return false;
@@ -136,6 +147,7 @@ class Payments extends \base_core\models\Base {
 		}
 		return $results;
 	}
+	*/
 }
 
 ?>

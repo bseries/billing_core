@@ -12,10 +12,12 @@
 
 use lithium\g11n\Message;
 use base_core\extensions\cms\Widgets;
+use billing_core\models\Payments;
 use billing_core\models\Invoices;
 use lithium\storage\Cache;
 use lithium\core\Environment;
 use \NumberFormatter;
+use Finance\MoneySum;
 use Finance\PriceSum;
 
 extract(Message::aliases());
@@ -26,37 +28,39 @@ Widgets::register('invoices_value', function() use ($t) {
 		return $formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency());
 	};
 
-	$paid = new PriceSum();
-	$results = Invoices::find('all', [
-		'conditions' => [
-			'status' => 'paid'
-		]
-	]);
-	foreach ($results as $item) {
-		$paid = $paid->add($item->totalAmount()->getGross());
-	}
+	$total = new PriceSum();
 
-	$outstanding = new PriceSum();
+	$sum = new MoneySum();
 	$results = Invoices::find('all', [
 		'conditions' => [
 			'status' => [
-				'!=' => 'paid'
+				'!=' => 'cancelled'
 			]
 		]
 	]);
 	foreach ($results as $item) {
-		$outstanding = $outstanding->add($item->totalAmount()->getGross());
+		$total = $total->add($item->totalAmount()->getGross());
+		$sum = $sum->add($item->balance()->getMoney());
+	}
+
+	$results = Payments::find('all', [
+		'conditions' => [
+			'billing_invoice_id' => null
+		]
+	]);
+	foreach ($results as $item) {
+		$sum = $sum->add($item->totalAmount());
 	}
 
 	return [
-		'title' => $t('Invoices'),
+		'title' => $t('Cashflow'),
 		'url' => [
 			'controller' => 'Invoices', 'action' => 'index', 'library' => 'billing_core'
 		],
-		'class' => 'positive',
+		'class' => $sum->getAmount() < 0 ? 'negative' : 'positive',
 		'data' => [
-			$t('paid') => !$paid->isZero() ? $formatMoney($paid->getGross()) : 0,
-			$t('outstanding') => !$outstanding->isZero() ? $formatMoney($outstanding->getGross()) : 0
+			$t('balance') => !$sum->isZero() ? $formatMoney($sum->getMoney()) : 0,
+			$t('total') => !$total->isZero() ? $formatMoney($total->getGross()) : 0
 		]
 	];
 }, [

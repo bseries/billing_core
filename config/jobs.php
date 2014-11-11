@@ -16,7 +16,11 @@ use base_core\extensions\cms\Jobs;
 use base_core\models\Users;
 use billing_core\models\Invoices;
 
-// Generates invoices from pending invoice positions.
+// Generates invoices from pending invoice positions
+// automatically then assigns payments.
+//
+// Assumes that if a user is auto invoiced
+// we also should auto assign the payments.
 Jobs::recur('billing_core:auto_invoice', function() {
 	Invoices::pdo()->beginTransaction();
 

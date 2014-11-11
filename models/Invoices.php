@@ -466,6 +466,23 @@ class Invoices extends \base_core\models\Base {
 		return $user->save([
 			'auto_invoiced' => date('Y-m-d H:i:s')
 		], ['whitelist' => ['auto_invoiced']]);
+
+		if (!$result) {
+			return false;
+		}
+
+		$payments = Payments::find('all', [
+			'conditions' => [
+				$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
+				'billing_invoice_id' => null // Only unassigned payments.
+			]
+		]);
+		if (!$payments) {
+			return true;
+		}
+
+		// Assumes the invoice we just created is not paid.
+		return Payments::assignToInvoices($payments, [$invoice]);
 	}
 
 	public function send($entity) {

@@ -26,8 +26,13 @@ class Money extends \lithium\template\Helper {
 
 		switch ($type) {
 			case 'money':
-				$formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
-				$result = $formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency());
+				if ($currency = $value->getCurrency()) {
+					$formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+					$result = $formatter->formatCurrency($value->getAmount() / 100, $currency);
+				} else {
+					$formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+					$result = $formatter->format($value->getAmount() / 100);
+				}
 
 				if ($options['html']) {
 					return $this->_applyMarkup($result);

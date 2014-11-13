@@ -380,7 +380,7 @@ class Invoices extends \base_core\models\Base {
 	public static function generateFromPending($user, array $data = []) {
 		$positions = InvoicePositions::pending($user);
 
-		if (!$positions) {
+		if (!$positions->count()) {
 			return true;
 		}
 		$invoice = static::create($data + [

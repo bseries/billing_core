@@ -15,16 +15,6 @@ namespace billing_core\models;
 use DateTime;
 use DateInterval;
 use Exception;
-use lithium\g11n\Message;
-use lithium\core\Libraries;
-use base_core\models\Addresses;
-use base_core\extensions\cms\Settings;
-use billing_core\models\Payments;
-use billing_core\models\TaxZones;
-use billing_core\models\InvoicePositions;
-use app\extensions\pdf\InvoiceDocument;
-use li3_mailer\action\Mailer;
-use temporary\Manager as Temporary;
 use Finance\Price;
 use Finance\NullPrice;
 use Finance\MoneySum;
@@ -33,6 +23,16 @@ use PHPExcel as Excel;
 use PHPExcel_Writer_Excel2007 as WriterExcel2007;
 use PHPExcel_IOFactory as ExcelIOFactory;
 use SebastianBergmann\Money\Money;
+use temporary\Manager as Temporary;
+use lithium\g11n\Message;
+use lithium\core\Libraries;
+use li3_mailer\action\Mailer;
+
+use app\extensions\pdf\InvoiceDocument;
+use base_core\extensions\cms\Settings;
+use base_address\models\Addresses;
+use billing_core\models\Payments;
+use billing_core\models\InvoicePositions;
 
 // Given our business resides in Germany DE and we're selling services
 // which fall und § 3 a Abs. 4 UStG (Katalogleistung).

@@ -13,17 +13,19 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "atelierdisko/base_core": "1.2.*",
+        "composer/installers": "~1.0",
         "uor/li3_flash_message": "dev-master",
         "atelierdisko/finance": "dev-master as 2.0.0-dev",
         "phpoffice/phpexcel": "1.8.0",
         "zendframework/zendpdf": "2.*",
         "unionofrad/lithium": "dev-dev",
-        "composer/installers": "~1.0"
+        "atelierdisko/base_core": "1.2.*",
+        "atelierdisko/base_address": "1.2.*"
     },
     "repositories": [
       { "type": "vcs", "url": "https://github.com/uor/li3_flash_message" },
+      { "type": "vcs", "url": "git@bitbucket.org:atelierdisko/finance.git" },
       { "type": "vcs", "url": "git@bitbucket.org:atelierdisko/base_core.git" },
-      { "type": "vcs", "url": "git@bitbucket.org:atelierdisko/finance.git" }
+      { "type": "vcs", "url": "git@bitbucket.org:atelierdisko/base_address.git" }
     ]
 }

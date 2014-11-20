@@ -12,12 +12,6 @@
 
 define('BILLING_CORE_VERSION', '1.2.0');
 
-require 'settings.php';
-// require 'media.php';
-require 'panes.php';
-require 'widgets.php';
-require 'jobs.php';
-
 use billing_core\models\TaxTypes;
 use lithium\g11n\Message;
 

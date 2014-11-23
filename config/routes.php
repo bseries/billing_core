@@ -37,15 +37,4 @@ Router::connect('/admin/billing/payments/{:action}/{:id:[0-9]+}', [
 	'controller' => 'payments', 'library' => 'billing_core', 'admin' => true
 ], $persist);
 
-Router::connect('/admin/billing/{:id:[0-9]+}', [
-	'controller' => 'Billing', 'library' => 'billing_core', 'action' => 'view', 'admin' => true
-], $persist);
-Router::connect('/admin/billing/{:action}', [
-	'controller' => 'Billing', 'library' => 'billing_core', 'admin' => true
-], $persist);
-Router::connect('/admin/billing/{:action}/{:id:[0-9]+}', [
-	'controller' => 'Billing', 'library' => 'billing_core', 'admin' => true
-], $persist);
-
-
 ?>

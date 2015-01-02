@@ -15,7 +15,7 @@
         "php": ">=5.5.0",
         "composer/installers": "~1.0",
         "uor/li3_flash_message": "dev-master",
-        "atelierdisko/finance": "dev-master as 2.0.0-dev",
+        "atelierdisko/finance": "1.1.*",
         "phpoffice/phpexcel": "1.8.0",
         "zendframework/zendpdf": "2.*",
         "unionofrad/lithium": "dev-dev",

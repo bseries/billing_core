@@ -12,9 +12,9 @@
 
 namespace billing_core\models;
 
+use Exception;
 use Finance\Price;
 use billing_core\models\Invoices;
-use Exception;
 use billing_core\models\TaxTypes;
 
 // In the moment of generating an invoice position the price is finalized.
@@ -34,7 +34,17 @@ class InvoicePositions extends \base_core\models\Base {
 		]
 	];
 
+	public $belongsTo = [
+		'Invoice' => [
+			'to' => 'billing_core\models\Invoices',
+			'key' => 'billing_invoice_id'
+		]
+	];
+
 	public function invoice($entity) {
+		if ($entity->invoice) {
+			return $entity->invoice;
+		}
 		return Invoices::find('first', [
 			'conditions' => [
 				'id' => $entity->billing_invoice_id

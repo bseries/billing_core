@@ -55,12 +55,32 @@ class Invoices extends \base_core\models\Base {
 
 	// public $belongsTo = ['User'];
 
-	// public $hasMany = ['InvoicePosition', 'Payments'];
-
 	protected static $_actsAs = [
 		'base_core\extensions\data\behavior\Timestamp',
 		'base_core\extensions\data\behavior\ReferenceNumber',
 		'base_core\extensions\data\behavior\StatusChange'
+	];
+
+	public $belongsTo = [
+		'User' => [
+			'to' => 'base_core\models\Users',
+			'key' => 'user_id'
+		],
+		'VirtualUser' => [
+			'to' => 'base_core\models\VirtualUsers',
+			'key' => 'virtual_user_id'
+		]
+	];
+
+	public $hasMany = [
+		'Positions' => [
+			'to' => 'billing_core\models\InvoicePositions',
+			'key' => 'billing_invoice_id'
+		],
+		'Payments' => [
+			'to' => 'billing_core\models\Payments',
+			'key' => 'billing_invoice_id'
+		],
 	];
 
 	public static $enum = [
@@ -117,7 +137,13 @@ class Invoices extends \base_core\models\Base {
 	}
 
 	public function positions($entity) {
-		return !$entity->id ? [] : InvoicePositions::find('all', [
+		if (!$entity->id) {
+			return [];
+		}
+		if ($entity->positions) {
+			return $entity->positions;
+		}
+		return InvoicePositions::find('all', [
 			'conditions' => [
 				'billing_invoice_id' => $entity->id
 			]
@@ -127,6 +153,9 @@ class Invoices extends \base_core\models\Base {
 	public function payments($entity) {
 		if (!$entity->id) {
 			return [];
+		}
+		if ($entity->payments) {
+			return $entity->payments;
 		}
 		return Payments::find('all', [
 			'conditions' => [

@@ -12,8 +12,8 @@
 
 namespace billing_core\models;
 
-use billing_core\models\Invoices;
 use SebastianBergmann\Money\Money;
+use billing_core\models\Invoices;
 
 class Payments extends \base_core\models\Base {
 
@@ -32,8 +32,30 @@ class Payments extends \base_core\models\Base {
 		]
 	];
 
+	public $belongsTo = [
+		'User' => [
+			'to' => 'base_core\models\Users',
+			'key' => 'user_id'
+		],
+		'VirtualUser' => [
+			'to' => 'base_core\models\VirtualUsers',
+			'key' => 'virtual_user_id'
+		],
+		'Invoice' => [
+			'to' => 'billing_core\models\Invoices',
+			'key' => 'billing_invoice_id'
+		]
+	];
+
 	public function invoice($entity) {
-		return Invoices::find('first', ['conditions' => ['id' => $entity->billing_invoice_id]]);
+		if ($entity->invoice) {
+			return $entity->invoice;
+		}
+		return Invoices::find('first', [
+			'conditions' => [
+				'id' => $entity->billing_invoice_id
+			]
+		]);
 	}
 
 	public function totalAmount($entity) {

@@ -18,9 +18,6 @@ use Exception;
 use AD\Finance\Price;
 use AD\Finance\Price\Prices;
 use AD\Finance\Money\Monies;
-use PHPExcel as Excel;
-use PHPExcel_Writer_Excel2007 as WriterExcel2007;
-use PHPExcel_IOFactory as ExcelIOFactory;
 use temporary\Manager as Temporary;
 use lithium\g11n\Message;
 use lithium\core\Libraries;
@@ -266,94 +263,6 @@ class Invoices extends \base_core\models\Base {
 			'awaiting-payment',
 			'payment-error',
 		]);
-	}
-
-	public function exportAsExcel($entity) {
-		extract(Message::aliases());
-
-		$excel = new Excel();
-
-		$sheet = $excel->getActiveSheet();
-
-		$sheet->setCellValue('A1', $t('Invoice number'));
-		$sheet->setCellValue('B1', $entity->number);
-		$sheet->setCellValue('A2', $t('Invoice date'));
-		$sheet->setCellValue('B2', $entity->date()->format('d.m.Y'));
-
-		$sheet->setCellValue('A4', $t('Recipient address'));
-		$sheet->setCellValue('B4', $entity->address()->format('postal'));
-		$sheet->setCellValue('A5', $t('Recipient VAT Reg. No.'));
-		$sheet->setCellValue('B5', $entity->user_vat_reg_no);
-		$sheet->setCellValue('A6', $t('Recipient number'));
-		$sheet->setCellValue('B6', $entity->user()->number);
-
-		$data = [];
-		$data[] = [
-			$t('Description'),
-			$t('Quantity'),
-			$t('Unit price (net)'),
-			$t('Line total (net)')
-		];
-		$data[] = [];
-		foreach ($entity->positions() as $position) {
-			$data[] = [
-				$position->description,
-				$position->quantity,
-				round($position->amount()->getNet()->getAmount() / 100, 4),
-				round($position->totalAmount()->getNet()->getAmount() / 100, 4)
-			];
-		}
-		$data[] = [];
-		$data[] = [
-			$t('Total (net)'),
-			null,
-			null,
-			round($entity->totalAmount()->getNet()->getAmount() / 100, 4)
-		];
-		$data[] = [
-			$t('Tax ({:rate}%)', ['rate' => $entity->tax_rate]),
-			null,
-			null,
-			round($entity->totalAmount()->getTax()->getAmount() / 100, 4)
-		];
-		$data[] = [
-			$t('Total (gross)'),
-			null,
-			null,
-			round($entity->totalAmount()->getGross()->getAmount() / 100, 4)
-		];
-		$sheet->fromArray($data, null, 'C9');
-
-		// Last filled cell.
-		$offset = 9 + count($data) - 1;
-
-		$sheet->setCellValue('A' . ($offset + 2), $t('Terms'));
-		$sheet->setCellValue('B' . ($offset + 2), $entity->terms);
-		$sheet->setCellValue('A' . ($offset + 3), $t('Note'));
-		$sheet->setCellValue('B' . ($offset + 3) , $entity->note);
-		$sheet->setCellValue('A' . ($offset + 4), $t('Tax note'));
-		$sheet->setCellValue('B' . ($offset + 4), $entity->taxNote());
-
-		$sheet->getStyle('A1:A45')->getFont()->setBold(true);
-		$sheet->getStyle('A1:A45')->getAlignment()->setVertical('top');
-		$sheet->getStyle('B1:B45')->getAlignment()->setWrapText(true);
-		$sheet->getStyle('C9:F9')->getFont()->setBold(true);
-		$sheet->getStyle('C' . ($offset - 2) . ':F' . $offset)->getFont()->setBold(true);
-
-		$sheet->getColumnDimension('A')->setAutoSize(true);
-		$sheet->getColumnDimension('B')->setAutoSize(true);
-		$sheet->getColumnDimension('C')->setAutoSize(true);
-		$sheet->getColumnDimension('E')->setAutoSize(true);
-		$sheet->getColumnDimension('F')->setAutoSize(true);
-
-		$file = Temporary::file([
-			'context' => PROJECT_NAME . '_invoices_export_excel'
-		]);
-
-		$writer = ExcelIOFactory::createWriter($excel, 'Excel2007');
-		$writer->save($file);
-
-		return fopen($file, 'r');
 	}
 
 	public function exportAsPdf($entity) {

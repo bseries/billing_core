@@ -34,27 +34,6 @@ class InvoicesController extends \base_core\controllers\BaseController {
 		return compact('data') + $this->_selects();
 	}
 
-	public function admin_export_excel() {
-		extract(Message::aliases());
-
-		$invoice = Invoices::find('first', [
-			'conditions' => [
-				'id' => $this->request->id
-			]
-		]);
-		$stream = $invoice->exportAsExcel();
-
-			$this->_renderDownload(
-			$this->_downloadBasename(
-				null,
-				'invoice',
-				$invoice->number . '.xlsx'
-			),
-			$stream
-		);
-		fclose($stream);
-	}
-
 	public function admin_export_pdf() {
 		extract(Message::aliases());
 

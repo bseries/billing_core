@@ -133,6 +133,7 @@ class Invoices extends \base_core\models\Base {
 
 	public function positions($entity) {
 		if (!$entity->id) {
+			trigger_error('ID less invoices are deprecated.', E_USER_DEPRECATED);
 			return [];
 		}
 		if ($entity->positions) {

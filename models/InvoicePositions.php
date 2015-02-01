@@ -42,10 +42,7 @@ class InvoicePositions extends \base_core\models\Base {
 	];
 
 	public function invoice($entity) {
-		if ($entity->invoice) {
-			return $entity->invoice;
-		}
-		return Invoices::find('first', [
+		return $entity->invoice ?: Invoices::find('first', [
 			'conditions' => [
 				'id' => $entity->billing_invoice_id
 			]

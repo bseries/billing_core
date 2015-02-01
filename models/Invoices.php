@@ -15,14 +15,12 @@ namespace billing_core\models;
 use DateTime;
 use DateInterval;
 use Exception;
-use Finance\Price;
-use Finance\NullPrice;
-use Finance\MoneySum;
-use Finance\PriceSum;
+use AD\Finance\Price;
+use AD\Finance\Price\Prices;
+use AD\Finance\Money\Monies;
 use PHPExcel as Excel;
 use PHPExcel_Writer_Excel2007 as WriterExcel2007;
 use PHPExcel_IOFactory as ExcelIOFactory;
-use SebastianBergmann\Money\Money;
 use temporary\Manager as Temporary;
 use lithium\g11n\Message;
 use lithium\core\Libraries;
@@ -174,50 +172,30 @@ class Invoices extends \base_core\models\Base {
 		return $entity->total_gross_outstanding && $date->getTimestamp() > strtotime($overdue);
 	}
 
-	public function totalAmount($entity) {
-		$sum = new PriceSum();
+	public function totals($entity) {
+		$result = new Prices();
 
 		foreach ($entity->positions() as $position) {
-			$sum = $sum->add($position->totalAmount());
+			$result = $result->add($position->totalAmount());
 		}
-		return $sum;
-	}
-
-	public function totalTax($entity) {
-		return $entity->totalAmount()->getTax();
-	}
-
-	public function totalTaxes($entity) {
-		$results = [];
-
-		foreach ($this->positions($entity) as $position) {
-			$results[] = [
-				'rate' => $position->tax_rate,
-				'amount' => $position->totalAmount()->getTax()
-			];
-		}
-
-		return $results;
-
+		return $result->sum();
 	}
 
 	// May return positive or negative values.
+	// We need to convert to gross here as payments will be gross only.
 	public function balance($entity) {
-		$sum = new MoneySum();
+		$result = new Monies();
 
 		foreach ($entity->positions() as $position) {
-			// We need to convert to gross here as payments will be gross only.
-			$sum = $sum->subtract($position->totalAmount()->getGross()->getMoney());
+			$result = $result->subtract($position->totalAmount()->getGross());
 		}
 		foreach ($entity->payments() as $payment) {
-			$sum = $sum->add($payment->totalAmount());
+			$result = $result->add($payment->totalAmount());
 		}
-		return $sum;
+		return $result->sum();
 	}
 
 	public function pay($entity, $payment) {
-		$sum = $entity->balance();
-
 		if ($entity->isPaidInFull()) {
 			throw new Exception("Invoice is already paid in full.");
 		}
@@ -229,10 +207,12 @@ class Invoices extends \base_core\models\Base {
 	}
 
 	public function isPaidInFull($entity) {
-		if (!($balance = $entity->balance())) {
-			return false;
+		foreach ($entity->balance() as $money) {
+			if ($money->getAmount() > 0) {
+				return false;
+			}
 		}
-		return $balance->getAmount() > 0;
+		return true;
 	}
 
 	public function address($entity) {
@@ -532,10 +512,19 @@ class Invoices extends \base_core\models\Base {
 		]);
 	}
 
-	// @deprecated
+	/* deprecated */
+
 	public function totalOutstanding($entity) {
 		trigger_error('totalOutstanding() is deprecated in favor of balance().', E_USER_DEPRECATED);
 		return $entity->balance();
+	}
+
+	public function totalAmount($entity) {
+		throw new Exception('Replaced by totals().');
+	}
+
+	public function totalTax($entity) {
+		throw new Exception('Replaced by totals().');
 	}
 }
 

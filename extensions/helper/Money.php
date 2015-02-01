@@ -14,7 +14,12 @@ namespace billing_core\extensions\helper;
 
 use lithium\core\Environment;
 use NumberFormatter;
+use AD\Finance\Money as MoneyValue;
+use AD\Finance\Money\Monies;
 use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
+use AD\Finance\Price;
+use AD\Finance\Price\Prices;
+use AD\Finance\Price\PriceIntlFormatter as PriceFormatter;
 
 class Money extends \lithium\template\Helper {
 
@@ -27,13 +32,36 @@ class Money extends \lithium\template\Helper {
 
 		switch ($type) {
 			case 'money':
-				$formatter = new MoneyFormatter($locale);
-				$result = $formatter->format($value);
+				if ($value instanceof Monies) {
+					$formatter = new MoneyFormatter($locale);
+					$results = [];
 
-				if ($options['html']) {
-					return $this->_applyMarkup($result);
+					foreach ($value->sum() as $currency => $money) {
+						$results[] = $formatter->format($value);
+					}
+					return implode(' / ', $results);
 				}
-				return $result;
+				if ($value instanceof MoneyValue) {
+					$formatter = new MoneyFormatter($locale);
+					return $formatter->format($value);
+				}
+				if ($value instanceof Prices) {
+					$formatter = new PriceFormatter($locale, false, false);
+					$results = [];
+
+					foreach ($value->sum() as $rate => $currencies) {
+						foreach ($currencies as $currency => $price) {
+							$results[] = $formatter->format($value);
+						}
+					}
+					return implode(' / ', $results);
+				}
+				if ($value instanceof Price) {
+					$formatter = new PriceFormatter($locale, false, false);
+					return $formatter->format($value);
+				}
+				return;
+
 			case 'decimal':
 				$formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
 				$formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
@@ -48,6 +76,7 @@ class Money extends \lithium\template\Helper {
 
 	// @todo Make this work with formats without currency symbols
 	// as well as ,/. separators. Use strrpos.
+	/*
 	protected function _applyMarkup($string) {
 		$before = mb_substr($string, 0, -5);
 		$comma = mb_substr($string, -5, 1);
@@ -85,6 +114,7 @@ class Money extends \lithium\template\Helper {
 		}
 		return $before . $new . $after;
 	}
+	*/
 
 	protected function _locale() {
 		return Environment::get('locale');

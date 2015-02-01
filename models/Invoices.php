@@ -171,14 +171,14 @@ class Invoices extends \base_core\models\Base {
 		return $entity->total_gross_outstanding && $date->getTimestamp() > strtotime($overdue);
 	}
 
-	// Returns an array of prices.
+	// Returns Prices.
 	public function totals($entity) {
 		$result = new Prices();
 
 		foreach ($entity->positions() as $position) {
 			$result = $result->add($position->totalAmount());
 		}
-		return $result->sum();
+		return $result;
 	}
 
 	// May return positive or negative values.
@@ -192,7 +192,7 @@ class Invoices extends \base_core\models\Base {
 		foreach ($entity->payments() as $payment) {
 			$result = $result->add($payment->totalAmount());
 		}
-		return $result->sum();
+		return $result;
 	}
 
 	public function pay($entity, $payment) {

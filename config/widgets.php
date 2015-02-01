@@ -14,42 +14,53 @@ use lithium\g11n\Message;
 use base_core\extensions\cms\Widgets;
 use billing_core\models\Payments;
 use billing_core\models\Invoices;
-use lithium\storage\Cache;
 use lithium\core\Environment;
-use \NumberFormatter;
-use Finance\MoneySum;
-use Finance\PriceSum;
+use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
+use AD\Finance\Money\Monies;
+use AD\Finance\Money\NullMoney;
 
 extract(Message::aliases());
 
 Widgets::register('invoices_value', function() use ($t) {
 	$formatMoney = function($value) {
-		$formatter = new NumberFormatter(Environment::get('locale'), NumberFormatter::CURRENCY);
-		return $formatter->formatCurrency($value->getAmount() / 100, $value->getCurrency());
+		$formatter = new MoneyFormatter(Environment::get('locale'));
+		return $formatter->format($value);
 	};
 
-	$total = new PriceSum();
+	$invoiced = new Monies();
+	$paid = new Monies();
 
-	$sum = new MoneySum();
-	$results = Invoices::find('all', [
+
+	$invoices = Invoices::find('all', [
 		'conditions' => [
 			'status' => [
 				'!=' => 'cancelled'
 			]
 		]
 	]);
-	foreach ($results as $item) {
-		$total = $total->add($item->totalAmount()->getGross());
-		$sum = $sum->add($item->balance()->getMoney());
+	foreach ($invoices as $invoice) {
+		foreach ($invoice->totals() as $rate => $currencies) {
+			foreach ($currencies as $currency => $price) {
+				$invoiced = $total->add($price->getGross());
+			}
+		}
 	}
 
-	$results = Payments::find('all', [
-		'conditions' => [
-			'billing_invoice_id' => null
-		]
-	]);
-	foreach ($results as $item) {
-		$sum = $sum->add($item->totalAmount());
+	$payments = Payments::find('all');
+	foreach ($payments as $payment) {
+		$paid = $paid->add($payment->amount());
+	}
+
+	// FIXME Auto selecting EUR for simplicity.
+	if ($invoiced->isZero()) {
+		$invoiced = new NullMoney();
+	} else {
+		$invoiced = $invoiced['EUR'];
+	}
+	if ($paid->isZero()) {
+		$paid = new NullMoney();
+	} else {
+		$paid = $paid['EUR'];
 	}
 
 	return [
@@ -57,10 +68,9 @@ Widgets::register('invoices_value', function() use ($t) {
 		'url' => [
 			'controller' => 'Invoices', 'action' => 'index', 'library' => 'billing_core'
 		],
-		'class' => $sum->getAmount() < 0 ? 'negative' : 'positive',
 		'data' => [
-			$t('balance') => !$sum->isZero() ? $formatMoney($sum->getMoney()) : 0,
-			$t('total') => !$total->isZero() ? $formatMoney($total->getGross()) : 0
+			$t('invoiced') => $formatter->format($invoiced),
+			$t('received') => $formatter->format($paid)
 		]
 	];
 }, [

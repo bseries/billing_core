@@ -15,7 +15,7 @@
         "php": ">=5.5.0",
         "composer/installers": "~1.0",
         "atelierdisko/li3_flash_message": "1.0.*@beta",
-        "atelierdisko/finance": "1.1.*",
+        "atelierdisko/finance": "2.0.*@dev",
         "phpoffice/phpexcel": "1.8.0",
         "zendframework/zendpdf": "2.*",
         "unionofrad/lithium": "dev-dev",

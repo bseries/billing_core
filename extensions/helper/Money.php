@@ -14,6 +14,7 @@ namespace billing_core\extensions\helper;
 
 use lithium\core\Environment;
 use NumberFormatter;
+use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
 
 class Money extends \lithium\template\Helper {
 
@@ -26,13 +27,8 @@ class Money extends \lithium\template\Helper {
 
 		switch ($type) {
 			case 'money':
-				if ($currency = $value->getCurrency()) {
-					$formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
-					$result = $formatter->formatCurrency($value->getAmount() / 100, $currency);
-				} else {
-					$formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
-					$result = $formatter->format($value->getAmount() / 100);
-				}
+				$formatter = new MoneyFormatter($locale);
+				$result = $formatter->format($value);
 
 				if ($options['html']) {
 					return $this->_applyMarkup($result);

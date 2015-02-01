@@ -173,6 +173,7 @@ class Invoices extends \base_core\models\Base {
 		return $entity->total_gross_outstanding && $date->getTimestamp() > strtotime($overdue);
 	}
 
+	// Returns an array of prices.
 	public function totals($entity) {
 		$result = new Prices();
 

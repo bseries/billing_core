@@ -12,7 +12,7 @@
 
 namespace billing_core\models;
 
-use SebastianBergmann\Money\Money;
+use AD\Finance\Money;
 use billing_core\models\Invoices;
 
 class Payments extends \base_core\models\Base {
@@ -58,8 +58,15 @@ class Payments extends \base_core\models\Base {
 		]);
 	}
 
-	public function totalAmount($entity) {
+	public function amount($entity) {
 		return new Money((integer) $entity->amount, $entity->amount_currency);
+	}
+
+	/* Deprecated */
+
+	public function totalAmount($entity) {
+		trigger_error("Payments::totalAmount() is deprecated in favor of Payments::amount()", E_USER_DEPRECATED);
+		return $entity->amount();
 	}
 }
 

@@ -63,19 +63,19 @@ class InvoicePositions extends \base_core\models\Base {
 
 	public function amount($entity) {
 		return new Price(
-			$entity->amount,
+			(integer) $entity->amount,
 			$entity->amount_currency,
 			$entity->amount_type,
 			(integer) $entity->tax_rate
 		);
 	}
 
-	public function taxType($entity) {
-		return TaxTypes::find('first', ['conditions' => ['id' => $entity->tax_type]]);
+	public function total($entity) {
+		return $entity->amount()->multiply($entity->quantity);
 	}
 
-	public function totalAmount($entity) {
-		return $entity->amount()->multiply($entity->quantity);
+	public function taxType($entity) {
+		return TaxTypes::find('first', ['conditions' => ['id' => $entity->tax_type]]);
 	}
 
 	// Assumes format "Foobar (#12345)".
@@ -92,6 +92,13 @@ class InvoicePositions extends \base_core\models\Base {
 			throw new Exception('Failed to extract item title from description.');
 		}
 		return $matches[1];
+	}
+
+	/* Deprecated */
+
+	public function totalAmount($entity) {
+		trigger_error('InvoicePositions::totalAmount has been deprecated in favor of total().', E_USER_DEPRECATED);
+		return $entity->total();
 	}
 }
 

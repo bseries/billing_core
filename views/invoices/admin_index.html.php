@@ -8,7 +8,15 @@ $this->set([
 ]);
 
 ?>
-<article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> use-list">
+<article
+	class="use-index-table"
+	data-endpoint-sort="<?= $this->url([
+		'action' => 'index',
+		'page' => $paginator->getPages()->current,
+		'orderField' => '__ORDER_FIELD__',
+		'orderDirection' => '__ORDER_DIRECTION__'
+	]) ?>"
+>
 
 	<div class="top-actions">
 		<?= $this->html->link($t('new invoice'), ['action' => 'add', 'library' => 'billing_core'], ['class' => 'button add']) ?>
@@ -18,21 +26,15 @@ $this->set([
 		<table>
 			<thead>
 				<tr>
-					<td data-sort="is-locked" class="flag list-sort is-locked "><?= $t('locked?') ?>
-					<td data-sort="date" class="date list-sort"><?= $t('Date') ?>
-					<td data-sort="number" class="emphasize number list-sort desc"><?= $t('Number') ?>
-					<td data-sort="status" class="status list-sort"><?= $t('Status') ?>
-					<td data-sort="user" class="user list-sort"><?= $t('Recipient') ?>
+					<td data-sort="is-locked" class="flag table-sort is-locked "><?= $t('locked?') ?>
+					<td data-sort="date" class="date table-sort"><?= $t('Date') ?>
+					<td data-sort="number" class="emphasize number table-sort"><?= $t('Number') ?>
+					<td data-sort="status" class="status table-sort"><?= $t('Status') ?>
+					<td data-sort="user" class="user table-sort"><?= $t('Recipient') ?>
 					<td><?= $t('Total (net)') ?>
 					<td><?= $t('Balance') ?>
-					<td data-sort="created" class="date created list-sort"><?= $t('Created') ?>
+					<td data-sort="modified" class="date modified table-sort desc"><?= $t('Modified') ?>
 					<td class="actions">
-						<?= $this->form->field('search', [
-							'type' => 'search',
-							'label' => false,
-							'placeholder' => $t('Filter'),
-							'class' => 'list-search'
-						]) ?>
 			</thead>
 			<tbody class="list">
 				<?php foreach ($data as $item): ?>
@@ -55,11 +57,11 @@ $this->set([
 						<?php else: ?>
 							-
 						<?php endif ?>
-					<td><?= $this->money->format($item->totals(), 'money') ?>
-					<td><?= $this->money->format($item->balance(), 'money') ?>
-					<td class="date created">
-						<time datetime="<?= $this->date->format($item->created, 'w3c') ?>">
-							<?= $this->date->format($item->created, 'date') ?>
+					<td><?= $this->price->format($item->totals(), 'net') ?>
+					<td><?= $this->money->format($item->balance()) ?>
+					<td class="date modified">
+						<time datetime="<?= $this->date->format($item->modified, 'w3c') ?>">
+							<?= $this->date->format($item->modified, 'date') ?>
 						</time>
 					<td class="actions">
 						<?= $this->html->link($t('PDF'), ['id' => $item->id, 'action' => 'export_pdf', 'library' => 'billing_core'], ['class' => 'button']) ?>

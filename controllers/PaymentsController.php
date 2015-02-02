@@ -22,16 +22,10 @@ use li3_flash_message\extensions\storage\FlashMessage;
 
 class PaymentsController extends \base_core\controllers\BaseController {
 
+	use \base_core\controllers\AdminIndexTrait;
 	use \base_core\controllers\AdminAddTrait;
 	use \base_core\controllers\AdminEditTrait;
 	use \base_core\controllers\AdminDeleteTrait;
-
-	public function admin_index() {
-		$data = Payments::find('all', [
-			'order' => ['date' => 'DESC']
-		]);
-		return compact('data');
-	}
 
 	protected function _selects($item = null) {
 		$virtualUsers = [null => '-'] + VirtualUsers::find('list', ['order' => 'name']);

@@ -21,18 +21,12 @@ use base_core\models\Currencies;
 
 class InvoicesController extends \base_core\controllers\BaseController {
 
+	use \base_core\controllers\AdminIndexTrait;
 	use \base_core\controllers\AdminAddTrait;
 	use \base_core\controllers\AdminEditTrait;
 	use \base_core\controllers\AdminDeleteTrait;
 
 	use \base_core\controllers\AdminLockTrait;
-
-	public function admin_index() {
-		$data = Invoices::find('all', [
-			'order' => ['number' => 'DESC']
-		]);
-		return compact('data') + $this->_selects();
-	}
 
 	public function admin_export_pdf() {
 		extract(Message::aliases());

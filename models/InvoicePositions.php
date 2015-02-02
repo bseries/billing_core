@@ -13,7 +13,7 @@
 namespace billing_core\models;
 
 use Exception;
-use Finance\Price;
+use AD\Finance\Price;
 use billing_core\models\Invoices;
 use billing_core\models\TaxTypes;
 

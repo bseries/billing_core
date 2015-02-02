@@ -176,7 +176,7 @@ class Invoices extends \base_core\models\Base {
 		$result = new Prices();
 
 		foreach ($entity->positions() as $position) {
-			$result = $result->add($position->totalAmount());
+			$result = $result->add($position->total());
 		}
 		return $result;
 	}
@@ -187,10 +187,10 @@ class Invoices extends \base_core\models\Base {
 		$result = new Monies();
 
 		foreach ($entity->positions() as $position) {
-			$result = $result->subtract($position->totalAmount()->getGross());
+			$result = $result->subtract($position->total()->getGross());
 		}
 		foreach ($entity->payments() as $payment) {
-			$result = $result->add($payment->totalAmount());
+			$result = $result->add($payment->amount());
 		}
 		return $result;
 	}

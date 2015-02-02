@@ -72,4 +72,7 @@ $this->set([
 	<?php else: ?>
 		<div class="none-available"><?= $t('No items available, yet.') ?></div>
 	<?php endif ?>
+
+	<?=$this->view()->render(['element' => 'paging'], compact('paginator'), ['library' => 'base_core']) ?>
+
 </article>

@@ -12,8 +12,10 @@
 
 namespace billing_core\extensions\helper;
 
+use Exception;
 use lithium\core\Environment;
 use NumberFormatter;
+use AD\Finance\Money\NullMoney;
 use AD\Finance\Money\Monies;
 use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
 
@@ -27,6 +29,9 @@ class Money extends \lithium\template\Helper {
 		$locale = $options['locale'] ?: $this->_locale();
 
 		if ($options['currency']) {
+			if (!is_object($value)) {
+				throw new Exception('Cannot format money with currency, not given a Money object.');
+			}
 			$formatter = new MoneyFormatter($locale);
 
 			if ($value instanceof Monies) {
@@ -43,15 +48,21 @@ class Money extends \lithium\template\Helper {
 		$formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
 		$formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
 
-		if ($value instanceof Monies) {
-			$results = [];
+		if (is_object($value)) {
+			if ($value instanceof Monies) {
+				$results = [];
 
-			foreach ($value->sum() as $currency => $money) {
-				$results[] = $formatter->format($money->getAmount() / 100);
+				foreach ($value->sum() as $currency => $money) {
+					if ($money instanceof NullMoney) {
+						continue;
+					}
+					$results[] = $formatter->format($money->getAmount() / 100);
+				}
+				return implode(' / ', $results);
 			}
-			return implode(' / ', $results);
+			return $formatter->format($value->getAmount() / 100);
 		}
-		return $formatter->format($value->getAmount() / 100);
+		return $formatter->format($value / 100);
 	}
 
 	protected function _locale() {

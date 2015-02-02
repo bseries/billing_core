@@ -14,6 +14,7 @@ namespace billing_core\extensions\helper;
 
 use lithium\core\Environment;
 use NumberFormatter;
+use AD\Finance\Price\NullPrice;
 use AD\Finance\Price\Prices;
 use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
 
@@ -22,7 +23,7 @@ class Price extends \lithium\template\Helper {
 	public function format($value, $type = 'net', array $options = []) {
 		$options += [
 			'locale' => null,
-			'currency' => true,
+			'currency' => true
 		];
 		$locale = $options['locale'] ?: $this->_locale();
 		$byMethod = 'get' . ucfirst($type);
@@ -49,8 +50,13 @@ class Price extends \lithium\template\Helper {
 		if ($value instanceof Prices) {
 			$results = [];
 
-			foreach ($value->sum() as $currency => $money) {
-				$results[] = $formatter->format($price->{$byMethod}()->getAmount() / 100);
+			foreach ($value->sum() as $rate => $currencies) {
+				foreach ($currencies as $currency => $price) {
+					if ($price instanceof NullPrice) {
+						continue;
+					}
+					$results[] = $formatter->format($price->{$byMethod}()->getAmount() / 100);
+				}
 			}
 			return implode(' / ', $results);
 		}

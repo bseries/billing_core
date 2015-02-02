@@ -18,6 +18,7 @@ use NumberFormatter;
 use AD\Finance\Money\NullMoney;
 use AD\Finance\Money\Monies;
 use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
+use AD\Finance\Money\MoniesFormatter as MoniesFormatter;
 
 class Money extends \lithium\template\Helper {
 
@@ -32,15 +33,10 @@ class Money extends \lithium\template\Helper {
 			if (!is_object($value)) {
 				throw new Exception('Cannot format money with currency, not given a Money object.');
 			}
-			$formatter = new MoneyFormatter($locale);
-
 			if ($value instanceof Monies) {
-				$results = [];
-
-				foreach ($value->sum() as $currency => $money) {
-					$results[] = $formatter->format($money);
-				}
-				return implode(' / ', $results);
+				$formatter = new MoniesFormatter($locale);
+			} else {
+				$formatter = new MoneyFormatter($locale);
 			}
 			return $formatter->format($value);
 		}
@@ -57,6 +53,9 @@ class Money extends \lithium\template\Helper {
 						continue;
 					}
 					$results[] = $formatter->format($money->getAmount() / 100);
+				}
+				if (!$results) {
+					return 0;
 				}
 				return implode(' / ', $results);
 			}

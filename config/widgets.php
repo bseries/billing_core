@@ -15,21 +15,17 @@ use base_core\extensions\cms\Widgets;
 use billing_core\models\Payments;
 use billing_core\models\Invoices;
 use lithium\core\Environment;
-use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
+use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
 use AD\Finance\Money\Monies;
 use AD\Finance\Money\NullMoney;
 
 extract(Message::aliases());
 
 Widgets::register('invoices_value', function() use ($t) {
-	$formatMoney = function($value) {
-		$formatter = new MoneyFormatter(Environment::get('locale'));
-		return $formatter->format($value);
-	};
+	$formatter = new MoniesFormatter(Environment::get('locale'));
 
 	$invoiced = new Monies();
 	$paid = new Monies();
-
 
 	$invoices = Invoices::find('all', [
 		'conditions' => [
@@ -39,9 +35,9 @@ Widgets::register('invoices_value', function() use ($t) {
 		]
 	]);
 	foreach ($invoices as $invoice) {
-		foreach ($invoice->totals() as $rate => $currencies) {
+		foreach ($invoice->totals()->sum() as $rate => $currencies) {
 			foreach ($currencies as $currency => $price) {
-				$invoiced = $total->add($price->getGross());
+				$invoiced = $invoiced->add($price->getGross());
 			}
 		}
 	}
@@ -49,18 +45,6 @@ Widgets::register('invoices_value', function() use ($t) {
 	$payments = Payments::find('all');
 	foreach ($payments as $payment) {
 		$paid = $paid->add($payment->amount());
-	}
-
-	// FIXME Auto selecting EUR for simplicity.
-	if ($invoiced->isZero()) {
-		$invoiced = new NullMoney();
-	} else {
-		$invoiced = $invoiced['EUR'];
-	}
-	if ($paid->isZero()) {
-		$paid = new NullMoney();
-	} else {
-		$paid = $paid['EUR'];
 	}
 
 	return [

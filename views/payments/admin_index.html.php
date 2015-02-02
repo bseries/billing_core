@@ -8,7 +8,15 @@ $this->set([
 ]);
 
 ?>
-<article class="view-<?= $this->_config['controller'] . '-' . $this->_config['template'] ?> use-list">
+<article
+	class="use-index-table"
+	data-endpoint-sort="<?= $this->url([
+		'action' => 'index',
+		'page' => $paginator->getPages()->current,
+		'orderField' => '__ORDER_FIELD__',
+		'orderDirection' => '__ORDER_DIRECTION__'
+	]) ?>"
+>
 
 	<div class="top-actions">
 		<?= $this->html->link($t('new payment'), ['action' => 'add', 'library' => 'billing_core'], ['class' => 'button add']) ?>
@@ -22,20 +30,15 @@ $this->set([
 		<table>
 			<thead>
 				<tr>
-					<td data-sort="date" class="date list-sort desc"><?= $t('Date') ?>
-					<td data-sort="method" class="method list-sort"><?= $t('Method') ?>
-					<td data-sort="user" class="user list-sort"><?= $t('Payer') ?>
-					<td data-sort="invoice" class="invoice list-sort"><?= $t('On Invoice') ?>
+					<td data-sort="date" class="date table-sort desc"><?= $t('Date') ?>
+					<td data-sort="method" class="method table-sort"><?= $t('Method') ?>
+					<td data-sort="user.number" class="user table-sort"><?= $t('Payer') ?>
+					<td data-sort="invoice.number" class="invoice table-sort"><?= $t('On Invoice') ?>
 					<td><?= $t('Amount') ?>
+					<td data-sort="modified" class="date table-sort desc"><?= $t('Modified') ?>
 					<td class="actions">
-						<?= $this->form->field('search', [
-							'type' => 'search',
-							'label' => false,
-							'placeholder' => $t('Filter'),
-							'class' => 'list-search'
-						]) ?>
 			</thead>
-			<tbody class="list">
+			<tbody>
 				<?php foreach ($data as $item): ?>
 					<?php $user = $item->user() ?>
 				<tr data-id="<?= $item->id ?>">
@@ -64,7 +67,11 @@ $this->set([
 						<?php else: ?>
 							-
 						<?php endif ?>
-					<td><?= ($money = $item->totalAmount()) ? $this->money->format($money, 'money') : null ?>
+					<td><?= $this->money->format($item->amount()) ?>
+					<td class="date modified">
+						<time datetime="<?= $this->date->format($item->modified, 'w3c') ?>">
+							<?= $this->date->format($item->modified, 'date') ?>
+						</time>
 					<td class="actions">
 						<?= $this->html->link($t('delete'), ['id' => $item->id, 'action' => 'delete', 'library' => 'billing_core'], ['class' => 'button delete']) ?>
 						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'billing_core'], ['class' => 'button']) ?>

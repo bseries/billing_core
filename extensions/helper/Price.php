@@ -14,26 +14,29 @@ namespace billing_core\extensions\helper;
 
 use lithium\core\Environment;
 use NumberFormatter;
-use AD\Finance\Money\Monies;
+use AD\Finance\Price\Prices;
 use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
 
-class Money extends \lithium\template\Helper {
+class Price extends \lithium\template\Helper {
 
-	public function format($value, array $options = []) {
+	public function format($value, $type = 'net', array $options = []) {
 		$options += [
 			'locale' => null,
-			'currency' => true
+			'currency' => true,
 		];
 		$locale = $options['locale'] ?: $this->_locale();
+		$byMethod = 'get' . ucfirst($type);
 
 		if ($options['currency']) {
 			$formatter = new MoneyFormatter($locale);
 
-			if ($value instanceof Monies) {
+			if ($value instanceof Prices) {
 				$results = [];
 
-				foreach ($value->sum() as $currency => $money) {
-					$results[] = $formatter->format($money);
+				foreach ($value->sum() as $rate => $currencies) {
+					foreach ($currencies as $currency => $price) {
+						$results[] = $formatter->format($price->{$byMethod}());
+					}
 				}
 				return implode(' / ', $results);
 			}
@@ -43,15 +46,15 @@ class Money extends \lithium\template\Helper {
 		$formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
 		$formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
 
-		if ($value instanceof Monies) {
+		if ($value instanceof Prices) {
 			$results = [];
 
 			foreach ($value->sum() as $currency => $money) {
-				$results[] = $formatter->format($money->getAmount() / 100);
+				$results[] = $formatter->format($price->{$byMethod}()->getAmount() / 100);
 			}
 			return implode(' / ', $results);
 		}
-		return $formatter->format($value->getAmount() / 100);
+		return $formatter->format($value->{$byMethod}()->getAmount() / 100);
 	}
 
 	protected function _locale() {

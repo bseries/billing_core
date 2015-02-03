@@ -41,7 +41,7 @@ class Price extends \lithium\template\Helper {
 				}
 				return implode(' / ', $results);
 			}
-			return $formatter->format($value);
+			return $formatter->format($value->{$byMethod}());
 		}
 		$formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
 		$formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);

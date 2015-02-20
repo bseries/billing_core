@@ -273,6 +273,8 @@ $this->set([
 			</section>
 		</div>
 		<div class="grid-row">
+			<h1 class="h-gamma"><?= $t('Tax') ?></h1>
+
 			<section class="grid-column-right">
 				<?= $this->form->field('tax_note', [
 					'type' => 'textarea',
@@ -284,6 +286,12 @@ $this->set([
 					<?= $t('Visible to recipient.') ?>
 					<?= $t('Automatically generated.') ?>
 				</div>
+				<?= $this->form->field('tax_type', [
+					'type' => 'select',
+					'label' => false,
+					'list' => $taxTypes,
+					'disabled' => true
+				]) ?>
 			</section>
 		</div>
 		<div class="grid-row">

@@ -70,7 +70,6 @@ class InvoicesController extends \base_core\controllers\BaseController {
 		if ($item) {
 			$taxTypes = TaxTypes::find('list');
 		}
-
 		return compact('currencies', 'statuses', 'users', 'virtualUsers', 'taxTypes');
 	}
 }

@@ -65,16 +65,16 @@ CREATE TABLE `billing_payments` (
 -- Augment other tables
 ALTER TABLE `users` ADD `currency` char(3) NOT NULL DEFAULT 'EUR' COMMENT 'billing_core' AFTER `timezone`;
 ALTER TABLE `users` ADD `vat_reg_no` varchar(100) DEFAULT NULL COMMENT 'billing_core' AFTER `currency`;
-ALTER TABLE `users` ADD `tax_country` CHAR(2)  NULL  DEFAULT NULL  COMMENT 'billing_core' AFTER `vat_reg_no`;
-ALTER TABLE `users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL COMMENT 'billing_core' AFTER `tax_country`;
+ALTER TABLE `users` ADD `country` CHAR(2)  NULL  DEFAULT NULL  COMMENT 'billing_core' AFTER `timezone`;
+ALTER TABLE `users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL COMMENT 'billing_core' AFTER `vat_reg_no`;
 ALTER TABLE `users` ADD `is_auto_invoiced` TINYINT(1)  UNSIGNED  NOT NULL  DEFAULT '0'  COMMENT 'billing_core' AFTER `is_notified`;
 ALTER TABLE `users` ADD `auto_invoiced` DATETIME  NULL  COMMENT 'billing_core' AFTER `is_auto_invoiced`;
 ALTER TABLE `users` ADD `auto_invoice_frequency` VARCHAR(20)  NOT NULL  DEFAULT 'monthly'  COMMENT 'billing_core'  AFTER `auto_invoiced`;
 
 ALTER TABLE `virtual_users` ADD `currency` char(3) NOT NULL DEFAULT 'EUR' COMMENT 'billing_core' AFTER `timezone`;
 ALTER TABLE `virtual_users` ADD `vat_reg_no` varchar(100) DEFAULT NULL COMMENT 'billing_core' AFTER `currency`;
-ALTER TABLE `virtual_users` ADD `tax_country` CHAR(2)  NULL  DEFAULT NULL  COMMENT 'billing_core' AFTER `vat_reg_no`;
-ALTER TABLE `virtual_users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL COMMENT 'billing_core' AFTER `tax_country`;
+ALTER TABLE `virtual_users` ADD `country` CHAR(2)  NULL  DEFAULT NULL  COMMENT 'billing_core' AFTER `timezone`;
+ALTER TABLE `virtual_users` ADD `billing_address_id` int(11) unsigned DEFAULT NULL COMMENT 'billing_core' AFTER `vat_reg_no`;
 ALTER TABLE `virtual_users` ADD `is_auto_invoiced` TINYINT(1)  UNSIGNED  NOT NULL  DEFAULT '0'  COMMENT 'billing_core' AFTER `is_notified`;
 ALTER TABLE `virtual_users` ADD `auto_invoiced` DATETIME  NULL  COMMENT 'billing_core' AFTER `is_auto_invoiced`;
 ALTER TABLE `virtual_users` ADD `auto_invoice_frequency` VARCHAR(20)  NOT NULL  DEFAULT 'monthly'  COMMENT 'billing_core'  AFTER `auto_invoiced`;

@@ -171,29 +171,21 @@ $this->set([
 								<?= $this->form->field("positions.{$key}.amount", [
 									'type' => 'text',
 									'label' => false,
-									'value' => $this->money->format($child->amount(), 'decimal'),
+									'value' => $this->money->format($child->amount, ['currency' => false]),
 									'disabled' => $item->is_locked
 								]) ?>
 							<td>
-								<?= $this->form->field("positions.{$key}.tax_type", [
-									'type' => 'select',
-									'label' => false,
-									'list' => $taxTypes,
-									'value' => $child->tax_type,
-									'disabled' => $item->is_locked
-								]) ?>
-							<td>
-								<?= $this->form->field("positions.{$key}.tax_rate", [
+								<?= $this->form->field("positions.{$key}.amount_rate", [
 									'type' => 'text',
 									'label' => false,
-									'value' => $child->tax_rate,
+									'value' => $child->amount_rate,
 									'disabled' => $item->is_locked
 								]) ?>
 							<td>
 								<?= $this->form->field("positions.{$key}.total_net", [
 									'type' => 'text',
 									'label' => false,
-									'value' => $this->money->format($child->totalAmount()->getNet(), 'decimal'),
+									'value' => $this->money->format($child->total()->getNet(), ['currency' => false]),
 									'disabled' => true
 								]) ?>
 							<td class="actions">
@@ -232,13 +224,7 @@ $this->set([
 									'label' => false
 								]) ?>
 							<td>
-								<?= $this->form->field("positions.new.tax_type", [
-									'type' => 'select',
-									'label' => false,
-									'list' => $taxTypes
-								]) ?>
-							<td>
-								<?= $this->form->field("positions.new.tax_rate", [
+								<?= $this->form->field("positions.new.amount_rate", [
 									'type' => 'text',
 									'label' => false
 								]) ?>
@@ -255,19 +241,21 @@ $this->set([
 								<?php endif ?>
 						<tr>
 							<td colspan="7"><?= $t('Total (net)') ?>
-							<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getNet(), 'money') : null ?>
-						<?php foreach ($item->totalTaxes() as $tax): ?>
+							<td><?= $this->money->format($item->totals()->getNet()) ?>
+
+						<?php foreach ($item->taxes() as $rate => $tax): ?>
 						<tr>
-							<td colspan="7"><?= $t('Tax ({:rate}%)', ['rate' => $tax['rate']]) ?>
-							<td><?= $this->money->format($tax['amount'], 'money') ?>
+							<td colspan="7"><?= $t('Tax ({:rate}%)', ['rate' => $rate]) ?>
+							<td><?= $this->money->format($tax) ?>
 
 						<?php endforeach ?>
+
 						<tr>
 							<td colspan="7"><?= $t('Total (gross)') ?>
-							<td><?= ($money = $item->totalAmount()) ? $this->money->format($money->getGross(), 'money') : null ?>
+							<td><?= $this->money->format($item->totals()->getGross()) ?>
 						<tr>
 							<td colspan="7"><?= $t('Balance') ?>
-							<td><?= ($money = $item->balance()) ? $this->money->format($money, 'money') : null ?>
+							<td><?= $this->money->format($item->balance()) ?>
 					</tfoot>
 				</table>
 			</section>
@@ -279,7 +267,7 @@ $this->set([
 				<?= $this->form->field('tax_note', [
 					'type' => 'textarea',
 					'label' => $t('Tax note'),
-					'value' => $item->taxNote(),
+					'value' => $item->tax_note,
 					'disabled' => true
 				]) ?>
 				<div class="help">
@@ -288,7 +276,6 @@ $this->set([
 				</div>
 				<?= $this->form->field('tax_type', [
 					'type' => 'select',
-					'label' => false,
 					'list' => $taxTypes,
 					'disabled' => true
 				]) ?>

@@ -38,11 +38,10 @@ class ClientGroups extends \base_core\models\Base {
 		if ($type == 'all') {
 			return static::$_data;
 		} elseif ($type == 'first') {
-			if (isset($options['user'])) {
+			if (isset($options['conditions']['user'])) {
 				foreach (static::$_data as $name => $item) {
 					$conditions = $item->conditions;
-
-					if ($conditions($user)) {
+					if ($conditions($options['conditions']['user'])) {
 						return $item;
 					}
 				}

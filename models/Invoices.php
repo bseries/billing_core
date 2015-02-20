@@ -117,16 +117,6 @@ class Invoices extends \base_core\models\Base {
 		return (integer) $matches[1];
 	}
 
-	// Iterate over taxes an retrieve unique tax notes.
-	public function taxNote($entity) {
-		$results = [];
-
-		foreach ($entity->positions() as $position) {
-			$results[] = $position->taxType()->note;
-		}
-		return implode("\n", array_unique($results));
-	}
-
 	public function date($entity) {
 		return DateTime::createFromFormat('Y-m-d', $entity->date);
 	}
@@ -179,6 +169,21 @@ class Invoices extends \base_core\models\Base {
 			$result = $result->add($position->total());
 		}
 		return $result;
+	}
+
+	// Monies keyed by rate.
+	public function taxes($entity) {
+		$results = [];
+
+		foreach ($entity->totals()->sum() as $rate => $currencies) {
+			foreach ($currencies as $currency => $price) {
+				if (!isset($results[$rate])) {
+					$results[$rate] = new Monies();
+				}
+				$results[$rate] = $results[$rate]->add($price->getTax());
+			}
+		}
+		return $results;
 	}
 
 	// May return positive or negative values.

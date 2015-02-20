@@ -18,7 +18,7 @@ use NumberFormatter;
 use AD\Finance\Money\NullMoney;
 use AD\Finance\Money\Monies;
 use AD\Finance\Money\MoneyIntlFormatter as MoneyFormatter;
-use AD\Finance\Money\MoniesFormatter as MoniesFormatter;
+use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
 
 class Money extends \lithium\template\Helper {
 

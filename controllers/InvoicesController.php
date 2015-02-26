@@ -17,7 +17,7 @@ use base_core\models\Users;
 use billing_core\models\Invoices;
 use billing_core\models\TaxTypes;
 use lithium\g11n\Message;
-use base_core\models\Currencies;
+use billing_core\models\Currencies;
 
 class InvoicesController extends \base_core\controllers\BaseController {
 

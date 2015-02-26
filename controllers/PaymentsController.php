@@ -16,7 +16,7 @@ use base_core\models\Users;
 use base_core\models\VirtualUsers;
 use billing_core\models\Invoices;
 use billing_core\models\Payments;
-use base_core\models\Currencies;
+use billing_core\models\Currencies;
 use lithium\g11n\Message;
 use li3_flash_message\extensions\storage\FlashMessage;
 

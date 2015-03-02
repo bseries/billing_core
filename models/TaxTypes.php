@@ -23,17 +23,17 @@ class TaxTypes extends \base_core\models\Base {
 
 	protected static $_data = [];
 
-	public static function register($name, array $data) {
+	public static function register($id, array $data) {
 		$data += [
-			'id' => $name,
-			'name' => $name,
+			'id' => $id,
+			'name' => null,
 			'title' => null,
 			// Either percentage as integer or `false` to indicate
 			// that no rate is calculated at all.
 			'rate' => false,
 			'note' => null
 		];
-		static::$_data[$name] = static::create($data);
+		static::$_data[$id] = static::create($data);
 	}
 
 	public static function find($type, array $options = []) {

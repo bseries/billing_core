@@ -22,16 +22,16 @@ class ClientGroups extends \base_core\models\Base {
 
 	protected static $_data = [];
 
-	public static function register($name, array $data) {
+	public static function register($id, array $data) {
 		$data += [
-			'id' => $name,
+			'id' => $id,
 			'title' => null,
 			'taxType' => null,
 			'conditions' => function($user) { return false; },
 			'amountCurrency' => 'EUR',
 			'amountType' => 'gross'
 		];
-		static::$_data[$name] = static::create($data);
+		static::$_data[$id] = static::create($data);
 	}
 
 	public static function find($type, array $options = []) {

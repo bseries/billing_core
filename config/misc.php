@@ -24,7 +24,7 @@ TaxTypes::register('DE.vat.standard', [
 	'note' => $t('Includes 19% VAT.')
 ]);
 
-// Tax that applies on certain googs when business resides in Germany.
+// Tax that applies on certain goods when business resides in Germany.
 TaxTypes::register('DE.vat.reduced', [
 	'name' => 'red. MwSt',
 	'title' => $t('VAT Reduced DE'),

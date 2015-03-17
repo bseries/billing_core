@@ -1,6 +1,11 @@
 <?php
 
 use base_core\extensions\cms\Settings;
+use lithium\g11n\Message;
+
+$t = function($message, array $options = []) {
+	return Message::translate($message, $options + ['scope' => 'billing_core', 'default' => $message]);
+};
 
 $this->set([
 	'page' => [

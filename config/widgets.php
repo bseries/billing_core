@@ -48,13 +48,13 @@ Widgets::register('invoices_value', function() use ($t) {
 	}
 
 	return [
-		'title' => $t('Cashflow'),
+		'title' => $t('Cashflow', ['scope' => 'billing_core']),
 		'url' => [
 			'controller' => 'Invoices', 'action' => 'index', 'library' => 'billing_core'
 		],
 		'data' => [
-			$t('invoiced') => $formatter->format($invoiced),
-			$t('received') => $formatter->format($paid)
+			$t('invoiced', ['scope' => 'billing_core']) => $formatter->format($invoiced),
+			$t('received', ['scope' => 'billing_core']) => $formatter->format($paid)
 		]
 	];
 }, [

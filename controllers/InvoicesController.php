@@ -53,15 +53,15 @@ class InvoicesController extends \base_core\controllers\BaseController {
 		extract(Message::aliases());
 
 		$statuses = Invoices::enum('status', [
-			'created' => $t('created'), // open
-			'sent' => $t('sent'), // open
-			'paid' => $t('paid'),  // paid
-			'cancelled' => $t('cancelled'), // storno
+			'created' => $t('created', ['scope' => 'billing_core']), // open
+			'sent' => $t('sent', ['scope' => 'billing_core']), // open
+			'paid' => $t('paid', ['scope' => 'billing_core']),  // paid
+			'cancelled' => $t('cancelled', ['scope' => 'billing_core']), // storno
 
-			'awaiting-payment' => $t('awaiting payment'),
-			'payment-accepted' => $t('payment accepted'),
-			'payment-remotely-accepted' => $t('payment remotely accepted'),
-			'payment-error' => $t('payment error'),
+			'awaiting-payment' => $t('awaiting payment', ['scope' => 'billing_core']),
+			'payment-accepted' => $t('payment accepted', ['scope' => 'billing_core']),
+			'payment-remotely-accepted' => $t('payment remotely accepted', ['scope' => 'billing_core']),
+			'payment-error' => $t('payment error', ['scope' => 'billing_core']),
 		]);
 		$currencies = Currencies::find('list');
 		$virtualUsers = [null => '-'] + VirtualUsers::find('list', ['order' => 'name']);

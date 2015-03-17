@@ -16,18 +16,18 @@ use lithium\g11n\Message;
 extract(Message::aliases());
 
 Panes::register('billing', [
-	'title' => $t('Billing'),
+	'title' => $t('Billing', ['scope' => 'billing_core']),
 	'weight' => 20
 ]);
 
 $base = ['controller' => 'billing', 'library' => 'billing_core', 'admin' => true];
 Panes::register('billing.invoices', [
-	'title' => $t('Invoices'),
+	'title' => $t('Invoices', ['scope' => 'billing_core']),
 	'url' => ['controller' => 'Invoices', 'action' => 'index'] + $base,
 	'weight' => 50
 ]);
 Panes::register('billing.payments', [
-	'title' => $t('Payments'),
+	'title' => $t('Payments', ['scope' => 'billing_core']),
 	'url' => ['controller' => 'Payments', 'action' => 'index'] + $base,
 	'weight' => 60
 ]);

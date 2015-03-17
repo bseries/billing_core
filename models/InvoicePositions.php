@@ -75,8 +75,12 @@ class InvoicePositions extends \base_core\models\Base {
 		return TaxTypes::find('first', ['conditions' => ['id' => $entity->tax_type]]);
 	}
 
+	/* Deprecated */
+
 	// Assumes format "Foobar (#12345)".
 	public function itemNumber($entity) {
+		trigger_error('itemNumber() has been deprecated, use product() instead.', E_USER_DEPRECATED);
+
 		if (!preg_match('/\(#(.*)\)/', $entity->description, $matches)) {
 			throw new Exception('Failed to extract item number from description.');
 		}
@@ -85,13 +89,13 @@ class InvoicePositions extends \base_core\models\Base {
 
 	// Assumes format "Foobar (#12345)".
 	public function itemTitle($entity) {
+		trigger_error('itemTitle() has been deprecated, use product() instead.', E_USER_DEPRECATED);
+
 		if (!preg_match('/^(.*)\(/', $entity->description, $matches)) {
 			throw new Exception('Failed to extract item title from description.');
 		}
 		return $matches[1];
 	}
-
-	/* Deprecated */
 
 	public function totalAmount($entity) {
 		trigger_error('InvoicePositions::totalAmount has been deprecated in favor of total().', E_USER_DEPRECATED);

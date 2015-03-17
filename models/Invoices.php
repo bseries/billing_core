@@ -255,6 +255,8 @@ class Invoices extends \base_core\models\Base {
 					'to' => $user->email,
 					'bcc' => $contact['email'],
 					'subject' => $t('Invoice #{:number} paid.', [
+						'locale' => $user->locale,
+						'scope' => 'billing_core',
 						'number' => $entity->number
 					]),
 					'data' => [
@@ -289,10 +291,14 @@ class Invoices extends \base_core\models\Base {
 
 		$document
 			->invoice($entity)
-			->recipient($entity->user())
+			->recipient($user)
 			->senderContact($contact)
 			->type($t('Invoice'))
-			->subject($t('Invoice #{:number}', $entity->data()))
+			->subject($t('Invoice #{:number}', [
+				'number' => $entity->number,
+				'locale' => $user->locale,
+				'scope' => 'billing_core'
+			]))
 			// ->intro($t("As agreed, we're billing you for the provided services associated with your account on http://npiece.com. The costs for these services are the following."))
 			->template(Libraries::get('app', 'resources') . "/pdf/empty_invoice_document.pdf")
 			->paypalEmail(Settings::read('service.paypal.default.email'))
@@ -419,6 +425,8 @@ class Invoices extends \base_core\models\Base {
 			'to' => $user->email,
 			'bcc' => $contact['email'],
 			'subject' => $t('Your invoice #{:number}.', [
+				'locale' => $user->locale,
+				'scope' => 'billing_core',
 				'number' => $invoice->number
 			]),
 			'data' => [

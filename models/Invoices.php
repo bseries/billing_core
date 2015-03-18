@@ -53,7 +53,15 @@ class Invoices extends \base_core\models\Base {
 	protected static $_actsAs = [
 		'base_core\extensions\data\behavior\Timestamp',
 		'base_core\extensions\data\behavior\ReferenceNumber',
-		'base_core\extensions\data\behavior\StatusChange'
+		'base_core\extensions\data\behavior\StatusChange',
+		'base_core\extensions\data\behavior\Searchable' => [
+			'fields' => [
+				'number',
+				'status',
+				'address_recipient',
+				'address_organization'
+			]
+		]
 	];
 
 	public $belongsTo = [

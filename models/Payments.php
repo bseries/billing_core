@@ -29,6 +29,11 @@ class Payments extends \base_core\models\Base {
 			'fields' => [
 				'amount' => 'money'
 			]
+		],
+		'base_core\extensions\data\behavior\Searchable' => [
+			'fields' => [
+				'method'
+			]
 		]
 	];
 

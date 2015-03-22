@@ -35,7 +35,7 @@ $this->set([
 				<tr>
 					<td data-sort="is-locked" class="flag table-sort is-locked "><?= $t('locked?') ?>
 					<td data-sort="date" class="date table-sort"><?= $t('Date') ?>
-					<td data-sort="number" class="emphasize number table-sort"><?= $t('Number') ?>
+					<td data-sort="number" class="emphasize number id table-sort"><?= $t('Number') ?>
 					<td data-sort="status" class="status table-sort"><?= $t('Status') ?>
 					<td data-sort="user.number" class="user table-sort"><?= $t('Recipient') ?>
 					<td><?= $t('Total (net)') ?>

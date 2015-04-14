@@ -16,6 +16,7 @@ use Exception;
 use AD\Finance\Price;
 use billing_core\models\Invoices;
 use billing_core\models\TaxTypes;
+use ecommerce_core\models\Products;
 
 // In the moment of generating an invoice position the price is finalized.
 class InvoicePositions extends \base_core\models\Base {
@@ -73,6 +74,18 @@ class InvoicePositions extends \base_core\models\Base {
 
 	public function taxType($entity) {
 		return TaxTypes::find('first', ['conditions' => ['id' => $entity->tax_type]]);
+	}
+
+	// Assumes format "Foobar (#12345)".
+	public function product($entity) {
+		if (!preg_match('/\(#(.*)\)/', $entity->description, $matches)) {
+			return false;
+		}
+		return Products::find('first', [
+			'conditions' => [
+				'number' => $matches[1]
+			]
+		]);
 	}
 
 	/* Deprecated */

@@ -24,6 +24,10 @@ abstract class Document {
 
 	protected $_template;
 
+	protected $_type = 'Document';
+
+	protected $_subject = 'Your Document';
+
 	protected $_fontSize = 9;
 
 	protected $_lineHeight = 11;

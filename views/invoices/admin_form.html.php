@@ -120,14 +120,13 @@ $this->set([
 				<table>
 					<thead>
 						<tr>
-							<td><?= $t('Description') ?>
-							<td><?= $t('Quantity') ?>
-							<td><?= $t('Currency') ?>
-							<td><?= $t('Type') ?>
-							<td><?= $t('Unit price') ?>
-							<td><?= $t('Tax') ?>
-							<td><?= $t('Tax rate (%)') ?>
-							<td><?= $t('Line total (net)') ?>
+							<td class="title--f"><?= $t('Description') ?>
+							<td class="finance--f"><?= $t('Quantity') ?>
+							<td class="finance--f"><?= $t('Currency') ?>
+							<td class="finance--f"><?= $t('Type') ?>
+							<td class="finance--f"><?= $t('Unit price') ?>
+							<td class="finance--f"><?= $t('Tax rate (%)') ?>
+							<td class="finance--f"><?= $t('Line total (net)') ?>
 							<td class="actions">
 					</thead>
 					<tbody>

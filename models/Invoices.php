@@ -58,6 +58,7 @@ class Invoices extends \base_core\models\Base {
 			'fields' => [
 				'number',
 				'status',
+				'date',
 				'address_recipient',
 				'address_organization'
 			]
@@ -218,20 +219,24 @@ class Invoices extends \base_core\models\Base {
 		if ($entity->isPaidInFull()) {
 			throw new Exception("Invoice is already paid in full.");
 		}
+		$user = $entity->user();
 
-		return $payment->save(['billing_invoice_id' => $entity->id], [
-			'localize' => false,
-			'whitelist' => ['billing_invoice_id']
+		$payment->set([
+			'billing_invoice_id' => $entity->id,
+			$user->isVirtual() ? 'virtual_user_id' : 'user_id' => $user->id,
+		]);
+		return $payment->save(null, [
+			'localize' => false
 		]);
 	}
 
 	public function isPaidInFull($entity) {
-		foreach ($entity->balance() as $money) {
+		foreach ($entity->balance()->sum() as $money) {
 			if ($money->getAmount() > 0) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public function address($entity) {

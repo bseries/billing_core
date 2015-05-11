@@ -39,8 +39,8 @@ $this->set([
 				<tr>
 					<td data-sort="date" class="date table-sort desc"><?= $t('Date') ?>
 					<td data-sort="method" class="method table-sort"><?= $t('Method') ?>
-					<td data-sort="user.number" class="user table-sort"><?= $t('Payer') ?>
-					<td data-sort="invoice.number" class="invoice table-sort"><?= $t('On Invoice') ?>
+					<td data-sort="User.number" class="user table-sort"><?= $t('Payer') ?>
+					<td data-sort="Invoice.number" class="invoice table-sort"><?= $t('On Invoice') ?>
 					<td><?= $t('Amount') ?>
 					<td data-sort="modified" class="date table-sort desc"><?= $t('Modified') ?>
 					<td class="actions">

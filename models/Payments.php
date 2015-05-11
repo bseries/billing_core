@@ -32,7 +32,10 @@ class Payments extends \base_core\models\Base {
 		],
 		'base_core\extensions\data\behavior\Searchable' => [
 			'fields' => [
-				'method'
+				'method',
+				'date',
+				'User.number',
+				'VirtualUser.number'
 			]
 		]
 	];

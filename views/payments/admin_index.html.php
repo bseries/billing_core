@@ -41,7 +41,7 @@ $this->set([
 					<td data-sort="method" class="method table-sort"><?= $t('Method') ?>
 					<td data-sort="User.number" class="user table-sort"><?= $t('Payer') ?>
 					<td data-sort="Invoice.number" class="invoice table-sort"><?= $t('On Invoice') ?>
-					<td><?= $t('Amount') ?>
+					<td class="money"><?= $t('Amount') ?>
 					<td data-sort="modified" class="date table-sort desc"><?= $t('Modified') ?>
 					<td class="actions">
 						<?= $this->form->field('search', [
@@ -81,7 +81,7 @@ $this->set([
 						<?php else: ?>
 							-
 						<?php endif ?>
-					<td><?= $this->money->format($item->amount()) ?>
+					<td class="money"><?= $this->money->format($item->amount()) ?>
 					<td class="date modified">
 						<time datetime="<?= $this->date->format($item->modified, 'w3c') ?>">
 							<?= $this->date->format($item->modified, 'date') ?>

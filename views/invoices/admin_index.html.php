@@ -38,8 +38,8 @@ $this->set([
 					<td data-sort="number" class="emphasize number id table-sort"><?= $t('Number') ?>
 					<td data-sort="status" class="status table-sort"><?= $t('Status') ?>
 					<td data-sort="User.number" class="user table-sort"><?= $t('Recipient') ?>
-					<td><?= $t('Total (gross)') ?>
-					<td><?= $t('Balance') ?>
+					<td class="money"><?= $t('Total (gross)') ?>
+					<td class="money"><?= $t('Balance') ?>
 					<td data-sort="modified" class="date modified table-sort desc"><?= $t('Modified') ?>
 					<td class="actions">
 						<?= $this->form->field('search', [
@@ -71,8 +71,8 @@ $this->set([
 						<?php else: ?>
 							-
 						<?php endif ?>
-					<td><?= $this->price->format($item->totals(), 'gross') ?>
-					<td><?= $this->money->format($item->balance()) ?>
+					<td class="money"><?= $this->price->format($item->totals(), 'gross') ?>
+					<td class="money"><?= $this->money->format($item->balance()) ?>
 					<td class="date modified">
 						<time datetime="<?= $this->date->format($item->modified, 'w3c') ?>">
 							<?= $this->date->format($item->modified, 'date') ?>

@@ -372,11 +372,17 @@ $this->set([
 
 		<div class="bottom-actions">
 			<?php if ($item->exists()): ?>
+
 				<?= $this->html->link($t('PDF'), [
 					'controller' => 'Invoices',
 					'id' => $item->id, 'action' => 'export_pdf',
 					'library' => 'billing_core'
 				], ['class' => 'button large']) ?>
+
+				<?php if (!$item->isPaidInFull()): ?>
+					<?= $this->html->link($t('pay in full'), ['id' => $item->id, 'action' => 'pay_in_full'], ['class' => 'button large']) ?>
+				<?php endif ?>
+
 				<?= $this->html->link($item->is_locked ? $t('unlock') : $t('lock'), ['id' => $item->id, 'action' => $item->is_locked ? 'unlock': 'lock', 'library' => 'billing_core'], ['class' => 'button large']) ?>
 			<?php endif ?>
 

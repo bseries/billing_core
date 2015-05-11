@@ -18,6 +18,7 @@ use billing_core\models\Invoices;
 use billing_core\models\TaxTypes;
 use lithium\g11n\Message;
 use billing_core\models\Currencies;
+use li3_flash_message\extensions\storage\FlashMessage;
 
 class InvoicesController extends \base_core\controllers\BaseController {
 
@@ -71,6 +72,29 @@ class InvoicesController extends \base_core\controllers\BaseController {
 			$taxTypes = TaxTypes::find('list');
 		}
 		return compact('currencies', 'statuses', 'users', 'virtualUsers', 'taxTypes');
+	}
+
+	public function admin_pay_in_full() {
+		extract(Message::aliases());
+
+		$model = $this->_model;
+		$model::pdo()->beginTransaction();
+
+		$item = $model::first($this->request->id);
+		$result = $item->payInFull();
+
+		if ($result) {
+			$model::pdo()->commit();
+			FlashMessage::write($t('Successfully paid invoice in full.', ['scope' => 'billing_core']), [
+				'level' => 'success'
+			]);
+		} else {
+			$model::pdo()->rollback();
+			FlashMessage::write($t('Failed to pay invoice in full.', ['scope' => 'billing_core']), [
+				'level' => 'error'
+			]);
+		}
+		return $this->redirect($this->request->referer());
 	}
 }
 

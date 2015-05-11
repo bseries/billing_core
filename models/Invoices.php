@@ -232,6 +232,30 @@ class Invoices extends \base_core\models\Base {
 		]);
 	}
 
+	// Generate a payment for each currency in the open positions.
+	public function payInFull($entity) {
+		if ($entity->isPaidInFull()) {
+			throw new Exception("Invoice is already paid in full.");
+		}
+
+		foreach ($entity->balance()->sum() as $currency => $money) {
+			$payment = Payments::create([
+				'method' => 'user',
+				'amount_currency' => $currency,
+				'amount' => $money->negate()->getAmount(),
+				'date' => date('Y-m-d')
+			]);
+			if (!$entity->pay($payment)) {
+				return false;
+			}
+		}
+		return $entity->save([
+			'status' => 'paid'
+		], [
+			'whitelist' => ['status']
+		]);
+	}
+
 	public function isPaidInFull($entity) {
 		foreach ($entity->balance()->sum() as $money) {
 			if ($money->getAmount() > 0) {

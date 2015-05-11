@@ -38,7 +38,7 @@ $this->set([
 					<td data-sort="number" class="emphasize number id table-sort"><?= $t('Number') ?>
 					<td data-sort="status" class="status table-sort"><?= $t('Status') ?>
 					<td data-sort="User.number" class="user table-sort"><?= $t('Recipient') ?>
-					<td><?= $t('Total (net)') ?>
+					<td><?= $t('Total (gross)') ?>
 					<td><?= $t('Balance') ?>
 					<td data-sort="modified" class="date modified table-sort desc"><?= $t('Modified') ?>
 					<td class="actions">
@@ -71,13 +71,16 @@ $this->set([
 						<?php else: ?>
 							-
 						<?php endif ?>
-					<td><?= $this->price->format($item->totals(), 'net') ?>
+					<td><?= $this->price->format($item->totals(), 'gross') ?>
 					<td><?= $this->money->format($item->balance()) ?>
 					<td class="date modified">
 						<time datetime="<?= $this->date->format($item->modified, 'w3c') ?>">
 							<?= $this->date->format($item->modified, 'date') ?>
 						</time>
 					<td class="actions">
+						<?php if (!$item->isPaidInFull()): ?>
+							<?= $this->html->link($t('pay in full'), ['id' => $item->id, 'action' => 'pay_in_full'], ['class' => 'button']) ?>
+						<?php endif ?>
 						<?= $this->html->link($t('PDF'), ['id' => $item->id, 'action' => 'export_pdf', 'library' => 'billing_core'], ['class' => 'button']) ?>
 						<?= $this->html->link($t('open'), ['id' => $item->id, 'action' => 'edit', 'library' => 'billing_core'], ['class' => 'button']) ?>
 				<?php endforeach ?>

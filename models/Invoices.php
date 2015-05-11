@@ -258,11 +258,11 @@ class Invoices extends \base_core\models\Base {
 
 	public function isPaidInFull($entity) {
 		foreach ($entity->balance()->sum() as $money) {
-			if ($money->getAmount() > 0) {
-				return true;
+			if ($money->getAmount() < 0) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	public function address($entity) {

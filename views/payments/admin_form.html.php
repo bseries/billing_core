@@ -43,7 +43,7 @@ $this->set([
 				<?= $this->form->field('amount', [
 					'type' => 'text',
 					'label' => $t('Amount'),
-					'value' => $this->money->format($item->total(), ['currency' => false]),
+					'value' => $this->money->format($item->amount(), ['currency' => false]),
 				]) ?>
 			</div>
 			<div class="grid-column-right">

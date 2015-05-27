@@ -322,6 +322,7 @@ class Invoices extends \base_core\models\Base {
 
 	public static function generateFromPending($user, array $data = []) {
 		$positions = InvoicePositions::pending($user);
+		$terms = Settings::read('billing.paymentTerms');
 
 		if (!$positions->count()) {
 			return true;
@@ -332,7 +333,7 @@ class Invoices extends \base_core\models\Base {
 			'date' => date('Y-m-d'),
 			'status' => 'created',
 			// 'note' => $t('Order No.') . ': ' . $entity->number,
-			'terms' => Settings::read('billing.paymentTerms')
+			'terms' => $terms($user)
 		]);
 		$invoice = $user->address('billing')->copy($invoice, 'address_');
 

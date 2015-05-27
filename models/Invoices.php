@@ -51,6 +51,7 @@ class Invoices extends \base_core\models\Base {
 	// public $belongsTo = ['User'];
 
 	protected static $_actsAs = [
+		'base_core\extensions\data\behavior\RelationsPlus',
 		'base_core\extensions\data\behavior\Timestamp',
 		'base_core\extensions\data\behavior\ReferenceNumber',
 		'base_core\extensions\data\behavior\StatusChange',
@@ -130,42 +131,6 @@ class Invoices extends \base_core\models\Base {
 
 	public function date($entity) {
 		return DateTime::createFromFormat('Y-m-d', $entity->date);
-	}
-
-	public function positions($entity) {
-		if (!$entity->id) {
-			// When creating a new invoice and displaying that
-			// inside the form, will use this method. It's OK
-			// to return just an empty array. This method is
-			// also used for calculating totals.
-			return [];
-		}
-		if ($entity->positions) {
-			return $entity->positions;
-		}
-		return InvoicePositions::find('all', [
-			'conditions' => [
-				'billing_invoice_id' => $entity->id
-			]
-		]);
-	}
-
-	public function payments($entity) {
-		if (!$entity->id) {
-			// When creating a new invoice and displaying that
-			// inside the form, will use this method. It's OK
-			// to return just an empty array. This method is
-			// also used for calculating totals.
-			return [];
-		}
-		if ($entity->payments) {
-			return $entity->payments;
-		}
-		return Payments::find('all', [
-			'conditions' => [
-				'billing_invoice_id' => $entity->id
-			]
-		]);
 	}
 
 	public function isOverdue($entity) {

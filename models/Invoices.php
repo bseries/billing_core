@@ -325,6 +325,7 @@ class Invoices extends \base_core\models\Base {
 
 		$user = $entity->user();
 		$contact = Settings::read('contact.billing');
+		$terms = Settings::read('billing.paymentTerms');
 
 		$document = new InvoiceDocument();
 
@@ -332,7 +333,7 @@ class Invoices extends \base_core\models\Base {
 			->invoice($entity)
 			->recipient($user)
 			->senderContact($contact)
-			->type($t('Invoice', ['scope' => 'billing_core']))
+			->type($t('Invoice', ['scope' => 'billing_core', 'locale' => $user->locale]))
 			->subject($t('Invoice #{:number}', [
 				'number' => $entity->number,
 				'locale' => $user->locale,
@@ -342,7 +343,7 @@ class Invoices extends \base_core\models\Base {
 			->template(Libraries::get('app', 'resources') . "/pdf/empty_invoice_document.pdf")
 			->paypalEmail(Settings::read('service.paypal.default.email'))
 			->bankAccount(Settings::read('billing.bankAccount'))
-			->paymentTerms(Settings::read('billing.paymentTerms'))
+			->paymentTerms($terms($user))
 			->vatRegNo(Settings::read('billing.vatRegNo'));
 
 		$document->compile();

@@ -12,6 +12,7 @@
 
 namespace billing_core\models;
 
+use lithium\core\Environment;
 use lithium\util\Collection;
 use OutOfBoundsException;
 
@@ -27,7 +28,9 @@ class TaxTypes extends \base_core\models\Base {
 		$data += [
 			'id' => $id,
 			'name' => null,
-			'title' => null,
+			'title' => function($locale) {
+				return null;
+			},
 			// Either percentage as integer or `false` to indicate
 			// that no rate is calculated at all.
 			'rate' => false,
@@ -48,7 +51,7 @@ class TaxTypes extends \base_core\models\Base {
 			$results = [];
 
 			foreach (static::$_data as $item) {
-				$results[$item->id] = $item->title;
+				$results[$item->id] = $item->title();
 			}
 			return $results;
 		}
@@ -145,6 +148,15 @@ class TaxTypes extends \base_core\models\Base {
 			'US'  // USA
 		];
 		return in_array($territory, $territories);
+	}
+
+	public function title($entity) {
+		$value = $entity->data('title');
+
+		if (is_string($value)) {
+			return $value;
+		}
+		return $value(Environment::get('locale'));
 	}
 }
 

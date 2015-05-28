@@ -19,7 +19,9 @@ extract(Message::aliases());
 // B2B & B2C
 TaxTypes::register('DE.vat.standard', [
 	'name' => 'MwSt',
-	'title' => $t('VAT Standard DE', ['scope' => 'billing_core']),
+	'title' => function($locale) use ($t) {
+		return $t('VAT Standard DE', ['scope' => 'billing_core', 'locale' => $locale]);
+	},
 	'rate' => 19,
 	'note' => $t('Includes 19% VAT.', ['scope' => 'billing_core'])
 ]);
@@ -27,7 +29,9 @@ TaxTypes::register('DE.vat.standard', [
 // Tax that applies on certain goods when business resides in Germany.
 TaxTypes::register('DE.vat.reduced', [
 	'name' => 'red. MwSt',
-	'title' => $t('VAT Reduced DE', ['scope' => 'billing_core']),
+	'title' => function($locale) use ($t) {
+		return $t('VAT Reduced DE', ['scope' => 'billing_core', 'locale' => $locale]);
+	},
 	'rate' => 7,
 	'note' => $t('Includes 7% VAT.', ['scope' => 'billing_core'])
 ]);
@@ -35,7 +39,9 @@ TaxTypes::register('DE.vat.reduced', [
 // Applies under certain circumstances worldwide.
 TaxTypes::register('*.vat.reverse', [
 	'name' => null,
-	'title' => $t('VAT Reverse Charge', ['scope' => 'billing_core']),
+	'title' => function($locale) use ($t) {
+		return $t('VAT Reverse Charge', ['scope' => 'billing_core', 'locale' => $locale]);
+	},
 	'rate' => false,
 	'note' => $t('Reverse Charge.', ['scope' => 'billing_core'])
 ]);

@@ -32,22 +32,45 @@ class InvoicesController extends \base_core\controllers\BaseController {
 	public function admin_export_pdf() {
 		extract(Message::aliases());
 
-		$invoice = Invoices::find('first', [
+		$item = Invoices::find('first', [
 			'conditions' => [
 				'id' => $this->request->id
 			]
 		]);
-		$stream = $invoice->exportAsPdf();
+		$stream = $item->exportAsPdf();
 
 		$this->_renderDownload(
 			$this->_downloadBasename(
 				null,
 				'invoice',
-				$invoice->number . '.pdf'
+				$item->number . '.pdf'
 			),
 			$stream
 		);
 		fclose($stream);
+	}
+
+	public function admin_pay_in_full() {
+		extract(Message::aliases());
+
+		$model = $this->_model;
+		$model::pdo()->beginTransaction();
+
+		$item = $model::first($this->request->id);
+		$result = $item->payInFull();
+
+		if ($result) {
+			$model::pdo()->commit();
+			FlashMessage::write($t('Successfully paid invoice in full.', ['scope' => 'billing_core']), [
+				'level' => 'success'
+			]);
+		} else {
+			$model::pdo()->rollback();
+			FlashMessage::write($t('Failed to pay invoice in full.', ['scope' => 'billing_core']), [
+				'level' => 'error'
+			]);
+		}
+		return $this->redirect($this->request->referer());
 	}
 
 	protected function _selects($item = null) {
@@ -72,29 +95,6 @@ class InvoicesController extends \base_core\controllers\BaseController {
 			$taxTypes = TaxTypes::find('list');
 		}
 		return compact('currencies', 'statuses', 'users', 'virtualUsers', 'taxTypes');
-	}
-
-	public function admin_pay_in_full() {
-		extract(Message::aliases());
-
-		$model = $this->_model;
-		$model::pdo()->beginTransaction();
-
-		$item = $model::first($this->request->id);
-		$result = $item->payInFull();
-
-		if ($result) {
-			$model::pdo()->commit();
-			FlashMessage::write($t('Successfully paid invoice in full.', ['scope' => 'billing_core']), [
-				'level' => 'success'
-			]);
-		} else {
-			$model::pdo()->rollback();
-			FlashMessage::write($t('Failed to pay invoice in full.', ['scope' => 'billing_core']), [
-				'level' => 'error'
-			]);
-		}
-		return $this->redirect($this->request->referer());
 	}
 }
 

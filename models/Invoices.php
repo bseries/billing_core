@@ -18,7 +18,6 @@ use Exception;
 use AD\Finance\Price;
 use AD\Finance\Price\Prices;
 use AD\Finance\Money\Monies;
-use temporary\Manager as Temporary;
 use lithium\g11n\Message;
 use lithium\core\Libraries;
 use li3_mailer\action\Mailer;
@@ -303,13 +302,11 @@ class Invoices extends \base_core\models\Base {
 			->invoice($entity)
 			->recipient($user)
 			->sender($sender)
-			->type($t('Invoice', ['scope' => 'billing_core', 'locale' => $user->locale]))
 			->subject($t('Invoice #{:number}', [
 				'number' => $entity->number,
 				'locale' => $user->locale,
 				'scope' => 'billing_core'
 			]))
-			// ->intro($t("As agreed, we're billing you for the provided services associated with your account on http://npiece.com. The costs for these services are the following."))
 			->vatRegNo(Settings::read('billing.vatRegNo'));
 
 		if (($settings = Settings::read('service.bank.default')) && isset($settings['holder']))  {

@@ -296,6 +296,10 @@ class Invoices extends \base_core\models\Base {
 		$sender = Contacts::create(Settings::read('contact.billing'));
 
 		$document
+			->type($t('Invoice', [
+				'scope' => 'billing_core',
+				'locale' => $user->locale
+			]))
 			->invoice($entity)
 			->recipient($user)
 			->sender($sender)

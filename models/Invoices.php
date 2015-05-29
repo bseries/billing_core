@@ -299,7 +299,7 @@ class Invoices extends \base_core\models\Base {
 				'scope' => 'billing_core',
 				'locale' => $user->locale
 			]))
-			->invoice($entity)
+			->entity($entity)
 			->recipient($user)
 			->sender($sender)
 			->subject($t('Invoice #{:number}', [

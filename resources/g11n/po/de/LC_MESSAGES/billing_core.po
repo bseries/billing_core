@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: billing_core 1.0\n"
 "Report-Msgid-Bugs-To: info@atelierdisko.de\n"
-"POT-Creation-Date: 2015-05-05 10:42+0200\n"
-"PO-Revision-Date: 2015-05-05 10:52+0100\n"
+"POT-Creation-Date: 2015-05-29 16:03+0200\n"
+"PO-Revision-Date: 2015-05-29 16:03+0100\n"
 "Last-Translator: David Persson <davidpersson@gmx.de>\n"
 "Language-Team: none\n"
 "Language: de\n"
@@ -18,27 +18,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: config/misc.php:22
+#: config/misc.php:23
 msgid "VAT Standard DE"
 msgstr ""
 
-#: config/misc.php:24
+#: config/misc.php:26
 msgid "Includes 19% VAT."
 msgstr "Enthält 19% MwSt."
 
-#: config/misc.php:30
+#: config/misc.php:33
 msgid "VAT Reduced DE"
 msgstr ""
 
-#: config/misc.php:32
+#: config/misc.php:36
 msgid "Includes 7% VAT."
 msgstr "Enthält 7% MwSt."
 
-#: config/misc.php:38
+#: config/misc.php:43
 msgid "VAT Reverse Charge"
 msgstr ""
 
-#: config/misc.php:40
+#: config/misc.php:46
 msgid "Reverse Charge."
 msgstr ""
 
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Invoices"
 msgstr ""
 
-#: config/panes.php:30 views/invoices/admin_form.html.php:290
+#: config/panes.php:30 views/invoices/admin_form.html.php:289
 msgid "Payments"
 msgstr ""
 
@@ -66,51 +66,59 @@ msgstr ""
 msgid "received"
 msgstr ""
 
-#: controllers/InvoicesController.php:56
+#: controllers/InvoicesController.php:57
 msgid "created"
 msgstr ""
 
-#: controllers/InvoicesController.php:57
+#: controllers/InvoicesController.php:58
 msgid "sent"
 msgstr ""
 
-#: controllers/InvoicesController.php:58
+#: controllers/InvoicesController.php:59
 msgid "paid"
 msgstr ""
 
-#: controllers/InvoicesController.php:59
+#: controllers/InvoicesController.php:60
 msgid "cancelled"
 msgstr ""
 
-#: controllers/InvoicesController.php:61
+#: controllers/InvoicesController.php:62
 msgid "awaiting payment"
 msgstr ""
 
-#: controllers/InvoicesController.php:62
+#: controllers/InvoicesController.php:63
 msgid "payment accepted"
 msgstr ""
 
-#: controllers/InvoicesController.php:63
+#: controllers/InvoicesController.php:64
 msgid "payment remotely accepted"
 msgstr ""
 
-#: controllers/InvoicesController.php:64
+#: controllers/InvoicesController.php:65
 msgid "payment error"
 msgstr ""
 
-#: models/Invoices.php:265
+#: controllers/InvoicesController.php:88
+msgid "Successfully paid invoice in full."
+msgstr ""
+
+#: controllers/InvoicesController.php:93
+msgid "Failed to pay invoice in full."
+msgstr ""
+
+#: models/Invoices.php:261
 msgid "Invoice #{:number} paid."
 msgstr ""
 
-#: models/Invoices.php:304 views/payments/admin_form.html.php:52
+#: models/Invoices.php:302 views/payments/admin_form.html.php:52
 msgid "Invoice"
-msgstr ""
+msgstr "Rechnung"
 
-#: models/Invoices.php:305
+#: models/Invoices.php:303
 msgid "Invoice #{:number}"
 msgstr "Rechnung #{:number}"
 
-#: models/Invoices.php:435
+#: models/Invoices.php:437
 msgid "Your invoice #{:number}."
 msgstr "Ihre Rechnung #{:number}."
 
@@ -156,7 +164,7 @@ msgid ""
 msgstr ""
 
 #: views/invoices/admin_form.html.php:56
-#: views/invoices/admin_form.html.php:295
+#: views/invoices/admin_form.html.php:294
 #: views/invoices/admin_index.html.php:37
 #: views/payments/admin_form.html.php:27
 #: views/payments/admin_index.html.php:40
@@ -185,7 +193,7 @@ msgstr ""
 
 #: views/invoices/admin_form.html.php:105
 #: views/invoices/admin_form.html.php:113
-#: views/invoices/admin_form.html.php:279
+#: views/invoices/admin_form.html.php:278
 msgid "Visible to recipient."
 msgstr ""
 
@@ -206,7 +214,7 @@ msgid "Quantity"
 msgstr ""
 
 #: views/invoices/admin_form.html.php:125
-#: views/invoices/admin_form.html.php:297
+#: views/invoices/admin_form.html.php:296
 #: views/payments/admin_form.html.php:39
 msgid "Currency"
 msgstr ""
@@ -220,96 +228,100 @@ msgid "Unit price"
 msgstr ""
 
 #: views/invoices/admin_form.html.php:128
-#: views/invoices/admin_form.html.php:269
-msgid "Tax"
-msgstr ""
-
-#: views/invoices/admin_form.html.php:129
 msgid "Tax rate (%)"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:130
+#: views/invoices/admin_form.html.php:129
 msgid "Line total (net)"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:172
-#: views/invoices/admin_form.html.php:224
+#: views/invoices/admin_form.html.php:171
+#: views/invoices/admin_form.html.php:223
 msgid "gross"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:172
-#: views/invoices/admin_form.html.php:224
+#: views/invoices/admin_form.html.php:171
+#: views/invoices/admin_form.html.php:223
 msgid "net"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:198
-#: views/invoices/admin_form.html.php:238
-#: views/invoices/admin_form.html.php:337
-#: views/invoices/admin_form.html.php:363
+#: views/invoices/admin_form.html.php:197
+#: views/invoices/admin_form.html.php:237
+#: views/invoices/admin_form.html.php:336
+#: views/invoices/admin_form.html.php:362
 #: views/payments/admin_index.html.php:90
 msgid "delete"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:245
+#: views/invoices/admin_form.html.php:244
 msgid "add position"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:248
-#: views/invoices/admin_index.html.php:41
+#: views/invoices/admin_form.html.php:247
 msgid "Total (net)"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:253
+#: views/invoices/admin_form.html.php:252
 msgid "Tax ({:rate}%)"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:259
+#: views/invoices/admin_form.html.php:258
+#: views/invoices/admin_index.html.php:41
 msgid "Total (gross)"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:262
+#: views/invoices/admin_form.html.php:261
 #: views/invoices/admin_index.html.php:42
 msgid "Balance"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:274
+#: views/invoices/admin_form.html.php:268
+msgid "Tax"
+msgstr ""
+
+#: views/invoices/admin_form.html.php:273
 msgid "Tax note"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:280
+#: views/invoices/admin_form.html.php:279
 msgid "Automatically generated."
 msgstr ""
 
-#: views/invoices/admin_form.html.php:296
+#: views/invoices/admin_form.html.php:295
 #: views/payments/admin_form.html.php:34
 #: views/payments/admin_index.html.php:41
 msgid "Method"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:298
+#: views/invoices/admin_form.html.php:297
 #: views/payments/admin_form.html.php:45
 #: views/payments/admin_index.html.php:44
 msgid "Amount"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:368
+#: views/invoices/admin_form.html.php:367
 msgid "add payment"
 msgstr ""
 
 #: views/invoices/admin_form.html.php:376
-#: views/invoices/admin_index.html.php:81
+#: views/invoices/admin_index.html.php:84
 msgid "PDF"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:381
+#: views/invoices/admin_form.html.php:383
+#: views/invoices/admin_index.html.php:82
+msgid "pay in full"
+msgstr ""
+
+#: views/invoices/admin_form.html.php:386
 msgid "lock"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:381
+#: views/invoices/admin_form.html.php:386
 msgid "unlock"
 msgstr ""
 
-#: views/invoices/admin_form.html.php:384
+#: views/invoices/admin_form.html.php:389
 #: views/payments/admin_form.html.php:80
 msgid "save"
 msgstr ""
@@ -340,12 +352,12 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: views/invoices/admin_index.html.php:82
+#: views/invoices/admin_index.html.php:85
 #: views/payments/admin_index.html.php:91
 msgid "open"
 msgstr ""
 
-#: views/invoices/admin_index.html.php:87
+#: views/invoices/admin_index.html.php:90
 #: views/payments/admin_index.html.php:96
 msgid "No items available, yet."
 msgstr ""

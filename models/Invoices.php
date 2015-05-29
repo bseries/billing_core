@@ -24,6 +24,7 @@ use lithium\core\Libraries;
 use li3_mailer\action\Mailer;
 
 use base_core\extensions\cms\Settings;
+use base_address\models\Contacts;
 use base_address\models\Addresses;
 use billing_core\models\Payments;
 use billing_core\models\InvoicePositions;
@@ -288,16 +289,16 @@ class Invoices extends \base_core\models\Base {
 		$stream = fopen('php://temp', 'w+');
 
 		$user = $entity->user();
-		$contact = Settings::read('contact.billing');
-		$terms = Settings::read('billing.paymentTerms');
 
 		$document = Libraries::locate('document', 'Invoice');
 		$document = new $document();
 
+		$sender = Contacts::create(Settings::read('contact.billing'));
+
 		$document
 			->invoice($entity)
 			->recipient($user)
-			->sender($contact)
+			->sender($sender)
 			->type($t('Invoice', ['scope' => 'billing_core', 'locale' => $user->locale]))
 			->subject($t('Invoice #{:number}', [
 				'number' => $entity->number,
@@ -305,10 +306,14 @@ class Invoices extends \base_core\models\Base {
 				'scope' => 'billing_core'
 			]))
 			// ->intro($t("As agreed, we're billing you for the provided services associated with your account on http://npiece.com. The costs for these services are the following."))
-			->paypalEmail(Settings::read('service.paypal.default.email'))
-			->bankAccount(Settings::read('billing.bankAccount'))
-			->paymentTerms($terms($user))
 			->vatRegNo(Settings::read('billing.vatRegNo'));
+
+		if (($settings = Settings::read('service.bank.default')) && isset($settings['holder']))  {
+			$document->bank($settings);
+		}
+		if (($settings = Settings::read('service.paypal.default')) && isset($settings['email']))  {
+			$document->paypal($settings);
+		}
 
 		$document->compile();
 		$document->render($stream);

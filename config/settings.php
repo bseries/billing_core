@@ -33,12 +33,12 @@ Settings::register('invoice.sendPaidMail', false);
 Settings::register('invoice.autoSend', false);
 
 Settings::register('billing.bankAccount', [
-	'holder' => 'App',
-	'bank' => 'Lorem Bank Hamburg',
-	'bic' => 'ACBCDEE0123',
-	'iban' => 'DE1231231123123123123123',
-	'code' => '123 12 123',
-	'account' => '123 1234 12'
+	'holder' => null,
+	'bank' => null,
+	'bic' => null,
+	'iban' => null,
+	'code' => null,
+	'account' => null
 ]);
 
 Settings::register('billing.paymentTerms', function($user) use ($t) {

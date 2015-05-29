@@ -23,7 +23,6 @@ use lithium\g11n\Message;
 use lithium\core\Libraries;
 use li3_mailer\action\Mailer;
 
-use app\extensions\pdf\InvoiceDocument;
 use base_core\extensions\cms\Settings;
 use base_address\models\Addresses;
 use billing_core\models\Payments;
@@ -292,12 +291,13 @@ class Invoices extends \base_core\models\Base {
 		$contact = Settings::read('contact.billing');
 		$terms = Settings::read('billing.paymentTerms');
 
-		$document = new InvoiceDocument();
+		$document = Libraries::locate('document', 'Invoice');
+		$document = new $document();
 
 		$document
 			->invoice($entity)
 			->recipient($user)
-			->senderContact($contact)
+			->sender($contact)
 			->type($t('Invoice', ['scope' => 'billing_core', 'locale' => $user->locale]))
 			->subject($t('Invoice #{:number}', [
 				'number' => $entity->number,
@@ -305,7 +305,6 @@ class Invoices extends \base_core\models\Base {
 				'scope' => 'billing_core'
 			]))
 			// ->intro($t("As agreed, we're billing you for the provided services associated with your account on http://npiece.com. The costs for these services are the following."))
-			->template(Libraries::get('app', 'resources') . "/pdf/empty_invoice_document.pdf")
 			->paypalEmail(Settings::read('service.paypal.default.email'))
 			->bankAccount(Settings::read('billing.bankAccount'))
 			->paymentTerms($terms($user))

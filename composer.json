@@ -16,18 +16,18 @@
         "composer/installers": "~1.0",
         "atelierdisko/li3_flash_message": "1.0.*@beta",
         "atelierdisko/finance": "2.0.*@dev",
-        "zendframework/zendpdf": "2.*",
         "unionofrad/lithium": "dev-dev",
         "atelierdisko/base_core": "1.3.*@dev",
-        "atelierdisko/base_address": "1.3.*@dev"
+        "atelierdisko/base_address": "1.3.*@dev",
+        "atelierdisko/base_document": "1.3.*@dev"
     },
     "suggest": {
       "atelierdisko/ecommerce_core": "Enables product binding for invoice positions."
     },
     "repositories": [
-      { "type": "vcs", "url": "https://github.com/uor/li3_flash_message" },
-      { "type": "vcs", "url": "git@bitbucket.org:atelierdisko/finance.git" },
-      { "type": "vcs", "url": "git@bitbucket.org:atelierdisko/base_core.git" },
-      { "type": "vcs", "url": "git@bitbucket.org:atelierdisko/base_address.git" }
+      { "type": "vcs", "url": "git@code.atelierdisko:finance" },
+      { "type": "vcs", "url": "git@code.atelierdisko:base_core" },
+      { "type": "vcs", "url": "git@code.atelierdisko:base_address" },
+      { "type": "vcs", "url": "git@code.atelierdisko:base_document" }
     ]
 }

@@ -32,7 +32,10 @@ Settings::register('invoice.sendPaidMail', false);
 // Enable/disable auto mailing invoices to recipients once one becomes availablet.
 Settings::register('invoice.autoSend', false);
 
-Settings::register('billing.bankAccount', [
+Settings::register('service.paypal.default', [
+	'email' => null
+]);
+Settings::register('service.bank.default', [
 	'holder' => null,
 	'bank' => null,
 	'bic' => null,

@@ -10,6 +10,6 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-define('BILLING_CORE_VERSION', '1.3.0');
+define('BILLING_CORE_VERSION', '1.4.0');
 
 ?>

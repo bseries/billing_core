@@ -17,13 +17,12 @@ use billing_core\models\Invoices;
 
 class Payments extends \base_core\models\Base {
 
-	use \base_core\models\UserTrait;
-
 	protected $_meta = [
 		'source' => 'billing_payments'
 	];
 
 	protected static $_actsAs = [
+		'base_core\extensions\data\behavior\Ownable',
 		'base_core\extensions\data\behavior\Timestamp',
 		'base_core\extensions\data\behavior\Localizable' => [
 			'fields' => [

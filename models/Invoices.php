@@ -41,8 +41,6 @@ use billing_core\models\InvoicePositions;
 // @link http://www.hk24.de/recht_und_steuern/steuerrecht/umsatzsteuer_mehrwertsteuer/umsatzsteuer_mehrwertsteuer_international/644156/Uebersetzung_Steuerschuldnerschaft_des_Leistungsempfaengers.html
 class Invoices extends \base_core\models\Base {
 
-	use \base_core\models\UserTrait;
-
 	protected $_meta = [
 		'source' => 'billing_invoices'
 	];
@@ -50,6 +48,7 @@ class Invoices extends \base_core\models\Base {
 	// public $belongsTo = ['User'];
 
 	protected static $_actsAs = [
+		'base_core\extensions\data\behavior\Ownable',
 		'base_core\extensions\data\behavior\RelationsPlus',
 		'base_core\extensions\data\behavior\Timestamp',
 		'base_core\extensions\data\behavior\ReferenceNumber',

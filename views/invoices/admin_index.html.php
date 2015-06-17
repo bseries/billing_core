@@ -54,7 +54,7 @@ $this->set([
 				<?php foreach ($data as $item): ?>
 					<?php $user = $item->user() ?>
 				<tr data-id="<?= $item->id ?>">
-					<td class="is-locked flag"><?= ($item->is_locked ? '✓' : '×') ?>
+					<td class="flag"><i class="material-icons"><?= ($item->is_locked ? 'lock ' : '') ?></i>
 					<td class="date">
 						<time datetime="<?= $this->date->format($item->date, 'w3c') ?>">
 							<?= $this->date->format($item->date, 'date') ?>

@@ -26,7 +26,7 @@ $this->set([
 >
 
 	<div class="top-actions">
-		<?= $this->html->link($t('new invoice'), ['action' => 'add', 'library' => 'billing_core'], ['class' => 'button add']) ?>
+		<?= $this->html->link($t('invoice'), ['action' => 'add', 'library' => 'billing_core'], ['class' => 'button add']) ?>
 	</div>
 
 	<?php if ($data->count()): ?>

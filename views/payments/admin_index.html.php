@@ -26,7 +26,7 @@ $this->set([
 >
 
 	<div class="top-actions">
-		<?= $this->html->link($t('new payment'), ['action' => 'add', 'library' => 'billing_core'], ['class' => 'button add']) ?>
+		<?= $this->html->link($t('payment'), ['action' => 'add', 'library' => 'billing_core'], ['class' => 'button add']) ?>
 	</div>
 
 	<div class="help">

@@ -10,7 +10,9 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
-use \DateTime;
+namespace billing_core\config;
+
+use DateTime;
 use base_core\extensions\cms\Settings;
 use base_core\extensions\cms\Jobs;
 use base_core\models\Users;

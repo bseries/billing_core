@@ -10,6 +10,8 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+namespace billing_core\config;
+
 use base_core\extensions\cms\Panes;
 use lithium\g11n\Message;
 

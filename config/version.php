@@ -10,6 +10,8 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
 
+namespace billing_core\config;
+
 define('BILLING_CORE_VERSION', '1.4');
 
 ?>

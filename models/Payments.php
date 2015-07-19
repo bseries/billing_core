@@ -21,7 +21,7 @@ class Payments extends \base_core\models\Base {
 		'source' => 'billing_payments'
 	];
 
-	protected static $_actsAs = [
+	public $actsAs = [
 		'base_core\extensions\data\behavior\User',
 		'base_core\extensions\data\behavior\Timestamp',
 		'base_core\extensions\data\behavior\Localizable' => [

@@ -25,7 +25,7 @@ class InvoicePositions extends \base_core\models\Base {
 		'source' => 'billing_invoice_positions'
 	];
 
-	public $actsAs = [
+	protected $_actsAs = [
 		'base_core\extensions\data\behavior\Timestamp',
 		'base_core\extensions\data\behavior\Localizable' => [
 			'fields' => [

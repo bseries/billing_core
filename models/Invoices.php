@@ -45,7 +45,7 @@ class Invoices extends \base_core\models\Base {
 		'source' => 'billing_invoices'
 	];
 
-	public $actsAs = [
+	protected $_actsAs = [
 		'base_core\extensions\data\behavior\User',
 		'base_core\extensions\data\behavior\RelationsPlus',
 		'base_core\extensions\data\behavior\Timestamp',

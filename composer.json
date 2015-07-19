@@ -1,15 +1,14 @@
 {
     "name": "atelierdisko/billing_core",
     "description": "Core functionality for Billing.",
-    "license": "proprietary",
     "homepage": "http://atelierdisko.de",
     "type": "lithium-library",
-    "minimum-stability": "dev",
+    "license": "proprietary",
     "authors": [
-      {
-        "name": "Atelier Disko",
-        "homepage": "http://atelierdisko.de"
-      }
+        {
+          "name": "Atelier Disko",
+          "homepage": "http://atelierdisko.de"
+        }
     ],
     "require": {
         "php": ">=5.5.0",

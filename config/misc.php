@@ -20,7 +20,9 @@ extract(Message::aliases());
 // Tax that applies on all goods when business resides in Germany.
 // B2B & B2C
 TaxTypes::register('DE.vat.standard', [
-	'name' => 'MwSt',
+	'name' => function($locale) use ($t) {
+		return $t('VAT', ['scope' => 'billing_core', 'locale' => $locale]);
+	},
 	'title' => function($locale) use ($t) {
 		return $t('VAT Standard DE', ['scope' => 'billing_core', 'locale' => $locale]);
 	},
@@ -30,7 +32,9 @@ TaxTypes::register('DE.vat.standard', [
 
 // Tax that applies on certain goods when business resides in Germany.
 TaxTypes::register('DE.vat.reduced', [
-	'name' => 'red. MwSt',
+	'name' => function($locale) use ($t) {
+		return $t('red. VAT', ['scope' => 'billing_core', 'locale' => $locale]);
+	},
 	'title' => function($locale) use ($t) {
 		return $t('VAT Reduced DE', ['scope' => 'billing_core', 'locale' => $locale]);
 	},

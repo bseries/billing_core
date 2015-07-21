@@ -14,7 +14,7 @@
         "php": ">=5.5.0",
         "composer/installers": "1.*@stable",
         "atelierdisko/li3_flash_message": "1.0.*@beta",
-        "atelierdisko/finance": "2.0.*@beta",
+        "atelierdisko/finance": "2.0.*",
         "unionofrad/lithium": "1.0.*@dev",
         "atelierdisko/base_core": "1.4.*",
         "atelierdisko/base_address": "1.4.*",

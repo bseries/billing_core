@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: billing_core 1.0\n"
 "Report-Msgid-Bugs-To: info@atelierdisko.de\n"
-"POT-Creation-Date: 2015-05-29 16:03+0200\n"
+"POT-Creation-Date: 2015-07-21 13:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,107 +17,115 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: config/misc.php:23
+#: config/misc.php:24
+msgid "VAT"
+msgstr ""
+
+#: config/misc.php:27
 msgid "VAT Standard DE"
 msgstr ""
 
-#: config/misc.php:26
+#: config/misc.php:30
 msgid "Includes 19% VAT."
 msgstr ""
 
-#: config/misc.php:33
+#: config/misc.php:36
+msgid "red. VAT"
+msgstr ""
+
+#: config/misc.php:39
 msgid "VAT Reduced DE"
 msgstr ""
 
-#: config/misc.php:36
+#: config/misc.php:42
 msgid "Includes 7% VAT."
 msgstr ""
 
-#: config/misc.php:43
+#: config/misc.php:49
 msgid "VAT Reverse Charge"
 msgstr ""
 
-#: config/misc.php:46
+#: config/misc.php:52
 msgid "Reverse Charge."
 msgstr ""
 
-#: config/panes.php:19
+#: config/panes.php:21
 msgid "Billing"
 msgstr ""
 
-#: config/panes.php:25
+#: config/panes.php:27
 msgid "Invoices"
 msgstr ""
 
-#: config/panes.php:30 views/invoices/admin_form.html.php:289
+#: config/panes.php:32 views/invoices/admin_form.html.php:289
 msgid "Payments"
 msgstr ""
 
-#: config/widgets.php:51
+#: config/widgets.php:53
 msgid "Cashflow"
 msgstr ""
 
-#: config/widgets.php:56
+#: config/widgets.php:58
 msgid "invoiced"
 msgstr ""
 
-#: config/widgets.php:57
+#: config/widgets.php:59
 msgid "received"
 msgstr ""
 
-#: controllers/InvoicesController.php:57
-msgid "created"
-msgstr ""
-
-#: controllers/InvoicesController.php:58
-msgid "sent"
-msgstr ""
-
-#: controllers/InvoicesController.php:59
-msgid "paid"
-msgstr ""
-
-#: controllers/InvoicesController.php:60
-msgid "cancelled"
-msgstr ""
-
-#: controllers/InvoicesController.php:62
-msgid "awaiting payment"
-msgstr ""
-
-#: controllers/InvoicesController.php:63
-msgid "payment accepted"
-msgstr ""
-
 #: controllers/InvoicesController.php:64
-msgid "payment remotely accepted"
-msgstr ""
-
-#: controllers/InvoicesController.php:65
-msgid "payment error"
-msgstr ""
-
-#: controllers/InvoicesController.php:88
 msgid "Successfully paid invoice in full."
 msgstr ""
 
-#: controllers/InvoicesController.php:93
+#: controllers/InvoicesController.php:69
 msgid "Failed to pay invoice in full."
 msgstr ""
 
-#: models/Invoices.php:261
+#: controllers/InvoicesController.php:80
+msgid "created"
+msgstr ""
+
+#: controllers/InvoicesController.php:81
+msgid "sent"
+msgstr ""
+
+#: controllers/InvoicesController.php:82
+msgid "paid"
+msgstr ""
+
+#: controllers/InvoicesController.php:83
+msgid "cancelled"
+msgstr ""
+
+#: controllers/InvoicesController.php:85
+msgid "awaiting payment"
+msgstr ""
+
+#: controllers/InvoicesController.php:86
+msgid "payment accepted"
+msgstr ""
+
+#: controllers/InvoicesController.php:87
+msgid "payment remotely accepted"
+msgstr ""
+
+#: controllers/InvoicesController.php:88
+msgid "payment error"
+msgstr ""
+
+#: models/Invoices.php:260
 msgid "Invoice #{:number} paid."
 msgstr ""
 
-#: models/Invoices.php:302 views/payments/admin_form.html.php:52
+#: models/Invoices.php:298 views/payments/admin_form.html.php:52
 msgid "Invoice"
 msgstr ""
 
-#: models/Invoices.php:303
+#: models/Invoices.php:305
 msgid "Invoice #{:number}"
 msgstr ""
 
-#: models/Invoices.php:437
+#: models/Invoices.php:438
 msgid "Your invoice #{:number}."
 msgstr ""
 

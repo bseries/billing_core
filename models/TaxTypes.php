@@ -27,7 +27,9 @@ class TaxTypes extends \base_core\models\Base {
 	public static function register($id, array $data) {
 		$data += [
 			'id' => $id,
-			'name' => null,
+			'name' => function($locale) {
+				return null;
+			},
 			'title' => function($locale) {
 				return null;
 			},
@@ -150,13 +152,14 @@ class TaxTypes extends \base_core\models\Base {
 		return in_array($territory, $territories);
 	}
 
-	public function title($entity) {
-		$value = $entity->data('title');
+	public function name($entity) {
+		$value = $entity->data(__FUNCTION__);
+		return is_callable($value) ? $value(Environment::get('locale')) : $value;
+	}
 
-		if (is_string($value)) {
-			return $value;
-		}
-		return $value(Environment::get('locale'));
+	public function title($entity) {
+		$value = $entity->data(__FUNCTION__);
+		return is_callable($value) ? $value(Environment::get('locale')) : $value;
 	}
 }
 

@@ -13,16 +13,15 @@
 namespace billing_core\config;
 
 use base_core\extensions\cms\Settings;
-use lithium\g11n\Message;
 
-extract(Message::aliases());
-
-Settings::register('contact.billing', Settings::read('contact.default'));
+Settings::register('contact.billing',
+	Settings::read('contact.default')
+);
 
 Settings::register('billing.vatRegNo', 'DE1231232');
 Settings::register('billing.taxNo', '12/12/12');
 
-Settings::register('billing.paymentTerms', function($user) use ($t) {
+Settings::register('billing.paymentTerms', function($user) {
 	return null;
 });
 

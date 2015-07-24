@@ -12,56 +12,19 @@
 
 namespace billing_core\config;
 
-use lithium\g11n\Message;
 use base_core\extensions\cms\Widgets;
-use billing_core\models\Payments;
-use billing_core\models\Invoices;
-use lithium\core\Environment;
-use AD\Finance\Money\MoniesIntlFormatter as MoniesFormatter;
-use AD\Finance\Money\Monies;
-use AD\Finance\Money\NullMoney;
+use lithium\g11n\Message;
 
 extract(Message::aliases());
 
-Widgets::register('invoices_value', function() use ($t) {
-	$formatter = new MoniesFormatter(Environment::get('locale'));
-
-	$invoiced = new Monies();
-	$paid = new Monies();
-
-	$invoices = Invoices::find('all', [
-		'conditions' => [
-			'status' => [
-				'!=' => 'cancelled'
-			]
-		]
-	]);
-	foreach ($invoices as $invoice) {
-		foreach ($invoice->totals()->sum() as $rate => $currencies) {
-			foreach ($currencies as $currency => $price) {
-				$invoiced = $invoiced->add($price->getGross());
-			}
-		}
-	}
-
-	$payments = Payments::find('all');
-	foreach ($payments as $payment) {
-		$paid = $paid->add($payment->amount());
-	}
-
+Widgets::register('cashflow', function() use ($t) {
 	return [
 		'title' => $t('Cashflow', ['scope' => 'billing_core']),
-		'url' => [
-			'controller' => 'Invoices', 'action' => 'index', 'library' => 'billing_core'
-		],
-		'data' => [
-			$t('invoiced', ['scope' => 'billing_core']) => $formatter->format($invoiced),
-			$t('received', ['scope' => 'billing_core']) => $formatter->format($paid)
-		]
+		'data' => []
 	];
 }, [
 	'type' => Widgets::TYPE_COUNTER,
-	'group' => Widgets::GROUP_DASHBOARD,
+	'group' => Widgets::GROUP_DASHBOARD
 ]);
 
 ?>

@@ -22,16 +22,4 @@ Panes::register('billing', [
 	'weight' => 20
 ]);
 
-$base = ['controller' => 'billing', 'library' => 'billing_core', 'admin' => true];
-Panes::register('billing.invoices', [
-	'title' => $t('Invoices', ['scope' => 'billing_core']),
-	'url' => ['controller' => 'Invoices', 'action' => 'index'] + $base,
-	'weight' => 50
-]);
-Panes::register('billing.payments', [
-	'title' => $t('Payments', ['scope' => 'billing_core']),
-	'url' => ['controller' => 'Payments', 'action' => 'index'] + $base,
-	'weight' => 60
-]);
-
 ?>

@@ -1,6 +1,6 @@
 {
     "name": "atelierdisko/billing_core",
-    "description": "Core functionality for Billing.",
+    "description": "Core functionality for Banque.",
     "homepage": "http://atelierdisko.de",
     "type": "lithium-library",
     "license": "proprietary",

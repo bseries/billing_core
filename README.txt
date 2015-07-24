@@ -1,5 +1,5 @@
 Billing Core
--- Core functionality for Billing.
+-- Core functionality for Banque.
 
 Synopsis
 --------

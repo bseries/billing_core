@@ -22,3 +22,5 @@
   moved into new namespaces:
   - `billing_core\models\Payments` -> `billing_payment\models\Payments`
 
+- Settings `billing.vatRegNo` and `billing.taxNo` have been deprecated
+  in favor of fields on `contact.billing`.

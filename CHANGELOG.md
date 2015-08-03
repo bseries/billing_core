@@ -8,6 +8,8 @@
 
 ### Added
 
+- Added support for tax no on users.
+
 ### Changed
 
 ### Backwards Incompatible Changes

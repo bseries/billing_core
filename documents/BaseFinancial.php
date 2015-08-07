@@ -1,6 +1,6 @@
 <?php
 /**
- * Base Document
+ * Billing Core
  *
  * Copyright (c) 2015 Atelier Disko - All rights reserved.
  *

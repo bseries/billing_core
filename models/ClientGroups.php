@@ -12,6 +12,8 @@
 
 namespace billing_core\models;
 
+use InvalidArgumentException;
+use OutOfBoundsException;
 use billing_core\models\TaxTypes;
 
 class ClientGroups extends \base_core\models\Base {
@@ -46,6 +48,12 @@ class ClientGroups extends \base_core\models\Base {
 					}
 				}
 				return false;
+			}
+			if (!isset($options['conditions']['id'])) {
+				throw new InvalidArgumentException('No `id` condition given.');
+			}
+			if (!isset(static::$_data[$key = $options['conditions']['id']])) {
+				throw new OutOfBoundsException("Client group `{$key}` not registered.");
 			}
 			return static::$_data[$options['conditions']['id']];
 		}

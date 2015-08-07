@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: billing_core 1.0\n"
 "Report-Msgid-Bugs-To: info@atelierdisko.de\n"
-"POT-Creation-Date: 2015-07-24 16:24+0200\n"
+"POT-Creation-Date: 2015-08-07 15:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,35 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: config/misc.php:24
+#: config/misc.php:38
 msgid "VAT"
 msgstr ""
 
-#: config/misc.php:27
+#: config/misc.php:41
 msgid "VAT Standard DE"
 msgstr ""
 
-#: config/misc.php:30
+#: config/misc.php:44
 msgid "Includes 19% VAT."
 msgstr ""
 
-#: config/misc.php:36
+#: config/misc.php:50
 msgid "red. VAT"
 msgstr ""
 
-#: config/misc.php:39
+#: config/misc.php:53
 msgid "VAT Reduced DE"
 msgstr ""
 
-#: config/misc.php:42
+#: config/misc.php:56
 msgid "Includes 7% VAT."
 msgstr ""
 
-#: config/misc.php:49
+#: config/misc.php:63
 msgid "VAT Reverse Charge"
 msgstr ""
 
-#: config/misc.php:52
+#: config/misc.php:66
 msgid "Reverse Charge."
 msgstr ""
 

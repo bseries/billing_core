@@ -31,8 +31,6 @@ abstract class BaseFinancial extends \base_document\documents\Base {
 
 	protected $_sender;
 
-	protected $_intro;
-
 	public function compile() {
 		parent::compile();
 
@@ -61,12 +59,6 @@ abstract class BaseFinancial extends \base_document\documents\Base {
 			$this->_compileSubject();
 		}
 
-		/* Intro Text */
-		if ($this->_intro) {
-			$this->_compileHello();
-			$this->_compileIntro();
-		}
-
 		/* Financial Table */
 		$this->_compileTableHeader();
 
@@ -92,18 +84,12 @@ abstract class BaseFinancial extends \base_document\documents\Base {
 	abstract protected function _compileSubject();
 
 	// 6.
-	abstract protected function _compileHello();
-
-	//  7.
-	abstract protected function _compileIntro();
-
-	// 8.
 	abstract protected function _compileTableHeader();
 
-	// 9.
+	// 7.
 	abstract protected function _compileTablePosition($position);
 
-	// 10.
+	// 8.
 	abstract protected function _compileTableFooter();
 }
 

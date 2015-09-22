@@ -17,24 +17,10 @@
 
 namespace billing_core\config;
 
-use base_core\security\Gate;
 use billing_core\models\TaxTypes;
-use li3_access\security\Access;
 use lithium\g11n\Message;
 
 extract(Message::aliases());
-
-// Register additional roles.
-Gate::registerRole('merchant');
-Gate::registerRole('customer');
-
-// Add additional entity rules.
-Access::add('entity', 'user.role:merchant', function($user, $entity) {
-	return $user->role == 'merchant';
-});
-Access::add('entity', 'user.role:customer', function($user, $entity) {
-	return $user->role == 'customer';
-});
 
 // Tax that applies on all goods when business resides in Germany.
 // B2B & B2C

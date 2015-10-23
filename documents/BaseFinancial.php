@@ -19,7 +19,7 @@ namespace billing_core\documents;
 
 abstract class BaseFinancial extends \base_document\documents\Base {
 
-	protected $_layout = 'blank';
+	protected $_layout = 'financial';
 
 	protected $_entity;
 

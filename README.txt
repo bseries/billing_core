@@ -8,7 +8,12 @@ tax, client group and payment handling. It further includes
 view helpers to format financial values and a base document 
 for financial PDFs.
 
-Payment methods are backed by Omnipay.
+Payment methods are backed by Omnipay. By default the following
+methods are supported out of the box:
+
+- PayPal (Express, Pro, Rest)
+- Wirecard
+- Local (Invoice, Debit Card)
 
 Authors
 -------

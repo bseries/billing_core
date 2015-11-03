@@ -3,7 +3,12 @@ Billing Core
 
 Synopsis
 --------
-n/a
+This is the foundation module for all Banque modules. It covers
+tax, client group and payment handling. It further includes
+view helpers to format financial values and a base document 
+for financial PDFs.
+
+Payment methods are backed by Omnipay.
 
 Authors
 -------

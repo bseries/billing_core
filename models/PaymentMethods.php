@@ -64,6 +64,8 @@ class PaymentMethods extends \base_core\models\Base {
 				$results[$item->id] = $item->title();
 			}
 			return $results;
+		} else {
+			return static::$_data[$type];
 		}
 	}
 

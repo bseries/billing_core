@@ -25,36 +25,42 @@ extract(Message::aliases());
 // Tax that applies on all goods when business resides in Germany.
 // B2B & B2C
 TaxTypes::register('DE.vat.standard', [
-	'name' => function($locale) use ($t) {
-		return $t('VAT', ['scope' => 'billing_core', 'locale' => $locale]);
+	'name' => function() use ($t) {
+		return $t('VAT', ['scope' => 'billing_core']);
 	},
-	'title' => function($locale) use ($t) {
-		return $t('VAT Standard DE', ['scope' => 'billing_core', 'locale' => $locale]);
+	'title' => function() use ($t) {
+		return $t('VAT Standard DE', ['scope' => 'billing_core']);
 	},
 	'rate' => 19,
-	'note' => $t('Includes 19% VAT.', ['scope' => 'billing_core'])
+	'note' => function() use ($t) {
+		return $t('Includes 19% VAT.', ['scope' => 'billing_core']);
+	}
 ]);
 
 // Tax that applies on certain goods when business resides in Germany.
 TaxTypes::register('DE.vat.reduced', [
-	'name' => function($locale) use ($t) {
-		return $t('red. VAT', ['scope' => 'billing_core', 'locale' => $locale]);
+	'name' => function() use ($t) {
+		return $t('red. VAT', ['scope' => 'billing_core']);
 	},
-	'title' => function($locale) use ($t) {
-		return $t('VAT Reduced DE', ['scope' => 'billing_core', 'locale' => $locale]);
+	'title' => function() use ($t) {
+		return $t('VAT Reduced DE', ['scope' => 'billing_core']);
 	},
 	'rate' => 7,
-	'note' => $t('Includes 7% VAT.', ['scope' => 'billing_core'])
+	'note' => function() use ($t) {
+		return $t('Includes 7% VAT.', ['scope' => 'billing_core']);
+	}
 ]);
 
 // Applies under certain circumstances worldwide.
 TaxTypes::register('*.vat.reverse', [
 	'name' => null,
-	'title' => function($locale) use ($t) {
-		return $t('VAT Reverse Charge', ['scope' => 'billing_core', 'locale' => $locale]);
+	'title' => function() use ($t) {
+		return $t('VAT Reverse Charge', ['scope' => 'billing_core']);
 	},
 	'rate' => false,
-	'note' => $t('Reverse Charge.', ['scope' => 'billing_core'])
+	'note' => function() use ($t) {
+		return $t('Reverse Charge.', ['scope' => 'billing_core']);
+	}
 ]);
 
 ?>

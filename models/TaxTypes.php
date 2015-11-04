@@ -163,12 +163,17 @@ class TaxTypes extends \base_core\models\Base {
 
 	public function name($entity) {
 		$value = $entity->data(__FUNCTION__);
-		return is_callable($value) ? $value(Environment::get('locale')) : $value;
+		return is_callable($value) ? $value() : $value;
 	}
 
 	public function title($entity) {
 		$value = $entity->data(__FUNCTION__);
-		return is_callable($value) ? $value(Environment::get('locale')) : $value;
+		return is_callable($value) ? $value() : $value;
+	}
+
+	public function note($entity) {
+		$value = $entity->data(__FUNCTION__);
+		return is_callable($value) ? $value() : $value;
 	}
 }
 

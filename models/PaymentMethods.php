@@ -18,7 +18,6 @@
 namespace billing_core\models;
 
 use AD\Finance\Price\NullPrice;
-use lithium\core\Environment;
 use lithium\util\Collection;
 
 class PaymentMethods extends \base_core\models\Base {
@@ -37,7 +36,7 @@ class PaymentMethods extends \base_core\models\Base {
 		$data += [
 			'id' => $name,
 			'name' => $name,
-			'title' => function($locale) {
+			'title' => function() {
 				return null;
 			},
 			'access' => ['user.role:admin'],
@@ -46,6 +45,7 @@ class PaymentMethods extends \base_core\models\Base {
 			},
 			'info' => function($context, $format, $renderer, $order) {
 				// Dependent on $format return either HTML or plaintext.
+				return null;
 			}
 		];
 		$data['access'] = (array) $data['access'];
@@ -69,21 +69,17 @@ class PaymentMethods extends \base_core\models\Base {
 
 	public function title($entity) {
 		$value = $entity->data('title');
-
-		if (is_string($value)) {
-			return $value;
-		}
-		return $value(Environment::get('locale'));
+		return is_callable($value) ? $value() : $value;
 	}
 
 	public function price($entity, $user, $cart) {
 		$value = $entity->data('price');
-		return $value($user, $cart);
+		return is_callable($value) ? $value($user, $cart) : $value;
 	}
 
 	public function info($entity, $context, $format, $renderer, $order) {
 		$value = $entity->data('info');
-		return $value($context, $format, $renderer, $order);
+		return is_callable($value) ? $value($context, $format, $renderer, $order) : $value;
 	}
 }
 

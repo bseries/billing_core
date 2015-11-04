@@ -29,12 +29,9 @@ extract(Message::aliases());
 // Tax that applies on all goods when business resides in Germany.
 // B2B & B2C
 TaxTypes::register('DE.vat.standard', [
-	'name' => function() use ($t) {
-		return $t('VAT', ['scope' => 'billing_core']);
-	},
 	'rate' => 19,
 	'title' => function() use ($t) {
-		return $t('VAT Standard DE', ['scope' => 'billing_core']);
+		return $t('VAT', ['scope' => 'billing_core']);
 	},
 	'note' => function() use ($t) {
 		return $t('Includes 19% VAT.', ['scope' => 'billing_core']);
@@ -43,12 +40,9 @@ TaxTypes::register('DE.vat.standard', [
 
 // Tax that applies on certain goods when business resides in Germany.
 TaxTypes::register('DE.vat.reduced', [
-	'name' => function() use ($t) {
-		return $t('red. VAT', ['scope' => 'billing_core']);
-	},
 	'rate' => 7,
 	'title' => function() use ($t) {
-		return $t('VAT Reduced DE', ['scope' => 'billing_core']);
+		return $t('red. VAT', ['scope' => 'billing_core']);
 	},
 	'note' => function() use ($t) {
 		return $t('Includes 7% VAT.', ['scope' => 'billing_core']);
@@ -57,7 +51,6 @@ TaxTypes::register('DE.vat.reduced', [
 
 // Applies under certain circumstances worldwide.
 TaxTypes::register('*.vat.reverse', [
-	'name' => null,
 	'rate' => false,
 	'title' => function() use ($t) {
 		return $t('VAT Reverse Charge', ['scope' => 'billing_core']);

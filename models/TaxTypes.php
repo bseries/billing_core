@@ -17,56 +17,20 @@
 
 namespace billing_core\models;
 
-use InvalidArgumentException;
-use OutOfBoundsException;
-use lithium\core\Environment;
-use lithium\util\Collection;
+class TaxTypes extends \base_core\models\BaseRegister {
 
-class TaxTypes extends \base_core\models\Base {
-
-	protected $_meta = [
-		'connection' => false
-	];
-
-	protected static $_data = [];
-
-	public static function register($id, array $data) {
+	public static function register($name, array $data) {
 		$data += [
-			'id' => $id,
-			'name' => function($locale) {
-				return null;
-			},
-			'title' => function($locale) {
-				return null;
-			},
+			'name' => $name,
+			'title' => $name,
 			// Either percentage as integer or `false` to indicate
 			// that no rate is calculated at all.
 			'rate' => false,
 			'note' => null
 		];
-		static::$_data[$id] = static::create($data);
+		static::$_data[$name] = static::create($data);
 	}
 
-	public static function find($type, array $options = []) {
-		if ($type == 'all') {
-			return new Collection(['data' => static::$_data]);
-		} elseif ($type == 'first') {
-			if (!isset($options['conditions']['id'])) {
-				throw new InvalidArgumentException('No `id` condition given.');
-			}
-			if (!isset(static::$_data[$key = $options['conditions']['id']])) {
-				throw new OutOfBoundsException("Tax type `{$key}` not registered.");
-			}
-			return static::$_data[$key];
-		} elseif ($type == 'list') {
-			$results = [];
-
-			foreach (static::$_data as $item) {
-				$results[$item->id] = $item->title();
-			}
-			return $results;
-		}
-	}
 
 	// Detect if beneficiary recipient is business (B) or non-business (C).
 	//
@@ -161,11 +125,6 @@ class TaxTypes extends \base_core\models\Base {
 		return in_array($territory, $territories);
 	}
 
-	public function name($entity) {
-		$value = $entity->data(__FUNCTION__);
-		return is_callable($value) ? $value() : $value;
-	}
-
 	public function title($entity) {
 		$value = $entity->data(__FUNCTION__);
 		return is_callable($value) ? $value() : $value;
@@ -174,6 +133,13 @@ class TaxTypes extends \base_core\models\Base {
 	public function note($entity) {
 		$value = $entity->data(__FUNCTION__);
 		return is_callable($value) ? $value() : $value;
+	}
+
+	/* Deprecated / BC */
+
+	public function name($entity) {
+		trigger_error('TaxTypes::name() is deprecated in favor of title().', E_USER_DEPRECATED);
+		return $entity->title();
 	}
 }
 

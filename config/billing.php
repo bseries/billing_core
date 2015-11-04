@@ -28,10 +28,10 @@ TaxTypes::register('DE.vat.standard', [
 	'name' => function() use ($t) {
 		return $t('VAT', ['scope' => 'billing_core']);
 	},
+	'rate' => 19,
 	'title' => function() use ($t) {
 		return $t('VAT Standard DE', ['scope' => 'billing_core']);
 	},
-	'rate' => 19,
 	'note' => function() use ($t) {
 		return $t('Includes 19% VAT.', ['scope' => 'billing_core']);
 	}
@@ -42,10 +42,10 @@ TaxTypes::register('DE.vat.reduced', [
 	'name' => function() use ($t) {
 		return $t('red. VAT', ['scope' => 'billing_core']);
 	},
+	'rate' => 7,
 	'title' => function() use ($t) {
 		return $t('VAT Reduced DE', ['scope' => 'billing_core']);
 	},
-	'rate' => 7,
 	'note' => function() use ($t) {
 		return $t('Includes 7% VAT.', ['scope' => 'billing_core']);
 	}
@@ -54,10 +54,10 @@ TaxTypes::register('DE.vat.reduced', [
 // Applies under certain circumstances worldwide.
 TaxTypes::register('*.vat.reverse', [
 	'name' => null,
+	'rate' => false,
 	'title' => function() use ($t) {
 		return $t('VAT Reverse Charge', ['scope' => 'billing_core']);
 	},
-	'rate' => false,
 	'note' => function() use ($t) {
 		return $t('Reverse Charge.', ['scope' => 'billing_core']);
 	}

@@ -21,7 +21,7 @@ use AD\Finance\Price\NullPrice;
 
 class PaymentMethods extends \base_core\models\BaseRegister {
 
-	public static function register($name, array $data) {
+	public static function register($name, array $data = []) {
 		$data += [
 			'name' => $name,
 			'title' => $name,

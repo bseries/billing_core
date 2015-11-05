@@ -19,7 +19,7 @@ namespace billing_core\models;
 
 class TaxTypes extends \base_core\models\BaseRegister {
 
-	public static function register($name, array $data) {
+	public static function register($name, array $data = []) {
 		$data += [
 			'name' => $name,
 			'title' => $name,
@@ -30,7 +30,6 @@ class TaxTypes extends \base_core\models\BaseRegister {
 		];
 		static::$_data[$name] = static::create($data);
 	}
-
 
 	// Detect if beneficiary recipient is business (B) or non-business (C).
 	//

@@ -79,7 +79,7 @@ $infoBankAccount = function($context, $format) {
 	return implode("\n", $result);
 };
 
-PaymentMethods::register('invoice', [
+PaymentMethods::register('local.invoice', [
 	'title' => function() use ($t) {
 		return $t('Invoice', ['scope' => 'billing_core']);
 	},
@@ -103,7 +103,7 @@ PaymentMethods::register('invoice', [
 	}
 ]);
 
-PaymentMethods::register('prepayment', [
+PaymentMethods::register('local.prepayment', [
 	'title' => function() use ($t) {
 		return $t('Prepayment', ['scope' => 'billing_core']);
 	},

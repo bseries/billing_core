@@ -19,7 +19,7 @@ namespace billing_core\models;
 
 use lithium\g11n\Catalog;
 
-class Currencies extends \base_core\models\G11nBase {
+class Currencies extends \base_core\models\BaseG11n {
 
 	protected static function _available() {
 		return explode(' ', PROJECT_CURRENCIES);

@@ -21,16 +21,14 @@ use AD\Finance\Price\NullPrice;
 
 class PaymentMethods extends \base_core\models\BaseRegister {
 
-	public static function register($name, array $data = []) {
-		$data += [
-			'name' => $name,
-			'title' => $name,
+	protected static function _register(array $data) {
+		return $data + [
+			'title' => $data['name'],
 			'access' => ['user.role:admin'],
 			'price' => new NullPrice(),
 			// Dependent on $format return either HTML or plaintext.
 			'info' => null
 		];
-		static::$_data[$name] = static::create($data);
 	}
 
 	public function title($entity) {

@@ -31,6 +31,19 @@ class PaymentMethods extends \base_core\models\BaseRegister {
 		];
 	}
 
+	public function gateway($entity) {
+		if (!$entity->gateway) {
+			return falsE;
+		}
+		// i.e. omnipay.paypal.foo or banque.blaFasel
+		if ($entity->gateway['name'] === 'omnipay') {
+			$name = explode('.', $entity->gateway['name']);
+			$name = implode('.', array_slice($name, 1));
+
+			return Omnipay::create($name);
+		}
+	}
+
 	public function title($entity) {
 		$value = $entity->data(__FUNCTION__);
 		return is_callable($value) ? $value() : $value;

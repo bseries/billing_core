@@ -65,7 +65,7 @@ class ClientGroups extends \base_core\models\Base {
 	}
 
 	public function taxType($entity) {
-		return TaxTypes::find('first', ['conditions' => ['id' => $entity->taxType]]);
+		return TaxTypes::find('first', ['conditions' => ['name' => $entity->taxType]]);
 	}
 }
 

@@ -19,20 +19,13 @@ namespace billing_core\config;
 
 use base_core\extensions\cms\Settings;
 
-Settings::register('contact.billing',
-	Settings::read('contact.default') + [
-		'vat_reg_no' => 'DE123123123',
-		'tax_no' => '12/12/12'
-	]
-);
+Settings::register('contact.billing', Settings::read('contact.default') + [
+	'vat_reg_no' => 'DE123123123',
+	'tax_no' => '12/12/12'
+]);
 
 Settings::register('billing.paymentTerms', function($user) {
 	return null;
 });
-
-Settings::register('billing.paymentTerms', function($user) {
-	return null;
-});
-
 
 ?>

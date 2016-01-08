@@ -9,7 +9,6 @@
 ### Added
 
 - Added support for tax no on users.
-- Imported PaymentMethods from ecommerce_core
 
 ### Changed
 

@@ -17,15 +17,15 @@
 
 namespace billing_core\billing;
 
-use billing_core\billing\TaxTypeConfiguration;
+use billing_core\billing\TaxTypesConfiguration;
 
-class TaxType {
+class TaxTypes {
 
 	use \base_core\core\Configurable;
 	use \base_core\core\ConfigurableEnumeration;
 
 	protected static function _initializeConfiguration($config) {
-		return new TayTypeConfiguration(is_callable($config) ? $config() : $config);
+		return new TayTypesConfiguration(is_callable($config) ? $config() : $config);
 	}
 
 	// Detect if beneficiary recipient is business (B) or non-business (C).

@@ -17,7 +17,7 @@
 
 namespace billing_payment\billing\payment;
 
-class TaxTypesConfiguration extends \base_core\core\Configuration {
+class TaxTypeConfiguration extends \base_core\core\Configuration {
 
 	public function __construct(array $config) {
 		return parent::__conctruct($config + [

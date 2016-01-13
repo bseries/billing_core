@@ -19,7 +19,7 @@ namespace billing_core\models;
 
 use InvalidArgumentException;
 use OutOfBoundsException;
-use billing_core\models\TaxTypes;
+use billing_core\billing\TaxTypes;
 
 class ClientGroups extends \base_core\models\Base {
 
@@ -65,7 +65,7 @@ class ClientGroups extends \base_core\models\Base {
 	}
 
 	public function taxType($entity) {
-		return TaxTypes::find('first', ['conditions' => ['name' => $entity->taxType]]);
+		return TaxTypes::config($entity->taxType);
 	}
 }
 

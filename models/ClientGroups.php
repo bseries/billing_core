@@ -21,6 +21,7 @@ use InvalidArgumentException;
 use OutOfBoundsException;
 use billing_core\billing\TaxType;
 
+// @deprecated
 class ClientGroups extends \base_core\models\Base {
 
 	protected $_meta = [
@@ -30,6 +31,8 @@ class ClientGroups extends \base_core\models\Base {
 	protected static $_data = [];
 
 	public static function register($id, array $data) {
+		trigger_error('Deprecated in favor of billing\ClientGroup.', E_USER_DEPRECATED);
+
 		$data += [
 			'id' => $id,
 			'title' => null,

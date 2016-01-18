@@ -14,6 +14,8 @@
 
 ### Backwards Incompatible Changes
 
+- Setting `billing.paymentTerms` has been removed in favor of `invoice.terms`.
+
 - Extracted invoicing into billing_invoice, models have been
   moved into new namespaces:
   - `billing_core\models\Invoices` -> `billing_invoice\models\Invoices`

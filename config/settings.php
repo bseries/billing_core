@@ -24,8 +24,4 @@ Settings::register('contact.billing', Settings::read('contact.default') + [
 	'tax_no' => '12/12/12'
 ]);
 
-Settings::register('billing.paymentTerms', function($user) {
-	return null;
-});
-
 ?>

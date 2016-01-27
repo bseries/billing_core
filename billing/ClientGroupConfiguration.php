@@ -15,13 +15,13 @@
  * License. If not, see http://atelierdisko.de/licenses.
  */
 
-namespace billing_core\models;
+namespace billing_core\billing;
 
 use billing_core\billing\TaxType;
 
 class ClientGroupConfiguration extends \base_core\core\Configuration {
 
-	public function __construct($config) {
+	public function __construct(array $config) {
 		parent::__construct($config + [
 			'title' => null,
 			'taxType' => null,
@@ -29,6 +29,10 @@ class ClientGroupConfiguration extends \base_core\core\Configuration {
 			'amountCurrency' => 'EUR',
 			'amountType' => 'gross'
 		]);
+	}
+
+	public function conditions($user) {
+		return $this->_data['conditions']($user);
 	}
 
 	public function taxType() {

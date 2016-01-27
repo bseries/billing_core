@@ -45,6 +45,8 @@ class ClientGroups extends \base_core\models\Base {
 	}
 
 	public static function find($type, array $options = []) {
+		trigger_error('Deprecated in favor of billing\ClientGroup.', E_USER_DEPRECATED);
+
 		if ($type == 'all') {
 			return static::$_data;
 		} elseif ($type == 'first') {
@@ -68,6 +70,8 @@ class ClientGroups extends \base_core\models\Base {
 	}
 
 	public function taxType($entity) {
+		trigger_error('Deprecated in favor of billing\ClientGroup.', E_USER_DEPRECATED);
+
 		return TaxType::config($entity->taxType);
 	}
 }

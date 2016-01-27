@@ -15,13 +15,13 @@
  * License. If not, see http://atelierdisko.de/licenses.
  */
 
-namespace billing_payment\billing\payment;
+namespace billing_core\billing;
 
 class TaxTypeConfiguration extends \base_core\core\Configuration {
 
 	public function __construct(array $config) {
-		return parent::__conctruct($config + [
-			'title' => $data['name'],
+		return parent::__construct($config + [
+			'title' => null,
 			// Either percentage as integer or `false` to indicate
 			// that no rate is calculated at all.
 			'rate' => false,

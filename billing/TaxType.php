@@ -25,7 +25,7 @@ class TaxType {
 	use \base_core\core\ConfigurableEnumeration;
 
 	protected static function _initializeConfiguration($config) {
-		return new TayTypeConfiguration(is_callable($config) ? $config() : $config);
+		return new TaxTypeConfiguration(is_callable($config) ? $config() : $config);
 	}
 
 	// Detect if beneficiary recipient is business (B) or non-business (C).

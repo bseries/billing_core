@@ -15,7 +15,7 @@
  * License. If not, see http://atelierdisko.de/licenses.
  */
 
-namespace billing_core\models;
+namespace billing_core\billing;
 
 use billing_core\billing\ClientGroupConfiguration;
 

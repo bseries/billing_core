@@ -15,18 +15,17 @@
  * License. If not, see http://atelierdisko.de/licenses.
  */
 
-namespace billing_core\models;
+namespace billing_core\billing;
 
-class TaxTypes extends \base_core\models\BaseRegister {
+use billing_core\billing\TaxType;
 
-	protected static function _register(array $data) {
-		return $data + [
-			'title' => $data['name'],
-			// Either percentage as integer or `false` to indicate
-			// that no rate is calculated at all.
-			'rate' => false,
-			'note' => null
-		];
+class TaxTypes {
+
+	use \base_core\core\Registerable;
+	use \base_core\core\RegisterableEnumeration;
+
+	public static function register($name, array $object) {
+		static::$_registry[$name] = is_array($object) ? new TaxType($object) : $object;
 	}
 
 	// Detect if beneficiary recipient is business (B) or non-business (C).
@@ -120,23 +119,6 @@ class TaxTypes extends \base_core\models\BaseRegister {
 			'US'  // USA
 		];
 		return in_array($territory, $territories);
-	}
-
-	public function title($entity) {
-		$value = $entity->data(__FUNCTION__);
-		return is_callable($value) ? $value() : $value;
-	}
-
-	public function note($entity) {
-		$value = $entity->data(__FUNCTION__);
-		return is_callable($value) ? $value() : $value;
-	}
-
-	/* Deprecated / BC */
-
-	public function name($entity) {
-		trigger_error('TaxTypes::name() is deprecated in favor of title().', E_USER_DEPRECATED);
-		return $entity->title();
 	}
 }
 

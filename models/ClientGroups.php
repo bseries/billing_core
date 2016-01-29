@@ -19,8 +19,9 @@ namespace billing_core\models;
 
 use InvalidArgumentException;
 use OutOfBoundsException;
-use billing_core\models\TaxTypes;
+use billing_core\billing\TaxTypes;
 
+// @deprecated
 class ClientGroups extends \base_core\models\Base {
 
 	protected $_meta = [
@@ -30,6 +31,8 @@ class ClientGroups extends \base_core\models\Base {
 	protected static $_data = [];
 
 	public static function register($id, array $data) {
+		trigger_error('Deprecated in favor of billing\ClientGroup.', E_USER_DEPRECATED);
+
 		$data += [
 			'id' => $id,
 			'title' => null,
@@ -42,6 +45,8 @@ class ClientGroups extends \base_core\models\Base {
 	}
 
 	public static function find($type, array $options = []) {
+		trigger_error('Deprecated in favor of billing\ClientGroup.', E_USER_DEPRECATED);
+
 		if ($type == 'all') {
 			return static::$_data;
 		} elseif ($type == 'first') {
@@ -65,7 +70,9 @@ class ClientGroups extends \base_core\models\Base {
 	}
 
 	public function taxType($entity) {
-		return TaxTypes::find('first', ['conditions' => ['name' => $entity->taxType]]);
+		trigger_error('Deprecated in favor of billing\ClientGroup.', E_USER_DEPRECATED);
+
+		return TaxTypes::registry($entity->taxType);
 	}
 }
 

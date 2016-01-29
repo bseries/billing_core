@@ -17,7 +17,7 @@
 
 namespace billing_core\config;
 
-use billing_core\models\TaxTypes;
+use billing_core\billing\TaxTypes;
 use lithium\g11n\Message;
 
 extract(Message::aliases());

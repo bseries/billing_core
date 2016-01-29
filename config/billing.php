@@ -17,7 +17,7 @@
 
 namespace billing_core\config;
 
-use billing_core\billing\TaxType;
+use billing_core\billing\TaxTypes;
 use lithium\g11n\Message;
 
 extract(Message::aliases());
@@ -27,7 +27,7 @@ extract(Message::aliases());
 //
 // Tax that applies on all goods when business resides in Germany.
 // B2B & B2C
-TaxType::config('DE.vat.standard', [
+TaxTypes::register('DE.vat.standard', [
 	'rate' => 19,
 	'title' => function() use ($t) {
 		return $t('VAT', ['scope' => 'billing_core']);
@@ -38,7 +38,7 @@ TaxType::config('DE.vat.standard', [
 ]);
 
 // Tax that applies on certain goods when business resides in Germany.
-TaxType::config('DE.vat.reduced', [
+TaxTypes::register('DE.vat.reduced', [
 	'rate' => 7,
 	'title' => function() use ($t) {
 		return $t('red. VAT', ['scope' => 'billing_core']);
@@ -49,7 +49,7 @@ TaxType::config('DE.vat.reduced', [
 ]);
 
 // Applies under certain circumstances worldwide.
-TaxType::config('*.vat.reverse', [
+TaxTypes::register('*.vat.reverse', [
 	'rate' => false,
 	'title' => function() use ($t) {
 		return $t('VAT Reverse Charge', ['scope' => 'billing_core']);

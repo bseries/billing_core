@@ -19,7 +19,7 @@ namespace billing_core\models;
 
 use InvalidArgumentException;
 use OutOfBoundsException;
-use billing_core\billing\TaxType;
+use billing_core\billing\TaxTypes;
 
 // @deprecated
 class ClientGroups extends \base_core\models\Base {
@@ -72,7 +72,7 @@ class ClientGroups extends \base_core\models\Base {
 	public function taxType($entity) {
 		trigger_error('Deprecated in favor of billing\ClientGroup.', E_USER_DEPRECATED);
 
-		return TaxType::config($entity->taxType);
+		return TaxTypes::registry($entity->taxType);
 	}
 }
 

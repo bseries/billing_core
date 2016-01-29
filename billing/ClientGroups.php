@@ -17,24 +17,15 @@
 
 namespace billing_core\billing;
 
-class TaxTypeConfiguration extends \base_core\core\Configuration {
+use billing_core\billing\ClientGroup;
 
-	public function __construct(array $config) {
-		return parent::__construct($config + [
-			'title' => null,
-			// Either percentage as integer or `false` to indicate
-			// that no rate is calculated at all.
-			'rate' => false,
-			'note' => null
-		]);
-	}
+class ClientGroups {
 
-	public function title() {
-		return is_callable($value = $this->_data[__FUNCTION__]) ? $value() : $value;
-	}
+	use \base_core\core\Registerable;
+	use \base_core\core\RegisterableEnumeration;
 
-	public function note() {
-		return is_callable($value = $this->_data[__FUNCTION__]) ? $value() : $value;
+	public static function register($name, $object) {
+		static::$_registry[$name] = is_array($object) ? new ClientGroup($object) : $object;
 	}
 }
 

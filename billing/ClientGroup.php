@@ -17,15 +17,36 @@
 
 namespace billing_core\billing;
 
-use billing_core\billing\ClientGroupConfiguration;
+use BadMethodCallException;
+use billing_core\billing\TaxTypes;
 
 class ClientGroup {
 
-	use \base_core\core\Configurable;
-	use \base_core\core\ConfigurableEnumeration;
+	protected $_config = [];
 
-	protected static function _initializeConfiguration($config) {
-		return new ClientGroupConfiguration(is_callable($config) ? $config() : $config);
+	public function __construct(array $config) {
+		$this->_config = $config + [
+			'title' => null,
+			'taxType' => null,
+			'conditions' => function($user) { return false; },
+			'amountCurrency' => 'EUR',
+			'amountType' => 'gross'
+		];
+	}
+
+	public function __call($name, array $arguments) {
+		if (!array_key_exists($name, $this->_config)) {
+			throw new BadMethodCallException("Method or configuration `{$name}` does not exist.");
+		}
+		return $this->_config[$name];
+	}
+
+	public function conditions($user) {
+		return $this->_config['conditions']($user);
+	}
+
+	public function taxType() {
+		return TaxTypes::registry($this->_config['taxType']);
 	}
 }
 

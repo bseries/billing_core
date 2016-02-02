@@ -26,6 +26,7 @@ class ClientGroup {
 
 	public function __construct(array $config) {
 		$this->_config = $config + [
+			'name' => null,
 			'title' => null,
 			'taxType' => null,
 			'conditions' => function($user) { return false; },

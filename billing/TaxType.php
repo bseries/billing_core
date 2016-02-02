@@ -24,6 +24,7 @@ class TaxType {
 	public function __construct(array $config) {
 		return $this->_config = $config + [
 			'title' => null,
+			'name' => null,
 			// Either percentage as integer or `false` to indicate
 			// that no rate is calculated at all.
 			'rate' => false,

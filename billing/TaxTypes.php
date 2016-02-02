@@ -25,7 +25,7 @@ class TaxTypes {
 	use \base_core\core\RegisterableEnumeration;
 
 	public static function register($name, array $object) {
-		static::$_registry[$name] = is_array($object) ? new TaxType($object) : $object;
+		static::$_registry[$name] = new TaxType($object + compact('name'));
 	}
 
 	// Detect if beneficiary recipient is business (B) or non-business (C).

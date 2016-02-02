@@ -24,8 +24,8 @@ class ClientGroups {
 	use \base_core\core\Registerable;
 	use \base_core\core\RegisterableEnumeration;
 
-	public static function register($name, $object) {
-		static::$_registry[$name] = is_array($object) ? new ClientGroup($object) : $object;
+	public static function register($name, array $object) {
+		static::$_registry[$name] = new ClientGroup($object + compact('name'));
 	}
 }
 

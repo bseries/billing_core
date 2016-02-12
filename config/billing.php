@@ -19,8 +19,17 @@ namespace billing_core\config;
 
 use billing_core\billing\TaxTypes;
 use lithium\g11n\Message;
+use base_core\extensions\cms\Settings;
 
 extract(Message::aliases());
+
+//
+// Contacts
+//
+Settings::register('contact.billing', Settings::read('contact.default') + [
+	'vat_reg_no' => null, // i.e. 'DE123123123'
+	'tax_no' => null, // i.e. '12/12/12'
+]);
 
 //
 // Tax Types

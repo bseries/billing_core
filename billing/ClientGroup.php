@@ -46,6 +46,10 @@ class ClientGroup {
 		return $this->_config['conditions']($user);
 	}
 
+	public function title() {
+		return is_callable($value = $this->_config[__FUNCTION__]) ? $value() : $value;
+	}
+
 	public function taxType() {
 		return TaxTypes::registry($this->_config['taxType']);
 	}

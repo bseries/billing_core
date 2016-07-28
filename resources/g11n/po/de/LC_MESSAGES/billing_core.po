@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: billing_core 1.0\n"
 "Report-Msgid-Bugs-To: info@atelierdisko.de\n"
-"POT-Creation-Date: 2015-08-07 15:11+0200\n"
-"PO-Revision-Date: 2015-08-07 15:12+0100\n"
+"POT-Creation-Date: 2016-07-28 12:38+0200\n"
+"PO-Revision-Date: 2016-07-28 12:40+0200\n"
 "Last-Translator: David Persson <davidpersson@gmx.de>\n"
 "Language-Team: none\n"
 "Language: de\n"
@@ -16,47 +16,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.8.7\n"
 
-#: config/misc.php:38
+#: config/billing.php:42
 msgid "VAT"
 msgstr "MwSt."
 
-#: config/misc.php:41
-msgid "VAT Standard DE"
-msgstr "MwSt. Standard DE"
-
-#: config/misc.php:44
+#: config/billing.php:45
 msgid "Includes 19% VAT."
 msgstr "Enthält 19% MwSt."
 
-#: config/misc.php:50
+#: config/billing.php:53
 msgid "red. VAT"
 msgstr "red. MwSt."
 
-#: config/misc.php:53
-msgid "VAT Reduced DE"
-msgstr "MwSt. Reduziert DE"
-
-#: config/misc.php:56
+#: config/billing.php:56
 msgid "Includes 7% VAT."
 msgstr "Enthält 7% MwSt."
 
-#: config/misc.php:63
+#: config/billing.php:64
 msgid "VAT Reverse Charge"
 msgstr "MwSt. Reverse Charge"
 
-#: config/misc.php:66
+#: config/billing.php:67
 msgid "Reverse Charge."
 msgstr "Reverse Charge."
 
-#: config/panes.php:21
+#: config/panes.php:26
 msgid "Billing"
 msgstr "Faktura"
 
-#: config/widgets.php:22
-msgid "Cashflow"
-msgstr "Cashflow"
+#~ msgid "VAT Standard DE"
+#~ msgstr "MwSt. Standard DE"
+
+#~ msgid "VAT Reduced DE"
+#~ msgstr "MwSt. Reduziert DE"
+
+#~ msgid "Cashflow"
+#~ msgstr "Cashflow"
 
 #~ msgid "Invoices"
 #~ msgstr "Rechnungen"
@@ -121,17 +118,11 @@ msgstr "Cashflow"
 #~ msgid "unlocked"
 #~ msgstr "ensperrt"
 
-#~ msgid ""
-#~ "When the invoice is locked it cannot be changed anymore with the "
-#~ "exception of the outstanding amount."
-#~ msgstr ""
-#~ "Ist eine Rechnung gesperrt, kann sie nicht mehr verändert werden - mit "
-#~ "Ausnahme des ausstehenden Betrags."
+#~ msgid "When the invoice is locked it cannot be changed anymore with the exception of the outstanding amount."
+#~ msgstr "Ist eine Rechnung gesperrt, kann sie nicht mehr verändert werden - mit Ausnahme des ausstehenden Betrags."
 
 #~ msgid "The invoice is automatically locked once sent to the user."
-#~ msgstr ""
-#~ "Eine Rechnung wird automatisch gesperrt, sobald diese dem Benutzer "
-#~ "zugestellt worden ist."
+#~ msgstr "Eine Rechnung wird automatisch gesperrt, sobald diese dem Benutzer zugestellt worden ist."
 
 #~ msgid "Number"
 #~ msgstr "Nummer"
@@ -142,11 +133,8 @@ msgstr "Cashflow"
 #~ msgid "Status"
 #~ msgstr "Status"
 
-#~ msgid ""
-#~ "The user will be notified by e-mail when the status is changed to `paid`."
-#~ msgstr ""
-#~ "Der Benutzer wird per E-Mail benachrichtigt, sobald der Status `bezahlt` "
-#~ "ist."
+#~ msgid "The user will be notified by e-mail when the status is changed to `paid`."
+#~ msgstr "Der Benutzer wird per E-Mail benachrichtigt, sobald der Status `bezahlt` ist."
 
 #~ msgid "Date"
 #~ msgstr "Datum"
@@ -289,14 +277,8 @@ msgstr "Cashflow"
 #~ msgid "new payment"
 #~ msgstr "Neue Zahlung"
 
-#~ msgid ""
-#~ "Payments may be associated with an invoice but do not have to. This is to "
-#~ "cater for situations where you receive a payment that you can only "
-#~ "associate with an invoice later."
-#~ msgstr ""
-#~ "Zahlungen können mit einer Rechnung verbunden sein - müssen aber nicht. "
-#~ "Dies ist nützlich in Situationen, wo eine Zahlung erhalten wurde, aber "
-#~ "erst später mit einer Rechnung verbunden werden kann."
+#~ msgid "Payments may be associated with an invoice but do not have to. This is to cater for situations where you receive a payment that you can only associate with an invoice later."
+#~ msgstr "Zahlungen können mit einer Rechnung verbunden sein - müssen aber nicht. Dies ist nützlich in Situationen, wo eine Zahlung erhalten wurde, aber erst später mit einer Rechnung verbunden werden kann."
 
 #~ msgid "Payer"
 #~ msgstr "Einzahlender"

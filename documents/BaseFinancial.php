@@ -35,11 +35,11 @@ abstract class BaseFinancial extends \base_document\documents\Base {
 		parent::compile();
 
 		// Meta Data.
-		$this->_author($this->_sender->name);
-		$this->_creator($this->_sender->name);
+		$this->metaAuthor($this->_sender->name);
+		$this->metaCreator($this->_sender->name);
 
 		if ($this->_subject) {
-			$this->_subject($this->_subject);
+			$this->metaSubject($this->_subject);
 		}
 
 		/* Address field */

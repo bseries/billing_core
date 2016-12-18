@@ -263,7 +263,7 @@ msgstr "Faktura"
 #~ msgstr "öffnen"
 
 #~ msgid "No items available, yet."
-#~ msgstr "Es sind noch keine Element verfügbar."
+#~ msgstr "Es sind noch keine Einträge verfügbar."
 
 #~ msgid "payment"
 #~ msgstr "Zahlung"

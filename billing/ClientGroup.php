@@ -19,6 +19,7 @@ namespace billing_core\billing;
 
 use BadMethodCallException;
 use billing_core\billing\TaxTypes;
+use ecommerce_core\ecommerce\aquisition\Methods as AquisitionMethods;
 
 class ClientGroup {
 
@@ -37,7 +38,8 @@ class ClientGroup {
 			// Tax and currency preferences.
 			'taxType' => null,
 			'amountCurrency' => 'EUR',
-			'amountType' => 'gross'
+			'amountType' => 'gross',
+			'method' => 'buy'
 		];
 	}
 
@@ -58,6 +60,10 @@ class ClientGroup {
 
 	public function taxType() {
 		return TaxTypes::registry($this->_config['taxType']);
+	}
+
+	public function method() {
+		return AquisitionMethods::registry($this->_config['method']);
 	}
 }
 

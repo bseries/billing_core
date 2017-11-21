@@ -1,5 +1,5 @@
 {
-    "name": "atelierdisko/billing_core",
+    "name": "bseries/billing_core",
     "description": "Core functionality for Banque.",
     "homepage": "http://atelierdisko.de",
     "type": "lithium-library",
@@ -15,7 +15,7 @@
         "composer/installers": "1.*@stable",
         "atelierdisko/finance": "2.0.*",
         "unionofrad/lithium": "1.0.*@dev",
-        "atelierdisko/base_core": "1.4.*"
+        "bseries/base_core": "1.4.*"
     },
     "repositories": [
       { "type": "vcs", "url": "git@code.atelierdisko:finance" },

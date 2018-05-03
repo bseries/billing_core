@@ -11,6 +11,6 @@
         "unionofrad/lithium": "^1.1"
     },
     "repositories": [
-      { "type": "vcs", "url": "git@code.disko.io:finance" }
+      { "type": "vcs", "url": "git@github.com:atelierdisko/finance" }
     ]
 }

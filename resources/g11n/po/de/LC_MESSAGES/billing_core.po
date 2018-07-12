@@ -119,7 +119,7 @@ msgstr "Faktura"
 #~ msgstr "ensperrt"
 
 #~ msgid "When the invoice is locked it cannot be changed anymore with the exception of the outstanding amount."
-#~ msgstr "Ist eine Rechnung gesperrt, kann sie nicht mehr verändert werden - mit Ausnahme des ausstehenden Betrags."
+#~ msgstr "Ist eine Rechnung gesperrt, kann sie nicht mehr verändert werden – mit Ausnahme des ausstehenden Betrags."
 
 #~ msgid "The invoice is automatically locked once sent to the user."
 #~ msgstr "Eine Rechnung wird automatisch gesperrt, sobald diese dem Benutzer zugestellt worden ist."
@@ -278,7 +278,7 @@ msgstr "Faktura"
 #~ msgstr "Neue Zahlung"
 
 #~ msgid "Payments may be associated with an invoice but do not have to. This is to cater for situations where you receive a payment that you can only associate with an invoice later."
-#~ msgstr "Zahlungen können mit einer Rechnung verbunden sein - müssen aber nicht. Dies ist nützlich in Situationen, wo eine Zahlung erhalten wurde, aber erst später mit einer Rechnung verbunden werden kann."
+#~ msgstr "Zahlungen können mit einer Rechnung verbunden sein – müssen aber nicht. Dies ist nützlich in Situationen, wo eine Zahlung erhalten wurde, aber erst später mit einer Rechnung verbunden werden kann."
 
 #~ msgid "Payer"
 #~ msgstr "Einzahlender"

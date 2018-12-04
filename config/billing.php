@@ -26,7 +26,10 @@ extract(Message::aliases());
 //
 // Contacts
 //
-Settings::register('contact.billing', Settings::read('contact.default') + [
+if (!$primaryContact = Settings::read('contact.primary')) {
+	$primaryContact = Settings::read('contact.default');
+}
+Settings::register('contact.billing', $primaryContact + [
 	'vat_reg_no' => null, // i.e. 'DE123123123'
 	'tax_no' => null, // i.e. '12/12/12'
 ]);

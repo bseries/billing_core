@@ -26,18 +26,14 @@ extract(Message::aliases());
 //
 // Contacts
 //
-if (Settings::read('contact.primary')) {
-	Settings::register('contact.billing', Settings::read('contact.primary') + [
-		'vat_reg_no' => null, // i.e. 'DE123123123'
-		'tax_no' => null, // i.e. '12/12/12'
-	]);
-} else {
+if (!$primaryContact = Settings::read('contact.primary')) {
 	trigger_error('No primary contact found, using deprecated default.', E_USER_DEPRECATED);
-	Settings::register('contact.billing', Settings::read('contact.default') + [
-		'vat_reg_no' => null, // i.e. 'DE123123123'
-		'tax_no' => null, // i.e. '12/12/12'
-	]);
+	$primaryContact = Settings::read('contact.default');
 }
+Settings::register('contact.billing', $primaryContact + [
+	'vat_reg_no' => null, // i.e. 'DE123123123'
+	'tax_no' => null, // i.e. '12/12/12'
+]);
 
 //
 // Tax Types

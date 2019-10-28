@@ -43,9 +43,11 @@ class TaxTypes {
 	// @link http://publications.europa.eu/code/de/de-370100.htm
 	public static function isEuTerritory($territory) {
 		$territories = [
-			'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'IE', 'EL', 'ES', 'FR',
-			'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'AT', 'PL',
-			'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB'
+			'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL',
+			'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV',
+			'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK',
+
+			'GB',
 		];
 		return in_array($territory, $territories);
 	}

@@ -2,17 +2,11 @@
 /**
  * Billing Core
  *
- * Copyright (c) 2014 Atelier Disko - All rights reserved.
+ * Copyright (c) 2014 David Persson - All rights reserved.
+ * Copyright (c) 2016 Atelier Disko - All rights reserved.
  *
- * Licensed under the AD General Software License v1.
- *
- * This software is proprietary and confidential. Redistribution
- * not permitted. Unless required by applicable law or agreed to
- * in writing, software distributed on an "AS IS" BASIS, WITHOUT-
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *
- * You should have received a copy of the AD General Software
- * License. If not, see https://atelierdisko.de/licenses.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
  */
 
 namespace billing_core\billing;
@@ -43,11 +37,9 @@ class TaxTypes {
 	// @link http://publications.europa.eu/code/de/de-370100.htm
 	public static function isEuTerritory($territory) {
 		$territories = [
-			'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL',
-			'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV',
-			'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK',
-
-			'GB',
+			'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'IE', 'EL', 'ES', 'FR',
+			'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'AT', 'PL',
+			'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'GR'
 		];
 		return in_array($territory, $territories);
 	}

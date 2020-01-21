@@ -2,7 +2,7 @@
     "name": "bseries/billing_core",
     "description": "Core functionality for Banque.",
     "type": "lithium-library",
-    "license": "proprietary",
+    "license": ["BSD-3-Clause"],
     "require": {
         "atelierdisko/finance": "^2",
         "bseries/base_core": "^1.5",

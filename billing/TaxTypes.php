@@ -39,7 +39,7 @@ class TaxTypes {
 		$territories = [
 			'BE', 'BG', 'CZ', 'DE', 'DK', 'EE', 'IE', 'EL', 'ES', 'FR',
 			'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'AT', 'PL',
-			'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB'
+			'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'GR'
 		];
 		return in_array($territory, $territories);
 	}
